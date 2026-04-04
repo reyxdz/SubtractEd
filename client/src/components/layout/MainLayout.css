@@ -5,12 +5,19 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 2rem;
 }
 
+@media (max-width: 768px) {
+  .main-layout {
+    padding: 1rem;
+  }
+}
+
 .banig-bg {
-  position: absolute;
+  position: fixed; /* Keep background static on scroll */
   top: 0;
   left: 0;
   right: 0;
@@ -27,7 +34,7 @@
 .app-window {
   position: relative;
   width: 100%;
-  max-width: 800px;
+  max-width: 1024px;
   min-height: 500px;
   z-index: 10;
   border-radius: 24px;
