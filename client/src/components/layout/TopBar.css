@@ -1,0 +1,19 @@
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  width: 100%;
+  position: relative;
+  z-index: 50;
+}
+
+.logo-placeholder {
+  height: 40px;
+  width: 120px;
+  /* Will hold image later */
+}
+
+.top-bar-actions {
+  position: relative;
+}
