@@ -1,0 +1,31 @@
+.switch {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  border: none;
+  background-color: #E2E8F0;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.switch-on {
+  background-color: var(--theme-accent);
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  transition: transform var(--transition-speed) ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.switch-on .switch-thumb {
+  transform: translateX(20px);
+}

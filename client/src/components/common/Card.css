@@ -1,0 +1,10 @@
+.card {
+  padding: 1.5rem;
+  border-radius: var(--border-radius-lg);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--box-shadow-elevated);
+}
