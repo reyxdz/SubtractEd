@@ -1,16 +1,13 @@
-import './App.css'
+import React from 'react';
+import { MainLayout } from './components/layout/MainLayout';
+import { HomeContent } from './components/features/home/HomeContent';
 
 function App() {
   return (
-    <div className="app-container">
-      <div className="theme-card">
-        <h1>SubtractEd Front-End</h1>
-        <p className="status">
-          Global theme established. Clean Architecture is ready.
-        </p>
-      </div>
-    </div>
-  )
+    <MainLayout>
+      <HomeContent />
+    </MainLayout>
+  );
 }
 
-export default App
+export default App;
