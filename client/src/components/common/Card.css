@@ -2,9 +2,14 @@
   padding: 1.5rem;
   border-radius: var(--border-radius-lg);
   transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02), inset 0 0 15px rgba(255,255,255,0.5);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--box-shadow-elevated);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.7);
 }

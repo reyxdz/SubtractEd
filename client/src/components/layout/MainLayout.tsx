@@ -9,10 +9,14 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="main-layout">
-      <TopBar />
-      <main className="main-content">
-        {children}
-      </main>
+      <div className="banig-bg"></div>
+      
+      <div className="app-window">
+        <TopBar />
+        <main className="main-content">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

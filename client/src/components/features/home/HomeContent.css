@@ -4,21 +4,25 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  max-width: 800px;
   margin: 0 auto;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 1rem;
 }
 
-.home-title-wrapper {
-  padding: 0.5rem 3rem;
-  border-radius: var(--border-radius-lg);
+.glass-pill-title {
+  padding: 0.8rem 4rem;
+  border-radius: var(--border-radius-pill);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05), inset 0 0 10px rgba(255,255,255,0.8);
   margin-bottom: 0.5rem;
 }
 
 .home-title {
   color: var(--theme-accent);
-  font-size: 3rem;
+  font-size: 2.8rem;
   font-weight: 800;
   margin: 0;
   letter-spacing: -1px;
@@ -26,29 +30,23 @@
 
 .home-description {
   color: var(--color-text-dark);
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 500;
   line-height: 1.6;
-  max-width: 600px;
-}
-
-.home-description strong {
-  font-weight: 700;
-  color: var(--theme-accent);
+  max-width: 580px;
 }
 
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
   width: 100%;
+  margin-top: 1rem;
 }
 
 @media (max-width: 768px) {
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .home-title {
-    font-size: 2.2rem;
   }
 }
 
@@ -62,40 +60,41 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  gap: 0.5rem;
   cursor: pointer;
+  height: 140px;
 }
 
-.module-card h4 {
+.card-title {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-text-dark);
 }
 
 .card-icon-wrapper {
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Specific icon colors mimicking the image */
-.icon-blue {
-  color: var(--color-primary-blue);
-}
-
-.icon-red {
-  color: var(--color-primary-red);
-}
-
-.icon-yellow {
-  color: #FBBF24; /* Amber/Yellow for star */
-}
+.blue-gradient { color: var(--color-primary-blue); }
+.red-gradient { color: var(--color-primary-red); }
+.yellow-gradient { color: #F59E0B; }
 
 .home-action {
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .start-btn {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   padding: 1rem 3rem;
   border-radius: var(--border-radius-pill);
 }

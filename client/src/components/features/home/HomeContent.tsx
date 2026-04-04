@@ -5,16 +5,17 @@ import { Button } from '../../common/Button';
 import './HomeContent.css';
 
 const MOCK_CARDS = [
-  { id: 1, title: 'Guide Card', icon: BookOpen, colorClass: 'icon-blue' },
-  { id: 2, title: 'Activity Card', icon: Edit3, colorClass: 'icon-red' },
-  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, colorClass: 'icon-blue' },
-  { id: 4, title: 'Enrichment Card', icon: Star, colorClass: 'icon-yellow' },
+  { id: 1, title: 'Guide Card', icon: BookOpen, gradient: 'blue-gradient' },
+  { id: 2, title: 'Activity Card', icon: Edit3, gradient: 'red-gradient' },
+  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, gradient: 'blue-gradient' },
+  { id: 4, title: 'Enrichment Card', icon: Star, gradient: 'yellow-gradient' },
 ];
 
 export const HomeContent: React.FC = () => {
   return (
     <div className="home-container">
-      <div className="home-title-wrapper glass">
+      
+      <div className="glass-pill-title">
         <h1 className="home-title">SubtractEd</h1>
       </div>
 
@@ -29,10 +30,10 @@ export const HomeContent: React.FC = () => {
           const IconComponent = card.icon;
           return (
             <Card key={card.id} className="module-card">
-              <div className={`card-icon-wrapper ${card.colorClass}`}>
-                <IconComponent size={32} />
+              <div className="card-icon-wrapper">
+                <IconComponent size={24} strokeWidth={2.5} className={card.gradient} />
               </div>
-              <h4>{card.title}</h4>
+              <h4 className="card-title">{card.title}</h4>
             </Card>
           );
         })}
@@ -43,6 +44,7 @@ export const HomeContent: React.FC = () => {
           Start Learning
         </Button>
       </div>
+
     </div>
   );
 };

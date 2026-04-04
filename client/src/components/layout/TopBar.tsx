@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Settings } from 'lucide-react';
-import { Button } from '../common/Button';
 import { SettingsPopover } from '../features/settings/SettingsPopover';
 import './TopBar.css';
 
@@ -9,18 +8,17 @@ export const TopBar: React.FC = () => {
 
   return (
     <header className="top-bar">
-      <div className="logo-placeholder">
-        {/* Logo goes here */}
-      </div>
+      {/* Spacer to push settings to the right */}
+      <div style={{ flex: 1 }}></div>
       
       <div className="top-bar-actions">
-        <Button 
-          variant="icon" 
+        <button 
+          className="settings-icon-btn glass"
           onClick={() => setIsSettingsOpen(!isSettingsOpen)}
           aria-label="Settings"
         >
-          <Settings size={20} />
-        </Button>
+          <Settings size={20} color="var(--color-text-muted)" />
+        </button>
         {isSettingsOpen && (
           <SettingsPopover onClose={() => setIsSettingsOpen(false)} />
         )}

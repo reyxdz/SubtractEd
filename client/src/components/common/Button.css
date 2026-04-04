@@ -23,23 +23,17 @@
 .btn-primary {
   background: linear-gradient(180deg, var(--theme-primary) 0%, var(--theme-accent) 100%);
   color: var(--color-white);
-  box-shadow: 0 4px 14px 0 rgba(var(--theme-primary), 0.39);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.3);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 6px 20px rgba(var(--theme-primary), 0.23);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.3);
 }
 
 .btn-icon {
   padding: 0.5rem;
-  background-color: var(--color-white);
+  background-color: transparent;
   color: var(--color-text-muted);
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.btn-icon:hover {
-  background-color: var(--theme-bg-soft);
-  color: var(--theme-primary);
 }

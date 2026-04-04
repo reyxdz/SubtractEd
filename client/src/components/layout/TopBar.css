@@ -1,19 +1,32 @@
 .top-bar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   width: 100%;
   position: relative;
   z-index: 50;
 }
 
-.logo-placeholder {
-  height: 40px;
-  width: 120px;
-  /* Will hold image later */
-}
-
 .top-bar-actions {
   position: relative;
+}
+
+.settings-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px; /* Squarish rounded like the picture */
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.settings-icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
 }
