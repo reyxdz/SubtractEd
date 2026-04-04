@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
 import { Switch } from '../../common/Switch';
-import { Button } from '../../common/Button';
 import './SettingsPopover.css';
 
 interface SettingsPopoverProps {
