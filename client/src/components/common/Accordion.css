@@ -131,3 +131,31 @@
 .accordion-inner {
   padding-bottom: 0.1rem;
 }
+
+@media (max-width: 600px) {
+  .accordion {
+    padding: 1.25rem 1rem;
+  }
+  
+  .accordion.open .accordion-header {
+    justify-content: flex-start;
+  }
+
+  .accordion.open .accordion-header-text {
+    text-align: left;
+    padding-right: 3rem; /* Room for the absolute button */
+  }
+
+  .accordion.open .accordion-title {
+    font-size: 1.25rem;
+  }
+  
+  .accordion-title {
+    font-size: 1.1rem;
+  }
+  
+  .accordion-toggle-btn {
+    width: 36px;
+    height: 36px;
+  }
+}

@@ -208,3 +208,39 @@
   }
 }
 
+@media (max-width: 600px) {
+  .researcher-card {
+    padding: 1rem;
+  }
+
+  .researcher-header {
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .researcher-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .researcher-info h4 {
+    font-size: 1.1rem;
+  }
+
+  .researcher-info p {
+    font-size: 0.8rem;
+  }
+
+  .researcher-desc {
+    font-size: 0.9rem;
+  }
+
+  .references-list {
+    padding: 1rem;
+  }
+
+  .reference-item {
+    font-size: 0.9rem;
+    padding-left: 1.5rem;
+  }
+}
