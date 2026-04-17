@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column; /* Allow natural flow */
   position: relative;
-  overflow-x: hidden;
   padding: 2rem;
   box-sizing: border-box;
 }
