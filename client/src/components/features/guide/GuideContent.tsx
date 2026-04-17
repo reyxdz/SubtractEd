@@ -7,7 +7,7 @@ import { TopBar } from '../../layout/TopBar';
 import './GuideContent.css';
 
 // Intersection Observer wrapper component
-const FadeInSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const FadeInSection: React.FC<{ children: React.ReactNode, delay?: number }> = ({ children, delay = 0 }) => {
   const [isVisible, setVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
@@ -18,7 +18,10 @@ const FadeInSection: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           setVisible(true);
         }
       });
-    }, { threshold: 0.1 });
+    }, { 
+      threshold: 0.1,
+      rootMargin: "0px 0px -10% 0px" // Trigger slightly above bottom fold
+    });
 
     const currentRef = domRef.current;
     if (currentRef) observer.observe(currentRef);
@@ -32,6 +35,7 @@ const FadeInSection: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     <div
       className={`fade-in-section ${isVisible ? 'is-visible' : ''}`}
       ref={domRef}
+      style={{ transitionDelay: `${isVisible ? delay : 0}ms` }}
     >
       {children}
     </div>
@@ -53,7 +57,7 @@ export const GuideContent: React.FC = () => {
       </header>
 
       {/* Intro Scene (Student) */}
-      <FadeInSection>
+      <FadeInSection delay={100}>
         <div className="speech-row left-only">
           <div className="character-box">
             <img src={studentImg} alt="Student confused" className="character-img" />
@@ -66,7 +70,7 @@ export const GuideContent: React.FC = () => {
       </FadeInSection>
 
       {/* Intro Scene (Teacher) */}
-      <FadeInSection>
+      <FadeInSection delay={200}>
         <div className="speech-row right-only">
           <div className="speech-card speech-white right-tail">
             Do not worry, Intoy. It is actually very simple. <strong>SubtractEd</strong> is here to help you.
@@ -78,7 +82,7 @@ export const GuideContent: React.FC = () => {
       </FadeInSection>
 
       {/* Learning Competency */}
-      <FadeInSection>
+      <FadeInSection delay={150}>
         <div className="competency-layout">
           <div className="character-box" style={{ paddingBottom: '10px' }}>
             {/* Same or different student avatar could be used here */}
@@ -106,7 +110,7 @@ export const GuideContent: React.FC = () => {
       </FadeInSection>
 
       {/* Video Block */}
-      <FadeInSection>
+      <FadeInSection delay={200}>
         <div className="video-wrapper" style={{ textAlign: 'center' }}>
           <div className="video-title-pill">Introduction</div>
           <div className="video-player">
@@ -125,7 +129,7 @@ export const GuideContent: React.FC = () => {
       </FadeInSection>
 
       {/* Footer Action */}
-      <FadeInSection>
+      <FadeInSection delay={100}>
         <div className="complete-btn-wrapper">
           <button className="complete-btn" onClick={() => navigate('/activity')}>
             Complete
