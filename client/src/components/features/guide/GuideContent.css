@@ -1,0 +1,119 @@
+.guide-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.guide-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--theme-primary);
+  background: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--box-shadow-elevated);
+}
+
+.guide-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--theme-primary);
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.objective-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.objective-card {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--box-shadow-soft);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.objective-card h2 {
+  color: var(--theme-primary);
+  margin-top: 0;
+}
+
+.objective-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.objective-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.check-icon {
+  color: #10B981;
+  background: #D1FAE5;
+  border-radius: 50%;
+  padding: 0.25rem;
+}
+
+.video-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.video-frame {
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16/9;
+  background: var(--theme-bg-soft);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--box-shadow-elevated);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-frame::before {
+  content: "📚";
+  font-size: 5rem;
+  opacity: 0.8;
+}
+
+.play-button {
+  position: absolute;
+  font-size: 3rem;
+  background: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-primary);
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}

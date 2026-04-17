@@ -7,13 +7,16 @@ import './HomeContent.css';
 import subtractedLogo from '../../../assets/subtracted_logo.png';
 
 const MOCK_CARDS = [
-  { id: 1, title: 'Guide Card', icon: BookOpen, gradient: 'blue-gradient' },
-  { id: 2, title: 'Activity Card', icon: Edit3, gradient: 'red-gradient' },
-  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, gradient: 'blue-gradient' },
-  { id: 4, title: 'Enrichment Card', icon: Star, gradient: 'yellow-gradient' },
+  { id: 1, title: 'Guide Card', icon: BookOpen, gradient: 'blue-gradient', path: '/guide' },
+  { id: 2, title: 'Activity Card', icon: Edit3, gradient: 'red-gradient', path: '/activity' },
+  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, gradient: 'blue-gradient', path: '/assessment' },
+  { id: 4, title: 'Enrichment Card', icon: Star, gradient: 'yellow-gradient', path: '/enrichment' },
 ];
 
+import { useNavigate } from 'react-router-dom';
+
 export const HomeContent: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="home-container">
       
@@ -29,7 +32,7 @@ export const HomeContent: React.FC = () => {
         {MOCK_CARDS.map((card) => {
           const IconComponent = card.icon;
           return (
-            <Card key={card.id} className="module-card">
+            <Card key={card.id} className="module-card" onClick={() => navigate(card.path)}>
               <div className="card-icon-wrapper">
                 <IconComponent size={24} strokeWidth={2.5} className={card.gradient} />
               </div>
