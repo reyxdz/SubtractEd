@@ -2,12 +2,11 @@
   min-height: 100vh;
   background-color: var(--theme-bg-soft);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column; /* Allow natural flow */
   position: relative;
-  overflow-y: auto;
   overflow-x: hidden;
   padding: 2rem;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -36,6 +35,7 @@
   width: 100%;
   max-width: 1024px;
   min-height: 500px;
+  margin: auto; /* Centered visually without clipping */
   z-index: 10;
   border-radius: 24px;
   display: flex;
