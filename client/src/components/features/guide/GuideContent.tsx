@@ -1,51 +1,139 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check } from 'lucide-react';
-import { Button } from '../../common/Button';
+import { Check, Settings, Play } from 'lucide-react';
+import studentImg from '../../../assets/student_clip_images/student_scratching_head_wondering.png';
+import teacherImg from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
 import './GuideContent.css';
+
+// Intersection Observer wrapper component
+const FadeInSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isVisible, setVisible] = useState(false);
+  const domRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const currentRef = domRef.current;
+    if (currentRef) observer.observe(currentRef);
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, []);
+
+  return (
+    <div
+      className={`fade-in-section ${isVisible ? 'is-visible' : ''}`}
+      ref={domRef}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const GuideContent: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="guide-container">
+    <div className="guide-page-container">
+      {/* Header */}
       <header className="guide-header">
-        <button className="back-button" onClick={() => navigate('/')}>
-          ← Back
+        <button className="neo-btn back-chip" onClick={() => navigate('/')}>
+          ← <span>Back</span>
         </button>
-        <h1 className="guide-title">Guide Card</h1>
-        <div style={{ width: '80px' }}></div> {/* Spacer for symmetry */}
+        <h1 className="guide-title-pill">Guide Card</h1>
+        <button className="neo-btn settings-btn" aria-label="Settings">
+          <Settings size={28} strokeWidth={2.5} />
+        </button>
       </header>
 
-      <section className="objective-section">
-        <div className="objective-card glass">
-          <h2>Learning Competency</h2>
-          <ul className="objective-list">
-            <li>
-              <div className="check-icon">
+      {/* Intro Scene (Student) */}
+      <FadeInSection>
+        <div className="speech-row left-only">
+          <div className="character-box">
+            <img src={studentImg} alt="Student confused" className="character-img" />
+          </div>
+          <div className="speech-card speech-cream left-tail">
+            This is so confusing,<br />
+            I cannot subtract integers.
+          </div>
+        </div>
+      </FadeInSection>
+
+      {/* Intro Scene (Teacher) */}
+      <FadeInSection>
+        <div className="speech-row right-only">
+          <div className="speech-card speech-white right-tail">
+            Do not worry, Intoy. It is actually very simple. <strong>SubtractEd</strong> is here to help you.
+          </div>
+          <div className="character-box">
+            <img src={teacherImg} alt="Teacher helpful" className="character-img" />
+          </div>
+        </div>
+      </FadeInSection>
+
+      {/* Learning Competency */}
+      <FadeInSection>
+        <div className="competency-layout">
+          <div className="character-box" style={{ paddingBottom: '10px' }}>
+            {/* Same or different student avatar could be used here */}
+            <img src={studentImg} alt="Student" style={{ width: '100px' }} className="character-img" />
+          </div>
+          <div className="competency-box">
+            <div className="competency-header">
+              <h3>Learning Competency</h3>
+              <div style={{ color: 'var(--color-text-muted)' }}>📋</div>
+            </div>
+            <div className="competency-item">
+              <div className="competency-check">
                 <Check size={20} strokeWidth={3} />
               </div>
-              <span>
+              <div>
                 Subtract integers using concrete models such as counters and integer chips, 
                 pictorial models such as bar models and number lines, and with integers written as numerals.
-              </span>
-            </li>
-          </ul>
+              </div>
+            </div>
+          </div>
+          <div className="character-box" style={{ paddingBottom: '10px' }}>
+             <img src={teacherImg} alt="Teacher" style={{ width: '100px' }} className="character-img" />
+          </div>
         </div>
-      </section>
+      </FadeInSection>
 
-      <section className="video-section">
-        <h2 style={{ color: 'var(--theme-primary)', marginTop: '1rem' }}>Introduction</h2>
-        <div className="video-frame">
-          <div className="play-button">▶</div>
+      {/* Video Block */}
+      <FadeInSection>
+        <div className="video-wrapper" style={{ textAlign: 'center' }}>
+          <div className="video-title-pill">Introduction</div>
+          <div className="video-player">
+            <div className="video-screen">
+              <div className="play-circle">
+                <Play fill="currentColor" size={32} style={{ marginLeft: '4px' }} />
+              </div>
+            </div>
+            <div className="video-controls">
+              <span>0:00</span>
+              <div className="progress-bar"></div>
+              <span>🔊 ⛶</span>
+            </div>
+          </div>
         </div>
-      </section>
+      </FadeInSection>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-        <Button onClick={() => navigate('/activity')} style={{ padding: '1rem 3rem', fontSize: '1.1rem' }}>
-          Next to Activity
-        </Button>
-      </div>
+      {/* Footer Action */}
+      <FadeInSection>
+        <div className="complete-btn-wrapper">
+          <button className="complete-btn" onClick={() => navigate('/activity')}>
+            Complete
+          </button>
+        </div>
+      </FadeInSection>
+
     </div>
   );
 };
