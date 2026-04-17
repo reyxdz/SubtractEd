@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../common/Card';
+import { TopBar } from '../../layout/TopBar';
 import './ActivityContent.css';
 import '../guide/GuideContent.css'; // Reuse header styles
 
@@ -14,7 +15,7 @@ export const ActivityContent: React.FC = () => {
           ← Back
         </button>
         <h1 className="guide-title">Activity Card</h1>
-        <div style={{ width: '80px' }}></div>
+        <TopBar />
       </header>
 
       <section className="video-section">

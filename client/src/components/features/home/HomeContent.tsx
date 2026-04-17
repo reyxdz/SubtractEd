@@ -5,6 +5,8 @@ import { Button } from '../../common/Button';
 import { Accordion } from '../../common/Accordion';
 import './HomeContent.css';
 import subtractedLogo from '../../../assets/subtracted_logo.png';
+import { useNavigate } from 'react-router-dom';
+import { TopBar } from '../../layout/TopBar';
 
 const MOCK_CARDS = [
   { id: 1, title: 'Guide Card', icon: BookOpen, gradient: 'blue-gradient', path: '/guide' },
@@ -13,12 +15,13 @@ const MOCK_CARDS = [
   { id: 4, title: 'Enrichment Card', icon: Star, gradient: 'yellow-gradient', path: '/enrichment' },
 ];
 
-import { useNavigate } from 'react-router-dom';
-
 export const HomeContent: React.FC = () => {
   const navigate = useNavigate();
   return (
     <div className="home-container">
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+        <TopBar />
+      </div>
       
       <img src={subtractedLogo} alt="SubtractEd Logo" className="home-logo" />
 

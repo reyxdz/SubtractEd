@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../common/Button';
+import { TopBar } from '../../layout/TopBar';
 import '../guide/GuideContent.css';
 
 export const AssessmentContent: React.FC = () => {
@@ -13,7 +14,7 @@ export const AssessmentContent: React.FC = () => {
           ← Back
         </button>
         <h1 className="guide-title">Assessment Card</h1>
-        <div style={{ width: '80px' }}></div>
+        <TopBar />
       </header>
 
       <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '2rem', gap: '1.5rem' }}>

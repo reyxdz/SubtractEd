@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Settings, Play } from 'lucide-react';
+import { Check, Play } from 'lucide-react';
 import studentImg from '../../../assets/student_clip_images/student_scratching_head_wondering.png';
 import teacherImg from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
+import { TopBar } from '../../layout/TopBar';
 import './GuideContent.css';
 
 // Intersection Observer wrapper component
@@ -48,9 +49,7 @@ export const GuideContent: React.FC = () => {
           ← <span>Back</span>
         </button>
         <h1 className="guide-title-pill">Guide Card</h1>
-        <button className="neo-btn settings-btn" aria-label="Settings">
-          <Settings size={28} strokeWidth={2.5} />
-        </button>
+        <TopBar />
       </header>
 
       {/* Intro Scene (Student) */}

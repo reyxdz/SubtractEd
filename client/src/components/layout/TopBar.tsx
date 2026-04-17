@@ -7,22 +7,17 @@ export const TopBar: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
-    <header className="top-bar">
-      {/* Spacer to push settings to the right */}
-      <div style={{ flex: 1 }}></div>
-      
-      <div className="top-bar-actions">
-        <button 
-          className="settings-icon-btn glass"
-          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-          aria-label="Settings"
-        >
-          <Settings size={20} color="var(--color-text-muted)" />
-        </button>
-        {isSettingsOpen && (
-          <SettingsPopover onClose={() => setIsSettingsOpen(false)} />
-        )}
-      </div>
-    </header>
+    <div className="top-bar-actions">
+      <button 
+        className="settings-icon-btn glass"
+        onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+        aria-label="Settings"
+      >
+        <Settings size={20} color="var(--color-text-muted)" />
+      </button>
+      {isSettingsOpen && (
+        <SettingsPopover onClose={() => setIsSettingsOpen(false)} />
+      )}
+    </div>
   );
 };

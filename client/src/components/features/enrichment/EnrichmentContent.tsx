@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TopBar } from '../../layout/TopBar';
 import '../guide/GuideContent.css';
 
 export const EnrichmentContent: React.FC = () => {
@@ -12,7 +13,7 @@ export const EnrichmentContent: React.FC = () => {
           ← Back
         </button>
         <h1 className="guide-title">Enrichment Card</h1>
-        <div style={{ width: '80px' }}></div>
+        <TopBar />
       </header>
 
       <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '2rem', gap: '1.5rem' }}>
