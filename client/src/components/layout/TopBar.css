@@ -11,20 +11,22 @@
 }
 
 .settings-icon-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px; /* Squarish rounded like the picture */
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.5);
-  display: flex;
+  width: 54px;
+  height: 54px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 10px 20px rgba(46,58,89,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  color: var(--theme-primary);
+  border-radius: 20px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .settings-icon-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  box-shadow: 0 14px 24px rgba(46,58,89,0.12);
 }

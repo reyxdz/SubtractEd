@@ -13,7 +13,7 @@ export const TopBar: React.FC = () => {
         onClick={() => setIsSettingsOpen(!isSettingsOpen)}
         aria-label="Settings"
       >
-        <Settings size={20} color="var(--color-text-muted)" />
+        <Settings size={28} strokeWidth={2.5} color="currentColor" />
       </button>
       {isSettingsOpen && (
         <SettingsPopover onClose={() => setIsSettingsOpen(false)} />
