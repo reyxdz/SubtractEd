@@ -12,6 +12,24 @@
   .main-layout {
     padding: 1rem;
   }
+  .app-window {
+    padding: 0.5rem;
+    border-radius: 16px;
+  }
+  .main-content {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-layout {
+    padding: 0;
+  }
+  .app-window {
+    border-radius: 0;
+    border: none;
+    min-height: 100vh;
+  }
 }
 
 .banig-bg {

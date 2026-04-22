@@ -74,6 +74,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .activity-side-character {
+    width: 100px; /* Make much smaller on mobile */
+  }
+}
+
 .activity-options-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
