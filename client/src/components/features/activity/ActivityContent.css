@@ -93,26 +93,69 @@
   justify-content: center;
   text-align: center;
   gap: 1rem;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   cursor: pointer;
   border-radius: 24px;
-  background: white;
   min-height: 250px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
-.activity-option-card:hover {
+.card-blue {
+  background: #eef2ff;
+}
+.card-blue:hover {
+  background: #e0e7ff;
+  border-color: #c7d2fe;
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.15);
+}
+.text-blue {
+  color: #4f46e5;
 }
 
-.activity-emoji {
-  font-size: 4rem;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+.card-pink {
+  background: #fdf2f8;
+}
+.card-pink:hover {
+  background: #fce7f3;
+  border-color: #fbcfe8;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(219, 39, 119, 0.15);
+}
+.text-pink {
+  color: #db2777;
+}
+
+.card-yellow {
+  background: #fffbeb;
+}
+.card-yellow:hover {
+  background: #fef3c7;
+  border-color: #fde68a;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(217, 119, 6, 0.15);
+}
+.text-yellow {
+  color: #d97706;
+}
+
+.activity-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+  transition: transform 0.3s ease;
+}
+
+.activity-option-card:hover .activity-icon-container {
+  transform: scale(1.1);
 }
 
 .activity-option-card h3 {
   font-size: 1.5rem;
-  color: var(--theme-primary);
+  font-weight: 700;
   margin: 0;
 }
 

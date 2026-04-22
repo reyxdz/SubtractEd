@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCart, FileEdit, Search } from 'lucide-react';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { TopBar } from '../../layout/TopBar';
@@ -43,22 +44,28 @@ export const ActivityContent: React.FC = () => {
             </Card>
           ) : (
             <div className="activity-options-grid">
-              <Card className="activity-option-card" onClick={() => {}}>
-                <div className="activity-emoji">🛒</div>
-                <h3>Activity 1</h3>
-                <p>Sari-sari store theme with neighborhood items, local buying situations, and a Filipino tindahan feel.</p>
+              <Card className="activity-option-card card-blue" onClick={() => {}}>
+                <div className="activity-icon-container text-blue">
+                  <ShoppingCart size={48} strokeWidth={2} />
+                </div>
+                <h3 className="text-blue">Activity 1</h3>
+                <p>Integer Chip</p>
               </Card>
               
-              <Card className="activity-option-card" onClick={() => {}}>
-                <div className="activity-emoji">📝</div>
-                <h3>Activity 2</h3>
-                <p>Guided written practice using clear steps and learner-friendly subtraction tasks.</p>
+              <Card className="activity-option-card card-pink" onClick={() => {}}>
+                <div className="activity-icon-container text-pink">
+                  <FileEdit size={48} strokeWidth={2} />
+                </div>
+                <h3 className="text-pink">Activity 2</h3>
+                <p>Number line</p>
               </Card>
 
-              <Card className="activity-option-card" onClick={() => {}}>
-                <div className="activity-emoji">🔍</div>
-                <h3>Activity 3</h3>
-                <p>Challenge and discovery tasks that help students inspect patterns and solve problems.</p>
+              <Card className="activity-option-card card-yellow" onClick={() => {}}>
+                <div className="activity-icon-container text-yellow">
+                  <Search size={48} strokeWidth={2} />
+                </div>
+                <h3 className="text-yellow">Activity 3</h3>
+                <p>Integer Rules</p>
               </Card>
             </div>
           )}
