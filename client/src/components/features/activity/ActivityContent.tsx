@@ -23,7 +23,7 @@ export const ActivityContent: React.FC = () => {
       <div className="activity-layout">
         <div className="activity-main-content">
           <div className="activity-options-grid">
-            <Card className="activity-option-card" onClick={() => {}}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/1')}>
               <div className="activity-icon-container">
                 <ShoppingCart size={40} strokeWidth={2} />
               </div>
