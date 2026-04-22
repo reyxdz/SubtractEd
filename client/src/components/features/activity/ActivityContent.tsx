@@ -44,27 +44,27 @@ export const ActivityContent: React.FC = () => {
             </Card>
           ) : (
             <div className="activity-options-grid">
-              <Card className="activity-option-card card-blue" onClick={() => {}}>
-                <div className="activity-icon-container text-blue">
-                  <ShoppingCart size={48} strokeWidth={2} />
+              <Card className="activity-option-card" onClick={() => {}}>
+                <div className="activity-icon-container">
+                  <ShoppingCart size={40} strokeWidth={2} />
                 </div>
-                <h3 className="text-blue">Activity 1</h3>
+                <h3>Activity 1</h3>
                 <p>Integer Chip</p>
               </Card>
               
-              <Card className="activity-option-card card-pink" onClick={() => {}}>
-                <div className="activity-icon-container text-pink">
-                  <FileEdit size={48} strokeWidth={2} />
+              <Card className="activity-option-card" onClick={() => {}}>
+                <div className="activity-icon-container">
+                  <FileEdit size={40} strokeWidth={2} />
                 </div>
-                <h3 className="text-pink">Activity 2</h3>
+                <h3>Activity 2</h3>
                 <p>Number line</p>
               </Card>
 
-              <Card className="activity-option-card card-yellow" onClick={() => {}}>
-                <div className="activity-icon-container text-yellow">
-                  <Search size={48} strokeWidth={2} />
+              <Card className="activity-option-card" onClick={() => {}}>
+                <div className="activity-icon-container">
+                  <Search size={40} strokeWidth={2} />
                 </div>
-                <h3 className="text-yellow">Activity 3</h3>
+                <h3>Activity 3</h3>
                 <p>Integer Rules</p>
               </Card>
             </div>
