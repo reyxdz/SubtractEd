@@ -1,8 +1,83 @@
+.activity-layout {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  align-items: center; /* Center teacher image vertically relative to content */
+  width: 100%;
+}
+
+.activity-main-content {
+  flex: 1;
+}
+
+.activity-side-character {
+  width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.teacher-image {
+  width: 100%;
+  max-width: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.activity-video-card {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: white;
+  border-radius: 24px;
+}
+
+.video-title {
+  color: var(--color-text-dark);
+  font-size: 1.6rem;
+  margin: 0;
+  text-align: center;
+}
+
+.video-wrapper {
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.proceed-btn {
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .activity-layout {
+    flex-direction: column;
+  }
+  
+  .activity-side-character {
+    width: 200px;
+  }
+}
+
 .activity-options-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  margin-top: 2rem;
 }
 
 @media (max-width: 900px) {
