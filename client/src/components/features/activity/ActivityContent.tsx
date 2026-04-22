@@ -12,12 +12,12 @@ export const ActivityContent: React.FC = () => {
   const [isVideoWatched, setIsVideoWatched] = useState(false);
 
   return (
-    <div className="guide-container">
+    <div className="guide-page-container">
       <header className="guide-header">
-        <button className="back-button" onClick={() => navigate('/')}>
-          ← Back
+        <button className="neo-btn back-chip" onClick={() => navigate('/')}>
+          ← <span>Back</span>
         </button>
-        <h1 className="guide-title">Activity Card</h1>
+        <h1 className="guide-title-pill">Activity Card</h1>
         <TopBar />
       </header>
 
