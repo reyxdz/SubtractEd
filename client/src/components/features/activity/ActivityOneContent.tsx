@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopBar } from '../../layout/TopBar';
+import { Modal } from '../../common/Modal';
 import './ActivityOneContent.css';
 import '../guide/GuideContent.css'; // Reuse common header styles
 
@@ -26,29 +27,54 @@ export const ActivityOneContent: React.FC = () => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answer, setAnswer] = useState('');
-  const [feedback, setFeedback] = useState({ message: '', type: '' });
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    type: 'success' | 'error' | 'info';
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
+  });
   
   const currentItem = activity1Items[currentIndex];
 
   const handleCheckAnswer = () => {
+    if (!answer.trim()) return;
+
     if (answer.trim() === currentItem.answer) {
-      setFeedback({ message: 'Correct! Moving to next item...', type: 'success' });
-      setTimeout(() => {
-        setFeedback({ message: '', type: '' });
-        if (currentIndex < activity1Items.length - 1) {
-          setCurrentIndex(prev => prev + 1);
-          setAnswer('');
-        } else {
-          alert('Activity 1 completed!');
-          navigate('/activity');
-        }
-      }, 1500);
+      setModalState({
+        isOpen: true,
+        type: 'success',
+        title: 'Correct!',
+        message: 'Great job! You got the right answer.'
+      });
     } else {
-      setFeedback({ message: 'Incorrect. Try again.', type: 'error' });
-      setTimeout(() => {
-        setFeedback({ message: '', type: '' });
-      }, 2000);
+      setModalState({
+        isOpen: true,
+        type: 'error',
+        title: 'Incorrect',
+        message: 'That is not the correct answer. Try again!'
+      });
     }
+  };
+
+  const handleModalNext = () => {
+    setModalState({ ...modalState, isOpen: false });
+    if (currentIndex < activity1Items.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setAnswer('');
+    } else {
+      alert('Activity 1 completed!');
+      navigate('/activity');
+    }
+  };
+
+  const handleModalRetry = () => {
+    setModalState({ ...modalState, isOpen: false });
+    setAnswer('');
   };
 
   const progressPercentage = ((currentIndex + 1) / activity1Items.length) * 100;
@@ -127,20 +153,6 @@ export const ActivityOneContent: React.FC = () => {
               }}
               placeholder="e.g. -3"
             />
-            {feedback.message && (
-              <div style={{ 
-                position: 'absolute', 
-                bottom: '-24px', 
-                left: 0, 
-                width: '100%', 
-                textAlign: 'center', 
-                color: feedback.type === 'success' ? '#388e3c' : '#d32f2f',
-                fontWeight: 600,
-                fontSize: '0.9rem'
-              }}>
-                {feedback.message}
-              </div>
-            )}
           </div>
 
           <div className="right-controls">
@@ -148,6 +160,26 @@ export const ActivityOneContent: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Modal 
+        isOpen={modalState.isOpen} 
+        type={modalState.type} 
+        title={modalState.title}
+        onClose={() => modalState.type === 'error' ? handleModalRetry() : handleModalNext()}
+        actions={
+          modalState.type === 'success' ? (
+            <button className="action-btn next-btn" onClick={handleModalNext} style={{ width: '100%' }}>
+              Next Question
+            </button>
+          ) : (
+            <button className="action-btn retry-btn" onClick={handleModalRetry} style={{ width: '100%', background: 'linear-gradient(145deg, #e57373, #d32f2f)' }}>
+              Retry
+            </button>
+          )
+        }
+      >
+        <p>{modalState.message}</p>
+      </Modal>
     </div>
   );
 };

@@ -1,0 +1,121 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(46, 58, 89, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-overlay.open {
+  animation: fadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modal-overlay.closed {
+  animation: fadeOut 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 48px rgba(46, 58, 89, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 32px;
+  width: min(90%, 480px);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transform: scale(0.95);
+  opacity: 0;
+  text-align: center;
+}
+
+.modal-overlay.open .modal-content {
+  animation: slideUpFade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+.modal-overlay.closed .modal-content {
+  animation: slideDownFade 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.modal-icon-container {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  background: linear-gradient(145deg, #ffffff, #e9eef8);
+  box-shadow: 0 12px 24px rgba(46, 58, 89, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.modal-success .modal-icon-container {
+  background: linear-gradient(145deg, #d8f3e5, #b8e6ce);
+}
+
+.modal-error .modal-icon-container {
+  background: linear-gradient(145deg, #fce8e8, #f8caca);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.modal-success .modal-header h2 {
+  color: #2e7d32;
+}
+
+.modal-error .modal-header h2 {
+  color: #c62828;
+}
+
+.modal-body {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { background: rgba(46, 58, 89, 0); backdrop-filter: blur(0px); }
+  to { background: rgba(46, 58, 89, 0.4); backdrop-filter: blur(8px); }
+}
+
+@keyframes fadeOut {
+  from { background: rgba(46, 58, 89, 0.4); backdrop-filter: blur(8px); }
+  to { background: rgba(46, 58, 89, 0); backdrop-filter: blur(0px); }
+}
+
+@keyframes slideUpFade {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes slideDownFade {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(20px) scale(0.95); opacity: 0; }
+}
