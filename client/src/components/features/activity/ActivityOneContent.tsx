@@ -168,11 +168,11 @@ export const ActivityOneContent: React.FC = () => {
         onClose={() => modalState.type === 'error' ? handleModalRetry() : handleModalNext()}
         actions={
           modalState.type === 'success' ? (
-            <button className="action-btn next-btn" onClick={handleModalNext} style={{ width: '100%' }}>
+            <button className="action-btn next-btn" onClick={handleModalNext} style={{ width: '100%', background: 'linear-gradient(145deg, var(--theme-primary), var(--theme-accent))', color: 'white' }}>
               Next Question
             </button>
           ) : (
-            <button className="action-btn retry-btn" onClick={handleModalRetry} style={{ width: '100%', background: 'linear-gradient(145deg, #e57373, #d32f2f)' }}>
+            <button className="action-btn retry-btn" onClick={handleModalRetry} style={{ width: '100%', background: 'linear-gradient(145deg, #e57373, #d32f2f)', color: 'white' }}>
               Retry
             </button>
           )
