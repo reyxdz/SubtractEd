@@ -4,9 +4,54 @@ import { TopBar } from '../../layout/TopBar';
 import './ActivityOneContent.css';
 import '../guide/GuideContent.css'; // Reuse common header styles
 
+export const activity1Items = [
+  { levelShort: 'Easy', index: 1, total: 5, problem: 'You have 15 pesos. You bought candy for 6 pesos. How much money do you have left?', sentence: '15 − 6', answer: '9', hint: 'Both are positive → subtract normally.' },
+  { levelShort: 'Easy', index: 2, total: 5, problem: 'You have 18 pesos. You spent 7 pesos on merienda. How much is left?', sentence: '18 − 7', answer: '11', hint: 'Count backwards.' },
+  { levelShort: 'Easy', index: 3, total: 5, problem: 'You have 12 pesos. You bought bread for 5 pesos. How much remains?', sentence: '12 − 5', answer: '7', hint: 'Subtract directly.' },
+  { levelShort: 'Easy', index: 4, total: 5, problem: 'You have 5 pesos. You bought food for 9 pesos. How much money do you have now?', sentence: '5 − 9', answer: '-4', hint: 'Not enough money → result becomes negative.' },
+  { levelShort: 'Easy', index: 5, total: 5, problem: 'You have 6 pesos. You spent 10 pesos. What is your money now?', sentence: '6 − 10', answer: '-4', hint: 'You go below zero.' },
+  { levelShort: 'Moderate', index: 1, total: 5, problem: 'You have 8 pesos. You subtract your utang of -5 pesos. How much money do you have now?', sentence: '8 − (−5)', answer: '13', hint: 'Minus a negative → becomes addition.' },
+  { levelShort: 'Moderate', index: 2, total: 5, problem: 'You have 6 pesos. You subtract your utang of -4 pesos. What is your money now?', sentence: '6 − (−4)', answer: '10', hint: 'Think: add instead.' },
+  { levelShort: 'Moderate', index: 3, total: 5, problem: 'You have 10 pesos. You subtract -3 pesos (utang cleared). What is your total money?', sentence: '10 − (−3)', answer: '13', hint: 'Subtracting negative increases value.' },
+  { levelShort: 'Moderate', index: 4, total: 5, problem: 'You have 7 pesos. You subtract -6 pesos. How much do you have now?', sentence: '7 − (−6)', answer: '13', hint: 'Change to addition.' },
+  { levelShort: 'Moderate', index: 5, total: 5, problem: 'You have 9 pesos. You subtract -5 pesos. What is your new amount?', sentence: '9 − (−5)', answer: '14', hint: 'Minus negative → plus.' },
+  { levelShort: 'Difficult', index: 1, total: 5, problem: 'You have -5 pesos. You subtract 6 pesos. What is your money now?', sentence: '-5 − 6', answer: '-11', hint: '' },
+  { levelShort: 'Difficult', index: 2, total: 5, problem: 'You have -8 pesos. You subtract 4 pesos. What is your total now?', sentence: '-8 − 4', answer: '-12', hint: '' },
+  { levelShort: 'Difficult', index: 3, total: 5, problem: 'You have -3 pesos. You subtract -7 pesos. How much money do you have now?', sentence: '-3 − (−7)', answer: '4', hint: '' },
+  { levelShort: 'Difficult', index: 4, total: 5, problem: 'You have -10 pesos. You subtract -5 pesos. What is your new amount?', sentence: '-10 − (−5)', answer: '-5', hint: '' },
+  { levelShort: 'Difficult', index: 5, total: 5, problem: 'You have -6 pesos. You subtract -8 pesos. What is your final money?', sentence: '-6 − (−8)', answer: '2', hint: '' }
+];
+
 export const ActivityOneContent: React.FC = () => {
   const navigate = useNavigate();
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [answer, setAnswer] = useState('');
+  const [feedback, setFeedback] = useState({ message: '', type: '' });
+  
+  const currentItem = activity1Items[currentIndex];
+
+  const handleCheckAnswer = () => {
+    if (answer.trim() === currentItem.answer) {
+      setFeedback({ message: 'Correct! Moving to next item...', type: 'success' });
+      setTimeout(() => {
+        setFeedback({ message: '', type: '' });
+        if (currentIndex < activity1Items.length - 1) {
+          setCurrentIndex(prev => prev + 1);
+          setAnswer('');
+        } else {
+          alert('Activity 1 completed!');
+          navigate('/activity');
+        }
+      }, 1500);
+    } else {
+      setFeedback({ message: 'Incorrect. Try again.', type: 'error' });
+      setTimeout(() => {
+        setFeedback({ message: '', type: '' });
+      }, 2000);
+    }
+  };
+
+  const progressPercentage = ((currentIndex + 1) / activity1Items.length) * 100;
 
   return (
     <div className="guide-page-container">
@@ -22,11 +67,11 @@ export const ActivityOneContent: React.FC = () => {
       {/* Progress Bar Area */}
       <div className="activity-progress-area">
         <div className="progress-text-row">
-          <span className="item-count">Item 6 of 15</span>
-          <span className="level-badge">Moderate Level</span>
+          <span className="item-count">Item {currentIndex + 1} of {activity1Items.length}</span>
+          <span className="level-badge">{currentItem.levelShort} Level</span>
         </div>
         <div className="progress-bar-container">
-          <div className="progress-fill" style={{ width: '40%' }}></div>
+          <div className="progress-fill" style={{ width: `${progressPercentage}%` }}></div>
         </div>
       </div>
 
@@ -38,12 +83,12 @@ export const ActivityOneContent: React.FC = () => {
 
         {/* Question Box */}
         <div className="question-box">
-          <p>You have 8 pesos. You subtract your utang of -5 pesos. How much money do you have now?</p>
+          <p>{currentItem.problem}</p>
         </div>
 
         {/* Equation Display */}
         <div className="equation-display">
-          <h2>8 - (-5)</h2>
+          <h2>{currentItem.levelShort === 'Difficult' ? '___' : currentItem.sentence}</h2>
         </div>
 
         {/* Game Area */}
@@ -65,22 +110,41 @@ export const ActivityOneContent: React.FC = () => {
         <div className="input-controls-row">
           <div className="left-controls">
             <button className="action-btn clear-btn" onClick={() => setAnswer('')}>Clear</button>
-            <button className="action-btn hint-btn">Hint</button>
+            <button className="action-btn hint-btn" onClick={() => alert(currentItem.hint || 'No hint for this round.')}>Hint</button>
           </div>
           
-          <div className="input-field-wrapper">
+          <div className="input-field-wrapper" style={{ position: 'relative' }}>
             <span className="input-label">Answer:</span>
             <input 
               type="text" 
               className="answer-input" 
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              placeholder="-3"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleCheckAnswer();
+                }
+              }}
+              placeholder="e.g. -3"
             />
+            {feedback.message && (
+              <div style={{ 
+                position: 'absolute', 
+                bottom: '-24px', 
+                left: 0, 
+                width: '100%', 
+                textAlign: 'center', 
+                color: feedback.type === 'success' ? '#388e3c' : '#d32f2f',
+                fontWeight: 600,
+                fontSize: '0.9rem'
+              }}>
+                {feedback.message}
+              </div>
+            )}
           </div>
 
           <div className="right-controls">
-             <button className="action-btn check-btn">Check Answer</button>
+             <button className="action-btn check-btn" onClick={handleCheckAnswer}>Check Answer</button>
           </div>
         </div>
       </div>
