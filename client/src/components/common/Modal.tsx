@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CheckCircle, XCircle, Info } from 'lucide-react';
 import './Modal.css';
 
 interface ModalProps {
@@ -39,9 +40,9 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, type = 'in
       >
         <div className="modal-header">
           <div className="modal-icon-container">
-            {type === 'success' && <span className="modal-icon">✅</span>}
-            {type === 'error' && <span className="modal-icon">❌</span>}
-            {type === 'info' && <span className="modal-icon">ℹ️</span>}
+            {type === 'success' && <CheckCircle className="modal-icon" color="#2e7d32" size={36} />}
+            {type === 'error' && <XCircle className="modal-icon" color="#c62828" size={36} />}
+            {type === 'info' && <Info className="modal-icon" color="#1976d2" size={36} />}
           </div>
           <h2>{title}</h2>
         </div>

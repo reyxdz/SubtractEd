@@ -139,9 +139,13 @@
 }
 
 .action-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
   padding: 0.8rem 1.5rem;
   border-radius: 50px;
   border: none;
+  outline: none;
   font-weight: 700;
   font-size: 1rem;
   color: white;
