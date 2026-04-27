@@ -11,8 +11,22 @@ class MusicManager {
     // Create audio element for the browser environment
     if (typeof window !== 'undefined') {
       this.audioPlayer = new Audio(mainBgMusic);
-      this.audioPlayer.loop = true;
       this.audioPlayer.volume = 0.2; // Default to 20% volume so it's not overpowering
+      
+      // Pre-seek the main track to skip 4 seconds of silence
+      this.audioPlayer.currentTime = 4;
+      
+      // Custom loop handler to always skip the first 4 seconds of the main track
+      this.audioPlayer.addEventListener('ended', () => {
+        if (this.currentTrackType === 'main') {
+          this.audioPlayer.currentTime = 4;
+        } else {
+          this.audioPlayer.currentTime = 0;
+        }
+        if (!this.isMuted) {
+          this.play();
+        }
+      });
     } else {
       // Mock for SSR if needed
       this.audioPlayer = {} as HTMLAudioElement; 
@@ -66,6 +80,10 @@ class MusicManager {
     
     // Switch the audio source smoothly
     this.audioPlayer.src = type === 'activity' ? activityBgMusic : mainBgMusic;
+    
+    if (type === 'main') {
+      this.audioPlayer.currentTime = 4;
+    }
     
     // Only automatically play the new track if music is enabled and wasn't manually paused
     if (!this.isMuted) {
