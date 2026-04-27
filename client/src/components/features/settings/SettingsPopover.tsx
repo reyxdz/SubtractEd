@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
 import { Switch } from '../../common/Switch';
+import { musicManager } from '../../../utils/music';
 import './SettingsPopover.css';
 
 interface SettingsPopoverProps {
@@ -10,7 +11,7 @@ interface SettingsPopoverProps {
 type ThemeColor = 'blue' | 'green' | 'red';
 
 export const SettingsPopover: React.FC<SettingsPopoverProps> = ({ onClose }) => {
-  const [musicEnabled, setMusicEnabled] = useState(true);
+  const [musicEnabled, setMusicEnabled] = useState(!musicManager.getIsMuted());
   const [activeTheme, setActiveTheme] = useState<ThemeColor>('blue');
 
   // Initialize theme from document data attribute
@@ -41,7 +42,13 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({ onClose }) => 
 
       <div className="settings-section">
         <span className="settings-label">Music</span>
-        <Switch checked={musicEnabled} onChange={setMusicEnabled} />
+        <Switch 
+          checked={musicEnabled} 
+          onChange={(enabled) => {
+            setMusicEnabled(enabled);
+            musicManager.toggleMute(!enabled);
+          }} 
+        />
       </div>
 
       <div className="settings-section theme-section">
