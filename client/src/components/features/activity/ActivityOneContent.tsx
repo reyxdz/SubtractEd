@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopBar } from '../../layout/TopBar';
 import { Modal } from '../../common/Modal';
+import { playSound } from '../../utils/sound';
 import './ActivityOneContent.css';
 import '../guide/GuideContent.css'; // Reuse common header styles
 
@@ -45,6 +46,7 @@ export const ActivityOneContent: React.FC = () => {
     if (!answer.trim()) return;
 
     if (answer.trim() === currentItem.answer) {
+      playSound.success();
       setModalState({
         isOpen: true,
         type: 'success',
@@ -52,6 +54,7 @@ export const ActivityOneContent: React.FC = () => {
         message: 'Great job! You got the right answer.'
       });
     } else {
+      playSound.error();
       setModalState({
         isOpen: true,
         type: 'error',
@@ -62,6 +65,7 @@ export const ActivityOneContent: React.FC = () => {
   };
 
   const handleModalNext = () => {
+    playSound.click();
     setModalState({ ...modalState, isOpen: false });
     if (currentIndex < activity1Items.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -73,6 +77,7 @@ export const ActivityOneContent: React.FC = () => {
   };
 
   const handleModalRetry = () => {
+    playSound.click();
     setModalState({ ...modalState, isOpen: false });
     setAnswer('');
   };
@@ -80,14 +85,20 @@ export const ActivityOneContent: React.FC = () => {
   const progressPercentage = ((currentIndex + 1) / activity1Items.length) * 100;
 
   return (
-    <div className="guide-page-container">
+    <div className="guide-page-container" onClick={(e) => {
+      // Add sound to any generic unhandled clicks on cards/containers if they don't have their own sound
+      const target = e.target as HTMLElement;
+      if (target.closest('.directions-box') || target.closest('.question-box') || target.closest('.equation-display')) {
+        playSound.pop();
+      }
+    }}>
       {/* Header */}
       <header className="guide-header activity-one-header">
-        <button className="neo-btn back-chip" onClick={() => navigate('/activity')}>
+        <button className="neo-btn back-chip" onClick={() => { playSound.click(); navigate('/activity'); }}>
           ← <span>Back</span>
         </button>
-        <h1 className="guide-title-pill activity-one-title">Activity 1</h1>
-        <TopBar />
+        <h1 className="guide-title-pill activity-one-title" onClick={() => playSound.pop()}>Activity 1</h1>
+        <div onClick={() => playSound.click()}><TopBar /></div>
       </header>
 
       {/* Progress Bar Area */}
@@ -135,8 +146,8 @@ export const ActivityOneContent: React.FC = () => {
         {/* Input Controls */}
         <div className="input-controls-row">
           <div className="left-controls">
-            <button className="action-btn clear-btn" onClick={() => setAnswer('')}>Clear</button>
-            <button className="action-btn hint-btn" onClick={() => alert(currentItem.hint || 'No hint for this round.')}>Hint</button>
+            <button className="action-btn clear-btn" onClick={() => { playSound.pop(); setAnswer(''); }}>Clear</button>
+            <button className="action-btn hint-btn" onClick={() => { playSound.pop(); alert(currentItem.hint || 'No hint for this round.'); }}>Hint</button>
           </div>
           
           <div className="input-field-wrapper" style={{ position: 'relative' }}>
@@ -145,7 +156,10 @@ export const ActivityOneContent: React.FC = () => {
               type="text" 
               className="answer-input" 
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              onChange={(e) => {
+                playSound.tick();
+                setAnswer(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleCheckAnswer();
