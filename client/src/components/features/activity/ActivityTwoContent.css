@@ -1,0 +1,519 @@
+/* Activity 2: Number Line Styles */
+
+/* Difficulty Pills */
+.difficulty-pills {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.difficulty-pill {
+  padding: 8px 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: var(--border-radius-pill);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, outline 0.2s;
+  outline: 3px solid transparent;
+}
+
+.difficulty-pill:hover {
+  transform: translateY(-2px);
+}
+
+.difficulty-pill.active {
+  outline: 3px solid rgba(66, 86, 180, 0.22);
+  box-shadow: 0 18px 28px rgba(46, 58, 89, 0.18);
+}
+
+.difficulty-pill.pill-easy {
+  background: linear-gradient(145deg, #c9f0d6, #84c79a);
+  color: #25543b;
+}
+
+.difficulty-pill.pill-moderate {
+  background: linear-gradient(145deg, #dfe8ff, #a9c0f4);
+  color: #3b4c8f;
+}
+
+.difficulty-pill.pill-difficult {
+  background: linear-gradient(145deg, #ffd2d7, #f0a0ab);
+  color: #8a3340;
+}
+
+/* Directions / Question Boxes */
+.a2-directions-box,
+.a2-question-box {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--border-radius-lg);
+  padding: 16px 24px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(46, 58, 89, 0.08);
+}
+
+.a2-directions-box p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.7;
+}
+
+.a2-question-box p {
+  font-weight: 800;
+  color: var(--color-text-dark);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+/* Chips Row */
+.a2-chips-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.a2-result-chip {
+  padding: 12px 18px;
+  border-radius: var(--border-radius-pill);
+  background: linear-gradient(145deg, rgba(223, 232, 255, 0.9), rgba(237, 243, 255, 0.9));
+  backdrop-filter: blur(8px);
+  font-weight: 700;
+  color: var(--theme-accent);
+  box-shadow: 0 10px 18px rgba(91, 143, 217, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.a2-expression-chip {
+  padding: 12px 18px;
+  border-radius: var(--border-radius-pill);
+  background: linear-gradient(145deg, rgba(255, 243, 209, 0.9), rgba(255, 230, 163, 0.9));
+  backdrop-filter: blur(8px);
+  font-weight: 700;
+  color: #8a5a16;
+  box-shadow: 0 10px 18px rgba(235, 179, 72, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Number Line Container */
+.a2-numberline-card {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 32px;
+  padding: 26px 20px 22px;
+  box-shadow: 0 22px 36px rgba(88, 106, 142, 0.14);
+}
+
+.a2-numberline-container {
+  position: relative;
+  height: 180px;
+  margin: 10px 0 8px;
+  user-select: none;
+  touch-action: none;
+}
+
+/* The horizontal line */
+.a2-numberline-track {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  top: 86px;
+  height: 8px;
+  border-radius: var(--border-radius-pill);
+  background: linear-gradient(90deg,
+    rgba(217, 227, 251, 0.9),
+    rgba(186, 205, 242, 0.9),
+    rgba(217, 227, 251, 0.9));
+  box-shadow: inset 0 2px 4px rgba(80, 100, 140, 0.18);
+}
+
+/* Path highlight */
+.a2-path-highlight {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  top: 76px;
+  height: 28px;
+  pointer-events: none;
+}
+
+.a2-path-bar {
+  position: absolute;
+  top: 8px;
+  height: 12px;
+  border-radius: var(--border-radius-pill);
+  background: linear-gradient(90deg, rgba(240, 164, 58, 0.35), rgba(240, 164, 58, 0.95));
+  box-shadow: 0 4px 10px rgba(240, 164, 58, 0.2);
+  transition: left 0.3s, width 0.3s;
+}
+
+.a2-path-cap {
+  position: absolute;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(145deg, #ffe29e, #f0a43a);
+  border: 3px solid #fff;
+  box-shadow: 0 8px 16px rgba(240, 164, 58, 0.22);
+  transition: left 0.3s;
+}
+
+/* Jump arc */
+.a2-jump-path {
+  position: absolute;
+  left: 28px;
+  top: 56px;
+  height: 34px;
+  pointer-events: none;
+}
+
+.a2-jump-arc {
+  position: absolute;
+  height: 30px;
+  border-top: 4px dashed #f0a43a;
+  border-radius: 999px 999px 0 0;
+  top: 0;
+  opacity: 0.95;
+}
+
+.a2-jump-arrow {
+  position: absolute;
+  top: 2px;
+  transform: translateX(-50%);
+  font-size: 20px;
+  font-weight: 900;
+  color: #f0a43a;
+}
+
+/* Ticks Container */
+.a2-ticks-container {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  top: 28px;
+  height: 112px;
+}
+
+/* Individual Tick */
+.a2-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  text-align: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.a2-tick-label {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+
+.a2-tick-label.negative { color: #d94b4b; }
+.a2-tick-label.positive { color: #3f7de0; }
+.a2-tick-label.zero { color: #6b55c6; font-weight: 800; }
+.a2-tick-label.active { color: #f08a00 !important; }
+
+.a2-tick-line {
+  width: 3px;
+  background: #42506f;
+  margin: 0 auto;
+  border-radius: var(--border-radius-pill);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.a2-tick-line.tall { height: 26px; }
+.a2-tick-line.short { height: 18px; }
+.a2-tick-line.zero-line { background: #6b55c6; }
+.a2-tick-line.active { background: #f0a43a; transform: scaleY(1.15); }
+
+.a2-tick-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin: 8px auto 0;
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 14px rgba(46, 58, 89, 0.16);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.a2-tick-dot.negative { background: linear-gradient(145deg, #ff9a9e, #ff6a6a); }
+.a2-tick-dot.positive { background: linear-gradient(145deg, #8ab6ff, #5b8fd9); }
+.a2-tick-dot.zero-dot {
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(145deg, #cdbdff, #8b72f0);
+}
+.a2-tick-dot.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 7px rgba(240, 164, 58, 0.16), 0 10px 16px rgba(46, 58, 89, 0.22);
+}
+
+/* Dog Marker */
+.a2-marker {
+  position: absolute;
+  top: 40px;
+  width: 52px;
+  height: 52px;
+  transform: translateX(-50%);
+  transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 5;
+  cursor: grab;
+  touch-action: none;
+}
+
+.a2-marker.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+.a2-marker img {
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Answer Row */
+.a2-answer-card {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--border-radius-lg);
+  padding: 16px 18px;
+  box-shadow: 0 8px 24px rgba(46, 58, 89, 0.08);
+}
+
+.a2-answer-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.a2-answer-label {
+  font-weight: 700;
+  color: var(--theme-accent);
+}
+
+.a2-answer-input {
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid #cfd6e6;
+  padding: 0 14px;
+  min-width: 180px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--theme-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.a2-answer-input:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(111, 163, 230, 0.15);
+}
+
+/* Controls Row */
+.a2-controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.a2-step-left-btn {
+  background: linear-gradient(145deg, #f4b3b8, #e57b87);
+  color: white;
+}
+
+.a2-step-right-btn {
+  background: linear-gradient(145deg, #b9d7ff, #7eb0ef);
+  color: white;
+}
+
+.a2-reset-btn {
+  background: linear-gradient(145deg, #f5f5f5, #e3e8f3);
+  color: var(--theme-accent);
+}
+
+/* Free-play / Animate Card */
+.a2-freeplay-card {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  background: rgba(255, 250, 240, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  padding: 22px 20px;
+  box-shadow: 0 8px 24px rgba(46, 58, 89, 0.08);
+}
+
+.a2-freeplay-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.a2-freeplay-input {
+  height: 50px;
+  border-radius: 16px;
+  border: 1px solid #cfd6e6;
+  padding: 0 14px;
+  min-width: 150px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.a2-freeplay-input:focus {
+  border-color: var(--theme-primary);
+}
+
+.a2-freeplay-separator {
+  font-weight: 700;
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+}
+
+.a2-hint-text {
+  margin: 14px 0 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.a2-result-text {
+  margin: 12px 0 0;
+  text-align: center;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  font-size: 1.08rem;
+}
+
+/* Main body layout */
+.a2-main-body {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .a2-numberline-container {
+    height: 150px;
+  }
+
+  .a2-marker {
+    width: 40px;
+    height: 40px;
+    top: 44px;
+  }
+
+  .a2-tick-label {
+    font-size: 10px;
+  }
+
+  .a2-tick-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .a2-tick-dot.zero-dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .a2-tick-line.tall { height: 20px; }
+  .a2-tick-line.short { height: 14px; }
+
+  .a2-question-box p {
+    font-size: 1.2rem;
+  }
+
+  .a2-answer-input,
+  .a2-freeplay-input {
+    min-width: 120px;
+  }
+
+  .a2-controls-row {
+    gap: 8px;
+  }
+
+  .difficulty-pills {
+    gap: 6px;
+  }
+
+  .difficulty-pill {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .a2-numberline-card {
+    padding: 16px 10px 14px;
+    border-radius: 20px;
+  }
+
+  .a2-ticks-container {
+    left: 14px;
+    right: 14px;
+  }
+
+  .a2-numberline-track {
+    left: 14px;
+    right: 14px;
+  }
+
+  .a2-path-highlight {
+    left: 14px;
+    right: 14px;
+  }
+
+  .a2-marker {
+    width: 34px;
+    height: 34px;
+    top: 48px;
+  }
+}
