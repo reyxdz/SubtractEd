@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { TopBar } from '../../layout/TopBar';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
-import { activity3Questions, Difficulty, A3Question } from './activity3Data';
+import { activity3Questions } from './activity3Data';
+import type { Difficulty, A3Question } from './activity3Data';
 import storeBg from '../../../assets/images/store_bg.png';
 import './ActivityThreeContent.css';
 import './ActivityOneContent.css'; // reuse progress bar & action-btn styles
