@@ -141,12 +141,15 @@
 
 /* Directions banner */
 .a3-directions {
+  max-width: 820px;
+  margin: 0 auto;
   background: rgba(255, 248, 225, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 16px;
   padding: 10px 20px;
   text-align: center;
   border: 1px solid rgba(255, 235, 170, 0.6);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
 }
 
 .a3-directions p {
@@ -158,6 +161,8 @@
 
 /* Question + Sentence card */
 .a3-question-card {
+  max-width: 820px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -167,7 +172,7 @@
   border: 2px solid rgba(100, 140, 220, 0.3);
   border-radius: 20px;
   padding: 18px 22px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.45), 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .a3-q-section { flex: 1; min-width: 220px; }
@@ -217,6 +222,8 @@
 
 /* Scaffolding Steps */
 .a3-steps {
+  max-width: 820px;
+  margin: 0 auto;
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -227,12 +234,12 @@
 .a3-step {
   flex: 1;
   min-width: 180px;
-  max-width: 280px;
+  max-width: 260px;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.4), 0 6px 18px rgba(0, 0, 0, 0.08);
   position: relative;
 }
 
@@ -301,6 +308,8 @@
 
 /* Bottom input area */
 .a3-bottom {
+  max-width: 820px;
+  margin: 0 auto;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -315,6 +324,7 @@
   border: 2px solid rgba(76, 175, 80, 0.3);
   border-radius: 16px;
   padding: 12px 16px;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.4);
 }
 
 .a3-answer-box {
@@ -325,6 +335,7 @@
   border: 2px solid rgba(100, 140, 220, 0.3);
   border-radius: 16px;
   padding: 12px 16px;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.4);
 }
 
 .a3-box-label {
@@ -376,6 +387,8 @@
 
 /* Footer buttons */
 .a3-footer {
+  max-width: 820px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   gap: 16px;
