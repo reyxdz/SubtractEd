@@ -1,6 +1,9 @@
 import mainBgMusic from '../assets/audio/bgmusic.mp3';
 import activityBgMusic from '../assets/audio/activities_bg_music.flac';
 
+// You can easily adjust how many seconds to skip at the start of the main background music right here!
+const MAIN_MUSIC_START_SECONDS = 2;
+
 class MusicManager {
   private static instance: MusicManager;
   private audioPlayer: HTMLAudioElement;
@@ -12,14 +15,14 @@ class MusicManager {
     if (typeof window !== 'undefined') {
       this.audioPlayer = new Audio(mainBgMusic);
       this.audioPlayer.volume = 0.2; // Default to 20% volume so it's not overpowering
-      
-      // Pre-seek the main track to skip 4 seconds of silence
-      this.audioPlayer.currentTime = 4;
-      
-      // Custom loop handler to always skip the first 4 seconds of the main track
+
+      // Pre-seek the main track to skip initial silence
+      this.audioPlayer.currentTime = MAIN_MUSIC_START_SECONDS;
+
+      // Custom loop handler to always skip the initial silence of the main track
       this.audioPlayer.addEventListener('ended', () => {
         if (this.currentTrackType === 'main') {
-          this.audioPlayer.currentTime = 4;
+          this.audioPlayer.currentTime = MAIN_MUSIC_START_SECONDS;
         } else {
           this.audioPlayer.currentTime = 0;
         }
@@ -29,7 +32,7 @@ class MusicManager {
       });
     } else {
       // Mock for SSR if needed
-      this.audioPlayer = {} as HTMLAudioElement; 
+      this.audioPlayer = {} as HTMLAudioElement;
     }
   }
 
@@ -42,12 +45,12 @@ class MusicManager {
 
   public play() {
     if (this.isMuted || !this.audioPlayer.play) return;
-    
+
     // Modern browsers require interaction before audio can play.
     // The play() method returns a Promise which we must catch to avoid console errors.
     const playPromise = this.audioPlayer.play();
     if (playPromise !== undefined) {
-      playPromise.catch((e) => {
+      playPromise.catch(() => {
         console.warn('Autoplay prevented by browser. Awaiting user interaction.');
       });
     }
@@ -74,17 +77,16 @@ class MusicManager {
 
   public switchTrack(type: 'main' | 'activity') {
     if (this.currentTrackType === type) return; // Do nothing if already playing target track
-    
+
     this.currentTrackType = type;
-    const isPlaying = this.audioPlayer.paused === false;
-    
+
     // Switch the audio source smoothly
     this.audioPlayer.src = type === 'activity' ? activityBgMusic : mainBgMusic;
-    
+
     if (type === 'main') {
-      this.audioPlayer.currentTime = 4;
+      this.audioPlayer.currentTime = MAIN_MUSIC_START_SECONDS;
     }
-    
+
     // Only automatically play the new track if music is enabled and wasn't manually paused
     if (!this.isMuted) {
       this.play();
