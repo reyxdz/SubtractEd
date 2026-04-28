@@ -472,21 +472,69 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .a3-frame { margin: 4px; padding: 10px 10px 16px; border-width: 4px; }
-  .a3-header { justify-content: center; }
-  .a3-title-pill { font-size: 1rem; padding: 8px 24px; }
-  .a3-question-card { flex-direction: column; text-align: center; }
-  .a3-steps { flex-direction: column; align-items: center; }
-  .a3-step { max-width: 100%; width: 100%; }
-  .a3-arrow { transform: rotate(90deg); }
+@media (max-width: 900px) {
+  .a3-header { flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .a3-header-right { justify-content: center; width: 100%; }
+  .a3-question-card { flex-direction: column; text-align: center; gap: 12px; }
+  .a3-s-display { font-size: 1.8rem; }
+  .a3-steps { flex-direction: column; align-items: stretch; }
+  .a3-step { max-width: 100%; min-width: unset; }
+  .a3-arrow { transform: rotate(90deg); justify-content: center; font-size: 1rem; }
   .a3-bottom { flex-direction: column; }
-  .a3-s-display { font-size: 1.6rem; }
-  .a3-header-right { justify-content: center; }
+  .a3-sentence-box, .a3-answer-box { min-width: unset; }
+}
+
+@media (max-width: 768px) {
+  .a3-frame { margin: 3px; padding: 8px 10px 12px; border-width: 4px; border-radius: 16px; gap: 6px; }
+  .a3-title-pill { font-size: 0.95rem; padding: 7px 20px; }
+  .a3-back-btn { padding: 6px 14px; font-size: 0.82rem; }
+  .a3-diff-pill { padding: 5px 12px; font-size: 0.72rem; }
+  .a3-directions { padding: 8px 14px; }
+  .a3-directions p { font-size: 0.78rem; line-height: 1.4; }
+  .a3-question-card { padding: 12px 14px; border-radius: 14px; }
+  .a3-q-text { font-size: 0.95rem; }
+  .a3-s-display { font-size: 1.5rem; }
+  .a3-step-head { font-size: 0.65rem; padding: 6px 8px; }
+  .a3-step-body { padding: 8px 10px; font-size: 0.78rem; }
+  .a3-step-body .example { font-size: 1rem; }
+  .a3-step-num { width: 26px; height: 26px; font-size: 0.85rem; }
+  .a3-step { border-radius: 14px; }
+  .a3-sentence-box, .a3-answer-box { padding: 10px 12px; border-radius: 12px; }
+  .a3-box-label { font-size: 0.65rem; }
+  .a3-txt-input { font-size: 1rem; }
+  .a3-num-input { font-size: 1rem; height: 40px; }
+  .a3-hint-btn, .a3-check-btn { padding: 8px 20px; font-size: 0.85rem; }
+  .a3-progress-text { font-size: 0.75rem; }
+  .a3-progress-bar { height: 8px; }
+  .a3-footer { gap: 10px; }
 }
 
 @media (max-width: 480px) {
-  .a3-frame { border-radius: 16px; gap: 8px; }
-  .a3-diff-pill { padding: 5px 10px; font-size: 0.7rem; }
-  .a3-back-btn { padding: 6px 12px; font-size: 0.8rem; }
+  .a3-frame { margin: 2px; padding: 6px 8px 10px; border-width: 3px; border-radius: 12px; gap: 5px; }
+  .a3-header { gap: 6px; }
+  .a3-title-pill { font-size: 0.85rem; padding: 6px 16px; }
+  .a3-back-btn { padding: 5px 10px; font-size: 0.75rem; }
+  .a3-diff-pill { padding: 4px 8px; font-size: 0.65rem; }
+  .a3-directions { padding: 6px 10px; border-radius: 10px; }
+  .a3-directions p { font-size: 0.72rem; }
+  .a3-question-card { padding: 10px 10px; border-radius: 12px; gap: 8px; }
+  .a3-q-badge, .a3-s-badge { font-size: 0.6rem; padding: 2px 8px; }
+  .a3-q-text { font-size: 0.85rem; }
+  .a3-s-display { font-size: 1.3rem; }
+  .a3-step-body .example { font-size: 0.9rem; }
+  .a3-step-body .label { font-size: 0.72rem; }
+  .a3-arrow { font-size: 0.9rem; }
+  .a3-txt-input { font-size: 0.9rem; border-bottom-width: 2px; }
+  .a3-num-input { font-size: 0.9rem; height: 36px; }
+  .a3-hint-btn, .a3-check-btn { padding: 7px 16px; font-size: 0.8rem; }
+  .a3-footer { gap: 8px; padding-bottom: 4px; }
+}
+
+@media (max-width: 360px) {
+  .a3-frame { margin: 1px; padding: 4px 6px 8px; border-width: 2px; gap: 4px; }
+  .a3-title-pill { font-size: 0.78rem; padding: 5px 12px; }
+  .a3-diff-pill { padding: 3px 6px; font-size: 0.6rem; }
+  .a3-q-text { font-size: 0.78rem; }
+  .a3-s-display { font-size: 1.1rem; }
+  .a3-directions p { font-size: 0.68rem; }
 }
