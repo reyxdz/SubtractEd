@@ -11,23 +11,25 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* Blue frame border */
 .a3-frame {
-  position: relative;
-  min-height: 100vh;
+  position: absolute;
+  inset: 0;
   border: 6px solid #1a3a7a;
-  border-radius: 24px;
-  margin: 8px;
-  padding: 12px 16px 20px;
+  border-radius: 20px;
+  margin: 6px;
+  padding: 10px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(1px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Header row */
