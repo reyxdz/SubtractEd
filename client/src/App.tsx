@@ -5,6 +5,7 @@ import { HomeContent } from './components/features/home/HomeContent';
 import { GuideContent } from './components/features/guide/GuideContent';
 import { ActivityContent } from './components/features/activity/ActivityContent';
 import { ActivityOneContent } from './components/features/activity/ActivityOneContent';
+import { ActivityTwoContent } from './components/features/activity/ActivityTwoContent';
 import { AssessmentContent } from './components/features/assessment/AssessmentContent';
 import { EnrichmentContent } from './components/features/enrichment/EnrichmentContent';
 import { playSound, getAudioContext } from './utils/sound';
@@ -26,11 +27,11 @@ function App() {
       const target = e.target as HTMLElement;
       const isClickable = target.closest('button') || target.closest('a') || target.closest('.card') || target.closest('.activity-option-card');
       
-      const isActivityOnePage = location.pathname === '/activity/1';
+      const isActivityPage = location.pathname === '/activity/1' || location.pathname === '/activity/2';
       
       // Play click sound if it's a clickable element AND we are NOT on Activity 1 page
       // (because Activity 1 will have its own specific sound bindings)
-      if (isClickable && !isActivityOnePage) {
+      if (isClickable && !isActivityPage) {
         playSound.click();
       }
     };
@@ -58,6 +59,7 @@ function App() {
         <Route path="/guide" element={<GuideContent />} />
         <Route path="/activity" element={<ActivityContent />} />
         <Route path="/activity/1" element={<ActivityOneContent />} />
+        <Route path="/activity/2" element={<ActivityTwoContent />} />
         <Route path="/assessment" element={<AssessmentContent />} />
         <Route path="/enrichment" element={<EnrichmentContent />} />
       </Routes>
