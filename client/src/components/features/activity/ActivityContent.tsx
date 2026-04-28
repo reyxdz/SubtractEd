@@ -31,7 +31,7 @@ export const ActivityContent: React.FC = () => {
               <p>Integer Chip</p>
             </Card>
             
-            <Card className="activity-option-card" onClick={() => {}}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/2')}>
               <div className="activity-icon-container">
                 <FileEdit size={40} strokeWidth={2} />
               </div>
