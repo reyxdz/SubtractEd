@@ -141,8 +141,7 @@
 
 /* Directions banner */
 .a3-directions {
-  max-width: 96%;
-  margin: 0 auto;
+  width: 100%;
   background: rgba(255, 248, 225, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 16px;
@@ -161,8 +160,7 @@
 
 /* Question + Sentence card */
 .a3-question-card {
-  max-width: 96%;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -222,8 +220,7 @@
 
 /* Scaffolding Steps */
 .a3-steps {
-  max-width: 96%;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -307,8 +304,7 @@
 
 /* Bottom input area */
 .a3-bottom {
-  max-width: 96%;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -386,8 +382,7 @@
 
 /* Footer buttons */
 .a3-footer {
-  max-width: 96%;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   justify-content: center;
   gap: 16px;
