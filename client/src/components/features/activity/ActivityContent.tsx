@@ -39,7 +39,7 @@ export const ActivityContent: React.FC = () => {
               <p>Number line</p>
             </Card>
 
-            <Card className="activity-option-card" onClick={() => {}}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/3')}>
               <div className="activity-icon-container">
                 <Search size={40} strokeWidth={2} />
               </div>
