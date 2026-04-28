@@ -234,7 +234,6 @@
 .a3-step {
   flex: 1;
   min-width: 180px;
-  max-width: 260px;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 18px;
@@ -318,7 +317,7 @@
 
 .a3-sentence-box {
   flex: 1.5;
-  min-width: 240px;
+  min-width: 0;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(8px);
   border: 2px solid rgba(76, 175, 80, 0.3);
@@ -329,7 +328,7 @@
 
 .a3-answer-box {
   flex: 1;
-  min-width: 180px;
+  min-width: 0;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(8px);
   border: 2px solid rgba(100, 140, 220, 0.3);
