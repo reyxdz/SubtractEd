@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopBar } from '../../layout/TopBar';
 import { Modal } from '../../common/Modal';
-import { playSound } from '../../utils/sound';
+import { playSound } from '../../../utils/sound';
 import './ActivityOneContent.css';
 import '../guide/GuideContent.css'; // Reuse common header styles
 
@@ -39,8 +39,14 @@ export const ActivityOneContent: React.FC = () => {
     title: '',
     message: ''
   });
+  const [hintModalOpen, setHintModalOpen] = useState(false);
   
   const currentItem = activity1Items[currentIndex];
+
+  const handleShowHint = () => {
+    playSound.pop();
+    setHintModalOpen(true);
+  };
 
   const handleCheckAnswer = () => {
     if (!answer.trim()) return;
@@ -147,7 +153,7 @@ export const ActivityOneContent: React.FC = () => {
         <div className="input-controls-row">
           <div className="left-controls">
             <button className="action-btn clear-btn" onClick={() => { playSound.pop(); setAnswer(''); }}>Clear</button>
-            <button className="action-btn hint-btn" onClick={() => { playSound.pop(); alert(currentItem.hint || 'No hint for this round.'); }}>Hint</button>
+            <button className="action-btn hint-btn" onClick={handleShowHint}>Hint</button>
           </div>
           
           <div className="input-field-wrapper" style={{ position: 'relative' }}>
@@ -193,6 +199,27 @@ export const ActivityOneContent: React.FC = () => {
         }
       >
         <p>{modalState.message}</p>
+      </Modal>
+
+      {/* Hint Modal */}
+      <Modal
+        isOpen={hintModalOpen}
+        type="info"
+        title="Hint"
+        onClose={() => { playSound.click(); setHintModalOpen(false); }}
+        actions={
+          <button 
+            className="action-btn" 
+            onClick={() => { playSound.click(); setHintModalOpen(false); }} 
+            style={{ width: '100%', background: 'linear-gradient(145deg, #4facfe, #00f2fe)', color: 'white', border: 'none' }}
+          >
+            Got it!
+          </button>
+        }
+      >
+        <p style={{ fontSize: '1.2rem', fontWeight: '500', color: '#1e293b' }}>
+          {currentItem.hint || 'No hint available for this difficult round. You can do it!'}
+        </p>
       </Modal>
     </div>
   );
