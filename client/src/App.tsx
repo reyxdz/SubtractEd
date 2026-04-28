@@ -54,18 +54,27 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <MainLayout>
+    <>
       <Routes>
-        <Route path="/" element={<HomeContent />} />
-        <Route path="/guide" element={<GuideContent />} />
-        <Route path="/activity" element={<ActivityContent />} />
-        <Route path="/activity/1" element={<ActivityOneContent />} />
-        <Route path="/activity/2" element={<ActivityTwoContent />} />
         <Route path="/activity/3" element={<ActivityThreeContent />} />
-        <Route path="/assessment" element={<AssessmentContent />} />
-        <Route path="/enrichment" element={<EnrichmentContent />} />
       </Routes>
-    </MainLayout>
+      <Routes>
+        <Route path="/activity/3" element={null} />
+        <Route path="*" element={
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<HomeContent />} />
+              <Route path="/guide" element={<GuideContent />} />
+              <Route path="/activity" element={<ActivityContent />} />
+              <Route path="/activity/1" element={<ActivityOneContent />} />
+              <Route path="/activity/2" element={<ActivityTwoContent />} />
+              <Route path="/assessment" element={<AssessmentContent />} />
+              <Route path="/enrichment" element={<EnrichmentContent />} />
+            </Routes>
+          </MainLayout>
+        } />
+      </Routes>
+    </>
   );
 }
 
