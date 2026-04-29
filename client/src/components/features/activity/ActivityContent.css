@@ -216,3 +216,18 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
 }
+
+/* Prevent vertical scrolling on large screens */
+@media (min-width: 1024px) {
+  .activity-page-container {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  
+  .activity-layout {
+    height: calc(100% - 88px); /* Account for header height + margins */
+    align-items: center;
+  }
+}

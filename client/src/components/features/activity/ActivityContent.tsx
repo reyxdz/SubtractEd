@@ -11,7 +11,7 @@ export const ActivityContent: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="guide-page-container">
+    <div className="guide-page-container activity-page-container">
       <header className="guide-header">
         <button className="neo-btn back-chip" onClick={() => navigate('/')}>
           ← <span>Back</span>
