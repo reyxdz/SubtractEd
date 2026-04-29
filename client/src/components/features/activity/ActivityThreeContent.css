@@ -236,7 +236,7 @@
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 18px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.85), 0 6px 18px rgba(0, 0, 0, 0.1);
   position: relative;
 }
@@ -269,6 +269,7 @@
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.3px;
+  border-radius: 18px 18px 0 0;
 }
 
 .a3-step-head.keep { background: linear-gradient(145deg, #c8e6c9, #a5d6a7); color: #1b5e20; }
@@ -510,6 +511,7 @@
   .a3-step-body .example { font-size: 1rem; }
   .a3-step-num { width: 26px; height: 26px; font-size: 0.85rem; }
   .a3-step { border-radius: 14px; }
+  .a3-step-head { border-radius: 14px 14px 0 0; padding: 6px 8px; }
   .a3-sentence-box, .a3-answer-box { padding: 10px 12px; border-radius: 12px; }
   .a3-box-label { font-size: 0.65rem; }
   .a3-txt-input { font-size: 1rem; }
