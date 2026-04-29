@@ -7,10 +7,7 @@
   z-index: 100;
   width: 100vw;
   height: 100vh;
-  background-image: var(--a3-store-bg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: #ffffff;
   overflow: hidden;
 }
 
@@ -20,13 +17,15 @@
   inset: 0;
   border: 6px solid #1a3a7a;
   border-radius: 20px;
-  margin: 6px;
-  padding: 10px 14px 12px;
+  margin: 24px;
+  padding: 16px 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(1px);
+  gap: 12px;
+  background-image: var(--a3-store-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -497,7 +496,7 @@
 }
 
 @media (max-width: 768px) {
-  .a3-frame { margin: 3px; padding: 8px 10px 12px; border-width: 4px; border-radius: 16px; gap: 6px; }
+  .a3-frame { margin: 16px; padding: 8px 10px 12px; border-width: 4px; border-radius: 16px; gap: 6px; }
   .a3-title-pill { font-size: 0.95rem; padding: 7px 20px; }
   .a3-back-btn { padding: 6px 14px; font-size: 0.82rem; }
   .a3-diff-pill { padding: 5px 12px; font-size: 0.72rem; }
@@ -522,7 +521,7 @@
 }
 
 @media (max-width: 480px) {
-  .a3-frame { margin: 2px; padding: 6px 8px 10px; border-width: 3px; border-radius: 12px; gap: 5px; }
+  .a3-frame { margin: 12px; padding: 6px 8px 10px; border-width: 3px; border-radius: 12px; gap: 5px; }
   .a3-header { gap: 6px; }
   .a3-title-pill { font-size: 0.85rem; padding: 6px 16px; }
   .a3-back-btn { padding: 5px 10px; font-size: 0.75rem; }
@@ -543,7 +542,7 @@
 }
 
 @media (max-width: 360px) {
-  .a3-frame { margin: 1px; padding: 4px 6px 8px; border-width: 2px; gap: 4px; }
+  .a3-frame { margin: 8px; padding: 4px 6px 8px; border-width: 2px; gap: 4px; }
   .a3-title-pill { font-size: 0.78rem; padding: 5px 12px; }
   .a3-diff-pill { padding: 3px 6px; font-size: 0.6rem; }
   .a3-q-text { font-size: 0.78rem; }
