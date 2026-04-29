@@ -23,28 +23,40 @@ export const ActivityContent: React.FC = () => {
       <div className="activity-layout">
         <div className="activity-main-content">
           <div className="activity-options-grid">
-            <Card className="activity-option-card card-act1" onClick={() => navigate('/activity/1')}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/1')}>
+              <div className="activity-badge badge-easy">Level 1</div>
               <div className="activity-icon-container">
                 <ShoppingCart size={40} strokeWidth={2} />
               </div>
-              <h3>Activity 1</h3>
-              <p>Integer Chip</p>
+              <div className="activity-text-content">
+                <h3>Activity 1</h3>
+                <p>Integer Chip</p>
+              </div>
+              <button className="neo-btn activity-start-btn">Start Activity</button>
             </Card>
             
-            <Card className="activity-option-card card-act2" onClick={() => navigate('/activity/2')}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/2')}>
+              <div className="activity-badge badge-moderate">Level 2</div>
               <div className="activity-icon-container">
                 <FileEdit size={40} strokeWidth={2} />
               </div>
-              <h3>Activity 2</h3>
-              <p>Number line</p>
+              <div className="activity-text-content">
+                <h3>Activity 2</h3>
+                <p>Number line</p>
+              </div>
+              <button className="neo-btn activity-start-btn">Start Activity</button>
             </Card>
 
-            <Card className="activity-option-card card-act3" onClick={() => navigate('/activity/3')}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/3')}>
+              <div className="activity-badge badge-difficult">Level 3</div>
               <div className="activity-icon-container">
                 <Search size={40} strokeWidth={2} />
               </div>
-              <h3>Activity 3</h3>
-              <p>Integer Rules</p>
+              <div className="activity-text-content">
+                <h3>Activity 3</h3>
+                <p>Integer Rules</p>
+              </div>
+              <button className="neo-btn activity-start-btn">Start Activity</button>
             </Card>
           </div>
         </div>
