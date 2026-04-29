@@ -24,6 +24,27 @@
   object-fit: contain;
   filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
   animation: float 4s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+.activity-side-character {
+  position: relative;
+}
+
+.activity-side-character::before {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: 1;
+  animation: pulse-glow 3s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.1); opacity: 1; }
 }
 
 @keyframes float {
@@ -104,16 +125,66 @@
   border-radius: 24px;
   min-height: 250px;
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
 }
 
-.activity-option-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.08);
+.activity-option-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  z-index: 0;
+  transition: opacity 0.3s;
 }
+
+.activity-option-card:hover::before {
+  opacity: 0.15;
+}
+
+/* Base elements inside card over background */
+.activity-option-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Card 1 Theme (Green/Teal) */
+.card-act1 {
+  background: linear-gradient(145deg, #ffffff, #f1f8e9);
+  border-color: #a5d6a7;
+}
+.card-act1 .activity-icon-container { background: #e8f5e9; color: #4caf50; }
+.card-act1 h3 { color: #2e7d32; }
+.card-act1 p { color: #43a047; }
+
+/* Card 2 Theme (Orange/Yellow) */
+.card-act2 {
+  background: linear-gradient(145deg, #ffffff, #fff3e0);
+  border-color: #ffcc80;
+}
+.card-act2 .activity-icon-container { background: #fff8e1; color: #ff9800; }
+.card-act2 h3 { color: #e65100; }
+.card-act2 p { color: #fb8c00; }
+
+/* Card 3 Theme (Purple/Pink) */
+.card-act3 {
+  background: linear-gradient(145deg, #ffffff, #f3e5f5);
+  border-color: #ce93d8;
+}
+.card-act3 .activity-icon-container { background: #fce4ec; color: #9c27b0; }
+.card-act3 h3 { color: #4a148c; }
+.card-act3 p { color: #8e24aa; }
+
+.activity-option-card:hover {
+  transform: translateY(-12px) scale(1.03);
+}
+
+.card-act1:hover { box-shadow: 0 20px 40px rgba(76, 175, 80, 0.25); border-color: #4caf50; }
+.card-act2:hover { box-shadow: 0 20px 40px rgba(255, 152, 0, 0.25); border-color: #ff9800; }
+.card-act3:hover { box-shadow: 0 20px 40px rgba(156, 39, 176, 0.25); border-color: #9c27b0; }
 
 .activity-icon-container {
   display: flex;
@@ -123,29 +194,23 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(30, 58, 138, 0.08); /* Soft primary color background */
-  color: var(--theme-primary, #1e3a8a);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.activity-option-card:hover .activity-icon-container {
-  transform: scale(1.1);
-  background: var(--theme-primary, #1e3a8a);
-  color: white;
-  box-shadow: 0 8px 16px rgba(30, 58, 138, 0.2);
-}
+.card-act1:hover .activity-icon-container { background: #4caf50; color: white; transform: scale(1.15) rotate(-5deg); box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4); }
+.card-act2:hover .activity-icon-container { background: #ff9800; color: white; transform: scale(1.15) rotate(5deg); box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4); }
+.card-act3:hover .activity-icon-container { background: #9c27b0; color: white; transform: scale(1.15) rotate(-5deg); box-shadow: 0 8px 20px rgba(156, 39, 176, 0.4); }
 
 .activity-option-card h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--theme-primary, #1e3a8a);
+  font-size: 1.6rem;
+  font-weight: 800;
   margin: 0;
   transition: color 0.3s ease;
 }
 
 .activity-option-card p {
-  color: var(--color-text-muted, #6b7280);
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.5;
   margin: 0;
 }

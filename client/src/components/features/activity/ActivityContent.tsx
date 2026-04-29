@@ -23,7 +23,7 @@ export const ActivityContent: React.FC = () => {
       <div className="activity-layout">
         <div className="activity-main-content">
           <div className="activity-options-grid">
-            <Card className="activity-option-card" onClick={() => navigate('/activity/1')}>
+            <Card className="activity-option-card card-act1" onClick={() => navigate('/activity/1')}>
               <div className="activity-icon-container">
                 <ShoppingCart size={40} strokeWidth={2} />
               </div>
@@ -31,7 +31,7 @@ export const ActivityContent: React.FC = () => {
               <p>Integer Chip</p>
             </Card>
             
-            <Card className="activity-option-card" onClick={() => navigate('/activity/2')}>
+            <Card className="activity-option-card card-act2" onClick={() => navigate('/activity/2')}>
               <div className="activity-icon-container">
                 <FileEdit size={40} strokeWidth={2} />
               </div>
@@ -39,7 +39,7 @@ export const ActivityContent: React.FC = () => {
               <p>Number line</p>
             </Card>
 
-            <Card className="activity-option-card" onClick={() => navigate('/activity/3')}>
+            <Card className="activity-option-card card-act3" onClick={() => navigate('/activity/3')}>
               <div className="activity-icon-container">
                 <Search size={40} strokeWidth={2} />
               </div>
