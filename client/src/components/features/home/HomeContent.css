@@ -20,16 +20,24 @@
 }
 
 .home-text-logo {
-  height: 40px;
+  height: 60px;
   width: auto;
   display: block;
   margin-bottom: 1.5rem;
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .home-description {
@@ -60,19 +68,23 @@
     height: 80px;
     margin-bottom: 1rem;
   }
+
   .cards-grid {
     grid-template-columns: 1fr;
   }
+
   .module-card {
     height: 120px;
     flex-direction: row;
     justify-content: flex-start;
     padding: 1rem 1.5rem;
   }
+
   .card-icon-wrapper {
     margin-bottom: 0;
     margin-right: 1rem;
   }
+
   .card-title {
     font-size: 1rem;
   }
@@ -103,13 +115,21 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.blue-gradient { color: var(--color-primary-blue); }
-.red-gradient { color: var(--color-primary-red); }
-.yellow-gradient { color: #F59E0B; }
+.blue-gradient {
+  color: var(--color-primary-blue);
+}
+
+.red-gradient {
+  color: var(--color-primary-red);
+}
+
+.yellow-gradient {
+  color: #F59E0B;
+}
 
 .home-action {
   margin-top: 2rem;
@@ -138,8 +158,8 @@
   background: rgba(255, 255, 255, 0.7);
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   text-align: left;
 }
 
@@ -155,7 +175,7 @@
   height: 75px;
   border-radius: 50%;
   border: 3px solid white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   object-fit: cover;
 }
 
@@ -184,7 +204,7 @@
   background: rgba(255, 255, 255, 0.6);
   border-radius: 16px;
   padding: 1.5rem;
-  border: 1px solid rgba(255,255,255,0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .reference-item {
