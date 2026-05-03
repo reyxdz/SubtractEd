@@ -5,6 +5,7 @@ import { Button } from '../../common/Button';
 import { Accordion } from '../../common/Accordion';
 import './HomeContent.css';
 import subtractedLogo from '../../../assets/subtracted_logo.png';
+import textLogo from '../../../assets/text_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { TopBar } from '../../layout/TopBar';
 
@@ -24,6 +25,7 @@ export const HomeContent: React.FC = () => {
       </div>
       
       <img src={subtractedLogo} alt="SubtractEd Logo" className="home-logo" />
+      <img src={textLogo} alt="SubtractEd Text Logo" className="home-text-logo" />
 
       <p className="home-description">
         <strong>Meet SubtractEd:</strong> A fun and interactive platform to master 

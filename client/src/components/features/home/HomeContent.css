@@ -15,8 +15,15 @@
   height: 120px;
   width: auto;
   display: block;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   animation: float 4s ease-in-out infinite;
+}
+
+.home-text-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  margin-bottom: 1.5rem;
 }
 
 @keyframes float {
