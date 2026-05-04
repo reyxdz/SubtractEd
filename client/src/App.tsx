@@ -10,6 +10,7 @@ import { ActivityThreeContent } from './components/features/activity/ActivityThr
 import { AssessmentContent } from './components/features/assessment/AssessmentContent';
 import { AssessmentQuizContent } from './components/features/assessment/AssessmentQuizContent';
 import { EnrichmentContent } from './components/features/enrichment/EnrichmentContent';
+import { EnrichmentQuizContent } from './components/features/enrichment/EnrichmentQuizContent';
 import { playSound, getAudioContext } from './utils/sound';
 import { musicManager } from './utils/music';
 
@@ -29,7 +30,7 @@ function App() {
       const target = e.target as HTMLElement;
       const isClickable = target.closest('button') || target.closest('a') || target.closest('.card') || target.closest('.activity-option-card');
       
-      const isActivityPage = /^\/(activity\/[123]|assessment\/quiz)$/.test(location.pathname);
+      const isActivityPage = /^\/(activity\/[123]|assessment\/quiz|enrichment\/quiz)$/.test(location.pathname);
       
       // Play click sound if it's a clickable element AND we are NOT on Activity 1 page
       // (because Activity 1 will have its own specific sound bindings)
@@ -45,7 +46,7 @@ function App() {
   // Handle route-based music switching
   useEffect(() => {
     // Match exactly /activity/1, /activity/2, /activity/3 or /assessment/quiz
-    const isActivityGamePage = /^\/(activity\/[123]|assessment\/quiz)$/.test(location.pathname);
+    const isActivityGamePage = /^\/(activity\/[123]|assessment\/quiz|enrichment\/quiz)$/.test(location.pathname);
     
     if (isActivityGamePage) {
       musicManager.switchTrack('activity');
@@ -61,12 +62,14 @@ function App() {
         <Route path="/activity/2" element={<ActivityTwoContent />} />
         <Route path="/activity/3" element={<ActivityThreeContent />} />
         <Route path="/assessment/quiz" element={<AssessmentQuizContent />} />
+        <Route path="/enrichment/quiz" element={<EnrichmentQuizContent />} />
       </Routes>
       <Routes>
         <Route path="/activity/1" element={null} />
         <Route path="/activity/2" element={null} />
         <Route path="/activity/3" element={null} />
         <Route path="/assessment/quiz" element={null} />
+        <Route path="/enrichment/quiz" element={null} />
         <Route path="*" element={
           <MainLayout>
             <Routes>
