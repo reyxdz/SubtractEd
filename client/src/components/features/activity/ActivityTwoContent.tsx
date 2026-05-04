@@ -235,8 +235,14 @@ export const ActivityTwoContent: React.FC = () => {
     setModalState(prev => ({ ...prev, isOpen: false }));
     if (qIndex < totalQuestions - 1) {
       setQIndex(prev => prev + 1);
+    } else if (difficulty === 'easy') {
+      setDifficulty('moderate');
+      setQIndex(0);
+    } else if (difficulty === 'moderate') {
+      setDifficulty('difficult');
+      setQIndex(0);
     } else {
-      alert(`${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} level completed!`);
+      alert('Activity 2 Complete!');
       navigate('/activity');
     }
   }, [qIndex, totalQuestions, difficulty, navigate]);
