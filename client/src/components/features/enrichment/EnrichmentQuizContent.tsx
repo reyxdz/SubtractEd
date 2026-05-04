@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Settings, X, Music, Palette, CheckCircle2, XCircle, ArrowLeft, RefreshCw, Home, Trophy } from 'lucide-react';
 import { playSound } from '../../../utils/sound';
 import { musicManager } from '../../../utils/music';
-import { crosswordLevels, GRID_ROWS, GRID_COLS, CWCell } from './crosswordData';
+import { crosswordLevels, GRID_ROWS, GRID_COLS } from './crosswordData';
+import type { CWCell } from './crosswordData';
 import enrichmentBg from '../../../assets/images/enrichment_bg.png';
 import './EnrichmentQuizContent.css';
 
