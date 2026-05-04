@@ -147,9 +147,6 @@ export const ActivityThreeContent: React.FC = () => {
     setAnswer(''); setNewSentence('');
   }, []);
 
-  const handleDiff = useCallback((l: Difficulty) => {
-    playSound.click(); setDifficulty(l); setQIndex(0);
-  }, []);
 
   return (
     <div className="a3-page-container" style={{ '--a3-store-bg': `url(${storeBg})` } as React.CSSProperties}>

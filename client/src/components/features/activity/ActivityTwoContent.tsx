@@ -247,12 +247,7 @@ export const ActivityTwoContent: React.FC = () => {
     setAnswer('');
   }, []);
 
-  // ── Difficulty switch ────────────────────────────────────────
-  const handleDifficultyChange = useCallback((level: Difficulty) => {
-    playSound.click();
-    setDifficulty(level);
-    setQIndex(0);
-  }, []);
+
 
 
 
