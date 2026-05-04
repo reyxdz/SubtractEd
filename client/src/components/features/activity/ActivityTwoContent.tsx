@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TopBar } from '../../layout/TopBar';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
 import dogMarkerImg from '../../../assets/images/dog_marker.png';
