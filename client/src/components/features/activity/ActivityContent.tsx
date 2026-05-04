@@ -23,7 +23,7 @@ export const ActivityContent: React.FC = () => {
       <div className="activity-layout">
         <div className="activity-main-content">
           <div className="activity-options-grid">
-            <Card className="activity-option-card" onClick={() => navigate('/activity/1')}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/1/intro')}>
               <div className="activity-icon-container">
                 <ShoppingCart size={40} strokeWidth={2} />
               </div>
@@ -34,7 +34,7 @@ export const ActivityContent: React.FC = () => {
               <button className="neo-btn activity-start-btn">Start Activity</button>
             </Card>
             
-            <Card className="activity-option-card" onClick={() => navigate('/activity/2')}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/2/intro')}>
               <div className="activity-icon-container">
                 <FileEdit size={40} strokeWidth={2} />
               </div>
@@ -45,7 +45,7 @@ export const ActivityContent: React.FC = () => {
               <button className="neo-btn activity-start-btn">Start Activity</button>
             </Card>
 
-            <Card className="activity-option-card" onClick={() => navigate('/activity/3')}>
+            <Card className="activity-option-card" onClick={() => navigate('/activity/3/intro')}>
               <div className="activity-icon-container">
                 <Search size={40} strokeWidth={2} />
               </div>
