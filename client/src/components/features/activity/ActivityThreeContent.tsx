@@ -9,7 +9,11 @@ import './ActivityThreeContent.css';
 
 // ── Helpers ────────────────────────────────────────────────────
 function normalizeSentence(s: string): string {
-  return s.replace(/\s+/g, '').replace(/[()]/g, '').replace(/−/g, '-').replace(/–/g, '-').toLowerCase();
+  let norm = s.replace(/\s+/g, '').replace(/[()]/g, '').replace(/[−–]/g, '-').toLowerCase();
+  norm = norm.replace(/\+\+/g, '+'); // handle + (+8)
+  norm = norm.replace(/-\+/g, '-'); // handle - (+8)
+  if (norm.startsWith('+')) norm = norm.slice(1); // handle +5
+  return norm;
 }
 
 function checkSentence(userInput: string, canonical: string): boolean {
@@ -99,8 +103,12 @@ export const ActivityThreeContent: React.FC = () => {
   useEffect(() => { setNewSentence(''); setAnswer(''); }, [difficulty, qIndex]);
 
   const handleCheck = useCallback(() => {
-    if (!answer.trim()) return;
-    const numAns = Number(answer.trim());
+    if (!answer.trim() || !newSentence.trim()) return;
+    
+    // Support standard hyphen, en-dash, em-dash, and spaces for the number input
+    const cleanAnswer = answer.replace(/\s+/g, '').replace(/[−–]/g, '-');
+    const numAns = Number(cleanAnswer);
+    
     const sentOk = checkSentence(newSentence, currentQ.newSentence);
     const ansOk = numAns === currentQ.answer;
 
@@ -109,7 +117,18 @@ export const ActivityThreeContent: React.FC = () => {
       setModalState({ isOpen: true, type: 'success', title: 'Great Job!', message: 'Your answer is correct!' });
     } else {
       playSound.error();
-      setModalState({ isOpen: true, type: 'error', title: currentQ.errorTitle, message: currentQ.errorMessage, question: currentQ });
+      let title = currentQ.errorTitle;
+      let message = currentQ.errorMessage;
+      
+      if (!sentOk && ansOk) {
+        title = 'Check your Number Sentence!';
+        message = 'Your final answer is correct, but your number sentence is wrong. Remember the KEEP-CHANGE-CHANGE rule!';
+      } else if (sentOk && !ansOk) {
+        title = 'Check your Answer!';
+        message = 'Your number sentence is perfectly correct, but your final calculation is wrong. Try calculating it again!';
+      }
+
+      setModalState({ isOpen: true, type: 'error', title, message, question: currentQ });
     }
   }, [answer, newSentence, currentQ]);
 
