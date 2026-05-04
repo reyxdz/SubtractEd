@@ -93,15 +93,15 @@ export const HomeContent: React.FC = () => {
           <div className="references-list">
             <div className="reference-item">
               <span className="reference-number">1.</span>
-              Meyer, J. P. (2020). Effective strategies for teaching mathematics in the middle school. <em>Journal of Educational Research</em>, 11(2), 123-134. https://doi.org/10.1234/jeduresearch.2020.567
+              Math Isip. (2025, January 12). <em>SUBTRACTION OF INTEGERS (3rd) THIRD QUARTER GRADE 7 MATATAG TAGALOG MATH TUTORIAL [Video]</em>. YouTube. <a href="https://www.youtube.com/watch?v=Er79fRnUK24" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=Er79fRnUK24</a>
             </div>
             <div className="reference-item">
               <span className="reference-number">2.</span>
-              Reyes, I., & Santos, J. (2023). SubtractEd: An innovative approach to teaching integer subtraction to Filipino students. <em>Philippine Journal of Mathematics Education</em>, 15(1), 45-59. https://doi.org/1.5678/phjmatheduc.2023.105
+              Math with Mr. J. (2020, June 16). <em>Parts of a Subtraction Problem: Minuend, Subtrahend, & Difference | Math with Mr. J [Video]</em>. YouTube. <a href="https://www.youtube.com/watch?v=EDCrtkT_JeA" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=EDCrtkT_JeA</a>
             </div>
             <div className="reference-item">
               <span className="reference-number">3.</span>
-              Sweller, J. Van Merriënboer, J. J. G., & Paas, F. G. W. C. (2019). Cognitive load theory and effective instructional design. <em>Journal of Educational Psychology</em>, 112(3), 453-468. https://doi.org/10.1037/edu0000319
+              Tambayan, D. (2026, January 26). <em>Grade 6 Mathematics Module: Subtracting Integers • DepEd Tambayan</em>. DepEd Tambayan. <a href="https://depedtambayan.net/grade-6-mathematics-module-subtracting-integers/" target="_blank" rel="noopener noreferrer">https://depedtambayan.net/grade-6-mathematics-module-subtracting-integers/</a>
             </div>
           </div>
         </Accordion>
