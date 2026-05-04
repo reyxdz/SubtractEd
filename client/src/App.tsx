@@ -7,6 +7,7 @@ import { ActivityContent } from './components/features/activity/ActivityContent'
 import { ActivityOneContent } from './components/features/activity/ActivityOneContent';
 import { ActivityTwoContent } from './components/features/activity/ActivityTwoContent';
 import { ActivityThreeContent } from './components/features/activity/ActivityThreeContent';
+import { ActivityVideoGatekeeper } from './components/features/activity/ActivityVideoGatekeeper';
 import { AssessmentContent } from './components/features/assessment/AssessmentContent';
 import { AssessmentQuizContent } from './components/features/assessment/AssessmentQuizContent';
 import { EnrichmentContent } from './components/features/enrichment/EnrichmentContent';
@@ -76,6 +77,7 @@ function App() {
               <Route path="/" element={<HomeContent />} />
               <Route path="/guide" element={<GuideContent />} />
               <Route path="/activity" element={<ActivityContent />} />
+              <Route path="/activity/:id/intro" element={<ActivityVideoGatekeeper />} />
               <Route path="/assessment" element={<AssessmentContent />} />
               <Route path="/enrichment" element={<EnrichmentContent />} />
             </Routes>
