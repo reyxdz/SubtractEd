@@ -4,7 +4,7 @@ import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
 import { activity3Questions } from './activity3Data';
 import type { Difficulty, A3Question } from './activity3Data';
-import storeBg from '../../../assets/images/store_bg.png';
+import storeBg from '../../../assets/images/activity3_bg.png';
 import './ActivityThreeContent.css';
 
 // ── Helpers ────────────────────────────────────────────────────
@@ -141,11 +141,6 @@ export const ActivityThreeContent: React.FC = () => {
             ← Back
           </button>
           <div className="a3-title-pill">Activity 3</div>
-          <div className="a3-header-right">
-            <button className={`a3-diff-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`} onClick={() => handleDiff('easy')}>Easy (1-5)</button>
-            <button className={`a3-diff-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`} onClick={() => handleDiff('moderate')}>Moderate (6-10)</button>
-            <button className={`a3-diff-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`} onClick={() => handleDiff('difficult')}>Difficult (11-15)</button>
-          </div>
         </div>
 
         {/* Progress */}
@@ -156,6 +151,13 @@ export const ActivityThreeContent: React.FC = () => {
           <div className="a3-progress-bar">
             <div className="a3-progress-fill" style={{ width: `${pct}%` }}></div>
           </div>
+        </div>
+
+        {/* Difficulty Selection */}
+        <div className="a3-difficulty-row">
+          <button className={`a3-diff-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`} onClick={() => handleDiff('easy')}>Easy (1-5)</button>
+          <button className={`a3-diff-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`} onClick={() => handleDiff('moderate')}>Moderate (6-10)</button>
+          <button className={`a3-diff-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`} onClick={() => handleDiff('difficult')}>Difficult (11-15)</button>
         </div>
 
         {/* Directions */}
@@ -237,7 +239,7 @@ export const ActivityThreeContent: React.FC = () => {
       {/* Hint Modal */}
       <Modal isOpen={hintModalOpen} type="info" title="Hint"
         onClose={() => { playSound.click(); setHintModalOpen(false); }}
-        actions={<button className="action-btn" onClick={() => { playSound.click(); setHintModalOpen(false); }} style={{ width: '100%', background: 'linear-gradient(145deg, #4facfe, #00f2fe)', color: 'white', border: 'none' }}>Got it!</button>}>
+        actions={<button className="action-btn" onClick={() => { playSound.click(); setHintModalOpen(false); }} style={{ width: '100%', background: '#00E5FF', color: 'white', border: 'none', fontWeight: 'bold', padding: '12px', borderRadius: '9999px', fontSize: '1rem' }}>Got it!</button>}>
         <p style={{ fontSize: '1.2rem', fontWeight: '500', color: '#1e293b' }}>
           {currentQ.hint || 'No hint available for this level.'}
         </p>

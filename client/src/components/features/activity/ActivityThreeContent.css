@@ -18,7 +18,7 @@
   border: 6px solid #1a3a7a;
   border-radius: 20px;
   margin: 24px;
-  padding: 16px 20px 24px;
+  padding: 12px 20px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -38,6 +38,7 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .a3-back-btn {
@@ -53,11 +54,13 @@
   font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
 }
 
-.a3-back-btn:hover { transform: translateY(-2px); }
+.a3-back-btn:hover {
+  transform: translateY(-2px);
+}
 
 .a3-title-pill {
   padding: 10px 32px;
@@ -68,12 +71,19 @@
   font-size: 1.2rem;
   box-shadow: 0 6px 20px rgba(26, 115, 232, 0.35);
   text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 }
 
-.a3-header-right {
+.a3-difficulty-row {
   display: flex;
+  justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
+  margin-top: -4px;
+  margin-bottom: -2px;
 }
 
 .a3-diff-pill {
@@ -86,7 +96,9 @@
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
-.a3-diff-pill:hover { transform: translateY(-1px); }
+.a3-diff-pill:hover {
+  transform: translateY(-1px);
+}
 
 .a3-diff-pill.pill-easy {
   background: linear-gradient(145deg, #c9f0d6, #84c79a);
@@ -128,7 +140,7 @@
   background: rgba(255, 255, 255, 0.5);
   border-radius: 9999px;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .a3-progress-fill {
@@ -140,12 +152,13 @@
 
 /* Directions banner */
 .a3-directions {
-  width: 90%;
+  width: 85%;
+  max-width: 950px;
   margin: 0 auto;
   background: rgba(255, 248, 225, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 16px;
-  padding: 10px 20px;
+  padding: 8px 20px;
   text-align: center;
   border: 1px solid rgba(255, 235, 170, 0.6);
   box-shadow: 0 0 30px 5px rgba(255, 255, 255, 0.85);
@@ -160,7 +173,8 @@
 
 /* Question + Sentence card */
 .a3-question-card {
-  width: 90%;
+  width: 85%;
+  max-width: 950px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -170,11 +184,14 @@
   backdrop-filter: blur(12px);
   border: 2px solid rgba(100, 140, 220, 0.3);
   border-radius: 20px;
-  padding: 18px 22px;
+  padding: 12px 22px;
   box-shadow: 0 0 35px 8px rgba(255, 255, 255, 0.85), 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.a3-q-section { flex: 1; min-width: 220px; }
+.a3-q-section {
+  flex: 1;
+  min-width: 220px;
+}
 
 .a3-q-badge {
   display: inline-block;
@@ -198,7 +215,10 @@
   white-space: pre-line;
 }
 
-.a3-s-section { text-align: center; min-width: 160px; }
+.a3-s-section {
+  text-align: center;
+  min-width: 160px;
+}
 
 .a3-s-badge {
   display: inline-block;
@@ -221,7 +241,8 @@
 
 /* Scaffolding Steps */
 .a3-steps {
-  width: 90%;
+  width: 85%;
+  max-width: 950px;
   margin: 0 auto;
   display: flex;
   gap: 8px;
@@ -258,12 +279,20 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.a3-step-num.n1 { background: linear-gradient(145deg, #4caf50, #388e3c); }
-.a3-step-num.n2 { background: linear-gradient(145deg, #2196f3, #1565c0); }
-.a3-step-num.n3 { background: linear-gradient(145deg, #ff9800, #ef6c00); }
+.a3-step-num.n1 {
+  background: linear-gradient(145deg, #4caf50, #388e3c);
+}
+
+.a3-step-num.n2 {
+  background: linear-gradient(145deg, #2196f3, #1565c0);
+}
+
+.a3-step-num.n3 {
+  background: linear-gradient(145deg, #ff9800, #ef6c00);
+}
 
 .a3-step-head {
-  padding: 8px 12px;
+  padding: 6px 12px;
   font-weight: 700;
   font-size: 0.72rem;
   text-align: center;
@@ -272,30 +301,56 @@
   border-radius: 18px 18px 0 0;
 }
 
-.a3-step-head.keep { background: linear-gradient(145deg, #c8e6c9, #a5d6a7); color: #1b5e20; }
-.a3-step-head.change-op { background: linear-gradient(145deg, #bbdefb, #90caf9); color: #0d47a1; }
-.a3-step-head.change-sign { background: linear-gradient(145deg, #ffe0b2, #ffcc80); color: #e65100; }
+.a3-step-head.keep {
+  background: linear-gradient(145deg, #c8e6c9, #a5d6a7);
+  color: #1b5e20;
+}
+
+.a3-step-head.change-op {
+  background: linear-gradient(145deg, #bbdefb, #90caf9);
+  color: #0d47a1;
+}
+
+.a3-step-head.change-sign {
+  background: linear-gradient(145deg, #ffe0b2, #ffcc80);
+  color: #e65100;
+}
 
 .a3-step-body {
-  padding: 10px 12px;
+  padding: 6px 12px 8px;
   text-align: center;
   font-size: 0.82rem;
   color: #2e3a59;
   line-height: 1.5;
 }
 
-.a3-step-body .label { font-weight: 700; margin-bottom: 4px; }
-
-.a3-step-body .example {
-  font-size: 1.2rem;
-  font-weight: 800;
-  margin-top: 6px;
+.a3-step-body .label {
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
-.a3-step-body .kept { color: #2e7d32; }
-.a3-step-body .cop { color: #1565c0; }
-.a3-step-body .csign { color: #e65100; }
-.a3-step-body .orig { color: #9e9e9e; text-decoration: line-through; }
+.a3-step-body .example {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.a3-step-body .kept {
+  color: #2e7d32;
+}
+
+.a3-step-body .cop {
+  color: #1565c0;
+}
+
+.a3-step-body .csign {
+  color: #e65100;
+}
+
+.a3-step-body .orig {
+  color: #9e9e9e;
+  text-decoration: line-through;
+}
 
 .a3-arrow {
   display: flex;
@@ -307,7 +362,8 @@
 
 /* Bottom input area */
 .a3-bottom {
-  width: 90%;
+  width: 85%;
+  max-width: 950px;
   margin: 0 auto;
   display: flex;
   gap: 12px;
@@ -322,7 +378,7 @@
   backdrop-filter: blur(8px);
   border: 2px solid rgba(76, 175, 80, 0.3);
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.85);
 }
 
@@ -333,7 +389,7 @@
   backdrop-filter: blur(8px);
   border: 2px solid rgba(100, 140, 220, 0.3);
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.85);
 }
 
@@ -345,8 +401,13 @@
   margin-bottom: 8px;
 }
 
-.a3-sentence-box .a3-box-label { color: #2e7d32; }
-.a3-answer-box .a3-box-label { color: #1565c0; }
+.a3-sentence-box .a3-box-label {
+  color: #2e7d32;
+}
+
+.a3-answer-box .a3-box-label {
+  color: #1565c0;
+}
 
 .a3-txt-input {
   width: 100%;
@@ -361,11 +422,13 @@
   transition: border-color 0.2s;
 }
 
-.a3-txt-input:focus { border-bottom-color: #4caf50; }
+.a3-txt-input:focus {
+  border-bottom-color: #4caf50;
+}
 
 .a3-num-input {
   width: 100%;
-  height: 44px;
+  height: 38px;
   border: 1px solid #cfd6e6;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.6);
@@ -377,22 +440,26 @@
   transition: border-color 0.2s;
 }
 
-.a3-num-input:focus { border-color: #1a73e8; }
+.a3-num-input:focus {
+  border-color: #1a73e8;
+}
 
-.a3-txt-input::placeholder, .a3-num-input::placeholder {
+.a3-txt-input::placeholder,
+.a3-num-input::placeholder {
   color: #bdbdbd;
   font-weight: 500;
 }
 
 /* Footer buttons */
 .a3-footer {
-  width: 90%;
+  width: 85%;
+  max-width: 950px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  padding-bottom: 8px;
+  padding-bottom: 0;
 }
 
 .a3-hint-btn {
@@ -404,11 +471,13 @@
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
 }
 
-.a3-hint-btn:hover { transform: translateY(-2px); }
+.a3-hint-btn:hover {
+  transform: translateY(-2px);
+}
 
 .a3-check-btn {
   padding: 10px 28px;
@@ -423,7 +492,9 @@
   transition: transform 0.2s;
 }
 
-.a3-check-btn:hover { transform: translateY(-2px); }
+.a3-check-btn:hover {
+  transform: translateY(-2px);
+}
 
 /* Error modal custom sections */
 .a3-remember {
@@ -451,7 +522,12 @@
   border-radius: 9999px;
 }
 
-.a3-remember p { margin: 0; font-size: 0.85rem; color: #2e3a59; line-height: 1.4; }
+.a3-remember p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #2e3a59;
+  line-height: 1.4;
+}
 
 .a3-fixit {
   background: rgba(227, 242, 253, 0.95);
@@ -473,7 +549,12 @@
   margin-bottom: 6px;
 }
 
-.a3-fixit p { margin: 0; font-size: 0.85rem; color: #2e3a59; line-height: 1.4; }
+.a3-fixit p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #2e3a59;
+  line-height: 1.4;
+}
 
 .a3-error-footer {
   font-weight: 700;
@@ -483,71 +564,295 @@
   text-align: center;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
-  .a3-header { flex-wrap: wrap; justify-content: center; gap: 8px; }
-  .a3-header-right { justify-content: center; width: 100%; }
-  .a3-question-card { flex-direction: column; text-align: center; gap: 12px; }
-  .a3-s-display { font-size: 1.8rem; }
-  .a3-steps { flex-direction: column; align-items: stretch; }
-  .a3-step { max-width: 100%; min-width: unset; }
-  .a3-arrow { transform: rotate(90deg); justify-content: center; font-size: 1rem; }
-  .a3-bottom { flex-direction: column; }
-  .a3-sentence-box, .a3-answer-box { min-width: unset; }
+
+  .a3-directions,
+  .a3-question-card,
+  .a3-steps,
+  .a3-bottom,
+  .a3-footer {
+    width: 95%;
+  }
+
+  .a3-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .a3-title-pill {
+    position: static;
+    transform: none;
+    left: auto;
+  }
+
+  .a3-question-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .a3-s-display {
+    font-size: 1.8rem;
+  }
+
+  .a3-steps {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .a3-step {
+    max-width: 100%;
+    min-width: unset;
+  }
+
+  .a3-arrow {
+    transform: rotate(90deg);
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .a3-bottom {
+    flex-direction: column;
+  }
+
+  .a3-sentence-box,
+  .a3-answer-box {
+    min-width: unset;
+  }
 }
 
 @media (max-width: 768px) {
-  .a3-frame { margin: 16px; padding: 8px 10px 12px; border-width: 4px; border-radius: 16px; gap: 6px; }
-  .a3-title-pill { font-size: 0.95rem; padding: 7px 20px; }
-  .a3-back-btn { padding: 6px 14px; font-size: 0.82rem; }
-  .a3-diff-pill { padding: 5px 12px; font-size: 0.72rem; }
-  .a3-directions { padding: 8px 14px; }
-  .a3-directions p { font-size: 0.78rem; line-height: 1.4; }
-  .a3-question-card { padding: 12px 14px; border-radius: 14px; }
-  .a3-q-text { font-size: 0.95rem; }
-  .a3-s-display { font-size: 1.5rem; }
-  .a3-step-head { font-size: 0.65rem; padding: 6px 8px; }
-  .a3-step-body { padding: 8px 10px; font-size: 0.78rem; }
-  .a3-step-body .example { font-size: 1rem; }
-  .a3-step-num { width: 26px; height: 26px; font-size: 0.85rem; }
-  .a3-step { border-radius: 14px; }
-  .a3-step-head { border-radius: 14px 14px 0 0; padding: 6px 8px; }
-  .a3-sentence-box, .a3-answer-box { padding: 10px 12px; border-radius: 12px; }
-  .a3-box-label { font-size: 0.65rem; }
-  .a3-txt-input { font-size: 1rem; }
-  .a3-num-input { font-size: 1rem; height: 40px; }
-  .a3-hint-btn, .a3-check-btn { padding: 8px 20px; font-size: 0.85rem; }
-  .a3-progress-text { font-size: 0.75rem; }
-  .a3-progress-bar { height: 8px; }
-  .a3-footer { gap: 10px; }
+  .a3-frame {
+    margin: 16px;
+    padding: 8px 10px 12px;
+    border-width: 4px;
+    border-radius: 16px;
+    gap: 6px;
+  }
+
+  .a3-title-pill {
+    font-size: 0.95rem;
+    padding: 7px 20px;
+  }
+
+  .a3-back-btn {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+  }
+
+  .a3-diff-pill {
+    padding: 5px 12px;
+    font-size: 0.72rem;
+  }
+
+  .a3-directions {
+    padding: 8px 14px;
+  }
+
+  .a3-directions p {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .a3-question-card {
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  .a3-q-text {
+    font-size: 0.95rem;
+  }
+
+  .a3-s-display {
+    font-size: 1.5rem;
+  }
+
+  .a3-step-head {
+    font-size: 0.65rem;
+    padding: 6px 8px;
+  }
+
+  .a3-step-body {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+
+  .a3-step-body .example {
+    font-size: 1rem;
+  }
+
+  .a3-step-num {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+  }
+
+  .a3-step {
+    border-radius: 14px;
+  }
+
+  .a3-step-head {
+    border-radius: 14px 14px 0 0;
+    padding: 6px 8px;
+  }
+
+  .a3-sentence-box,
+  .a3-answer-box {
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .a3-box-label {
+    font-size: 0.65rem;
+  }
+
+  .a3-txt-input {
+    font-size: 1rem;
+  }
+
+  .a3-num-input {
+    font-size: 1rem;
+    height: 40px;
+  }
+
+  .a3-hint-btn,
+  .a3-check-btn {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+  }
+
+  .a3-progress-text {
+    font-size: 0.75rem;
+  }
+
+  .a3-progress-bar {
+    height: 8px;
+  }
+
+  .a3-footer {
+    gap: 10px;
+  }
 }
 
 @media (max-width: 480px) {
-  .a3-frame { margin: 12px; padding: 6px 8px 10px; border-width: 3px; border-radius: 12px; gap: 5px; }
-  .a3-header { gap: 6px; }
-  .a3-title-pill { font-size: 0.85rem; padding: 6px 16px; }
-  .a3-back-btn { padding: 5px 10px; font-size: 0.75rem; }
-  .a3-diff-pill { padding: 4px 8px; font-size: 0.65rem; }
-  .a3-directions { padding: 6px 10px; border-radius: 10px; }
-  .a3-directions p { font-size: 0.72rem; }
-  .a3-question-card { padding: 10px 10px; border-radius: 12px; gap: 8px; }
-  .a3-q-badge, .a3-s-badge { font-size: 0.6rem; padding: 2px 8px; }
-  .a3-q-text { font-size: 0.85rem; }
-  .a3-s-display { font-size: 1.3rem; }
-  .a3-step-body .example { font-size: 0.9rem; }
-  .a3-step-body .label { font-size: 0.72rem; }
-  .a3-arrow { font-size: 0.9rem; }
-  .a3-txt-input { font-size: 0.9rem; border-bottom-width: 2px; }
-  .a3-num-input { font-size: 0.9rem; height: 36px; }
-  .a3-hint-btn, .a3-check-btn { padding: 7px 16px; font-size: 0.8rem; }
-  .a3-footer { gap: 8px; padding-bottom: 4px; }
+  .a3-frame {
+    margin: 12px;
+    padding: 6px 8px 10px;
+    border-width: 3px;
+    border-radius: 12px;
+    gap: 5px;
+  }
+
+  .a3-header {
+    gap: 6px;
+  }
+
+  .a3-title-pill {
+    font-size: 0.85rem;
+    padding: 6px 16px;
+  }
+
+  .a3-back-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .a3-diff-pill {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+
+  .a3-directions {
+    padding: 6px 10px;
+    border-radius: 10px;
+  }
+
+  .a3-directions p {
+    font-size: 0.72rem;
+  }
+
+  .a3-question-card {
+    padding: 10px 10px;
+    border-radius: 12px;
+    gap: 8px;
+  }
+
+  .a3-q-badge,
+  .a3-s-badge {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+  }
+
+  .a3-q-text {
+    font-size: 0.85rem;
+  }
+
+  .a3-s-display {
+    font-size: 1.3rem;
+  }
+
+  .a3-step-body .example {
+    font-size: 0.9rem;
+  }
+
+  .a3-step-body .label {
+    font-size: 0.72rem;
+  }
+
+  .a3-arrow {
+    font-size: 0.9rem;
+  }
+
+  .a3-txt-input {
+    font-size: 0.9rem;
+    border-bottom-width: 2px;
+  }
+
+  .a3-num-input {
+    font-size: 0.9rem;
+    height: 36px;
+  }
+
+  .a3-hint-btn,
+  .a3-check-btn {
+    padding: 7px 16px;
+    font-size: 0.8rem;
+  }
+
+  .a3-footer {
+    gap: 8px;
+    padding-bottom: 4px;
+  }
 }
 
 @media (max-width: 360px) {
-  .a3-frame { margin: 8px; padding: 4px 6px 8px; border-width: 2px; gap: 4px; }
-  .a3-title-pill { font-size: 0.78rem; padding: 5px 12px; }
-  .a3-diff-pill { padding: 3px 6px; font-size: 0.6rem; }
-  .a3-q-text { font-size: 0.78rem; }
-  .a3-s-display { font-size: 1.1rem; }
-  .a3-directions p { font-size: 0.68rem; }
+  .a3-frame {
+    margin: 8px;
+    padding: 4px 6px 8px;
+    border-width: 2px;
+    gap: 4px;
+  }
+
+  .a3-title-pill {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+  }
+
+  .a3-diff-pill {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+
+  .a3-q-text {
+    font-size: 0.78rem;
+  }
+
+  .a3-s-display {
+    font-size: 1.1rem;
+  }
+
+  .a3-directions p {
+    font-size: 0.68rem;
+  }
 }
