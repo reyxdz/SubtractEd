@@ -318,7 +318,6 @@ export const ActivityTwoContent: React.FC = () => {
         <div className="a2-numberline-card">
           {/* Chips */}
           <div className="a2-chips-row">
-            <div className="a2-result-chip">Result: {currentValue}</div>
             <div className="a2-expression-chip">{formatNum(startValue)} − {formatNum(moveValue)} = {currentValue}</div>
           </div>
 
