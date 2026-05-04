@@ -305,22 +305,6 @@ export const ActivityTwoContent: React.FC = () => {
           </div>
 
       <div className="a2-main-body">
-        {/* Difficulty Pills */}
-        <div className="difficulty-pills">
-          <button
-            className={`difficulty-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`}
-            style={{ cursor: 'default' }}
-          >Easy</button>
-          <button
-            className={`difficulty-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`}
-            style={{ cursor: 'default' }}
-          >Moderate</button>
-          <button
-            className={`difficulty-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`}
-            style={{ cursor: 'default' }}
-          >Difficult</button>
-        </div>
-
         {/* Directions */}
         <div className="a2-directions-box">
           <p><strong>Directions:</strong> Drag the dog to choose the <strong>minuend</strong>. Then move left or right to model the <strong>subtrahend</strong>. Answer each item.</p>

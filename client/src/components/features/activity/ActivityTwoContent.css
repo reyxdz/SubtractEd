@@ -170,9 +170,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   min-height: 0;
-  gap: 1vh;
+  gap: 0.5vh;
 }
 
 /* Directions / Question Boxes */
@@ -186,7 +186,7 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: var(--border-radius-lg);
-  padding: 1.5vh 2vw;
+  padding: 1vh 2vw;
   text-align: center;
   box-shadow: 0 8px 24px rgba(46, 58, 89, 0.08);
 }
@@ -248,15 +248,15 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 3vh;
-  padding: 2vh 2vw 1.5vh;
+  padding: 1.5vh 2vw 1vh;
   box-shadow: 0 22px 36px rgba(88, 106, 142, 0.14);
 }
 
 .a2-numberline-container {
   position: relative;
-  height: 20vh;
-  min-height: 100px;
-  max-height: 180px;
+  height: 18vh;
+  min-height: 80px;
+  max-height: 160px;
   margin: 1vh 0;
   user-select: none;
   touch-action: none;
@@ -587,18 +587,19 @@
 }
 
 .a2-hint-text {
-  margin: 14px 0 0;
+  margin: 1vh 0 0;
   text-align: center;
   color: var(--color-text-muted);
   font-weight: 600;
+  font-size: clamp(0.7rem, 1.4vh, 0.9rem);
 }
 
 .a2-result-text {
-  margin: 12px 0 0;
+  margin: 0.5vh 0 0;
   text-align: center;
   font-weight: 800;
   color: var(--color-text-dark);
-  font-size: 1.08rem;
+  font-size: clamp(0.8rem, 1.5vh, 1rem);
 }
 
 /* Main body layout */
