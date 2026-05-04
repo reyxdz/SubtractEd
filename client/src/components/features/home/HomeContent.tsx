@@ -48,7 +48,7 @@ export const HomeContent: React.FC = () => {
       </div>
 
       <div className="home-action">
-        <Button className="start-btn">
+        <Button className="start-btn" onClick={() => navigate('/guide')}>
           Start Learning
         </Button>
       </div>
