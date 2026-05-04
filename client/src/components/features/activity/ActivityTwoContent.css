@@ -344,7 +344,43 @@
   box-shadow: 0 0 0 3px rgba(111, 163, 230, 0.15);
 }
 
-/* Controls Row */
+/* Action Button Base Styles */
+.action-btn {
+  padding: 10px 24px;
+  border-radius: 9999px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+/* Specific Button Colors */
+.check-btn {
+  background: linear-gradient(145deg, #4caf50, #388e3c);
+  color: white;
+}
+
+.hint-btn {
+  background: linear-gradient(145deg, #ffd54f, #ffb300);
+  color: #5d4000;
+}
+
+/* Controls Row Buttons */
 .a2-controls-row {
   display: flex;
   justify-content: center;

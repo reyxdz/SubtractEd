@@ -87,9 +87,7 @@ export const ActivityTwoContent: React.FC = () => {
   }>({ isOpen: false, type: 'info', title: '', message: '' });
   const [hintModalOpen, setHintModalOpen] = useState(false);
 
-  // Free-play state
-  const [fpMinuend, setFpMinuend] = useState('');
-  const [fpSubtrahend, setFpSubtrahend] = useState('');
+  // Free-play state removed
   const [hintText, setHintText] = useState('Drag the dog to the starting point. That becomes the minuend.');
   const [resultText, setResultText] = useState('');
 
@@ -205,41 +203,7 @@ export const ActivityTwoContent: React.FC = () => {
     setHintText('Drag the dog to set a new minuend.');
   }, [clearTimers]);
 
-  // ── Animate subtraction (for free-play) ──────────────────────
-  const animateSubtraction = useCallback((start: number, subtract: number) => {
-    clearTimers();
-    const sanitizedStart = clamp(start);
-    const sanitizedSubtract = clamp(subtract);
-    const target = clamp(sanitizedStart - sanitizedSubtract);
-    const steps = Math.abs(sanitizedSubtract);
-    const direction = sanitizedSubtract >= 0 ? -1 : 1;
 
-    setStartValue(sanitizedStart);
-    setCurrentValue(sanitizedStart);
-    setMoveValue(0);
-    setActiveTickValue(sanitizedStart);
-    setResultText(`Animating ${sanitizedStart} − (${sanitizedSubtract}).`);
-    setHintText(sanitizedSubtract >= 0 ? 'Subtracting a positive moves left.' : 'Subtracting a negative moves right.');
-
-    for (let step = 1; step <= steps; step++) {
-      const nextValue = clamp(sanitizedStart + (direction * step));
-      const tid = window.setTimeout(() => {
-        setCurrentValue(nextValue);
-        setMoveValue(sanitizedStart - nextValue);
-        setActiveTickValue(nextValue);
-        setResultText(`Step ${step}: now at ${nextValue}.`);
-      }, step * 420);
-      timeoutsRef.current.push(tid);
-    }
-
-    const finalTid = window.setTimeout(() => {
-      setCurrentValue(target);
-      setMoveValue(sanitizedSubtract);
-      setActiveTickValue(target);
-      setResultText(`${sanitizedStart} − (${sanitizedSubtract}) = ${target}`);
-    }, Math.max(1, steps) * 420 + 140);
-    timeoutsRef.current.push(finalTid);
-  }, [clearTimers]);
 
   // ── Check answer ─────────────────────────────────────────────
   const handleCheckAnswer = useCallback(() => {
@@ -290,17 +254,7 @@ export const ActivityTwoContent: React.FC = () => {
     setQIndex(0);
   }, []);
 
-  // ── Animate free-play ────────────────────────────────────────
-  const handleAnimate = useCallback(() => {
-    playSound.click();
-    const start = Number(fpMinuend);
-    const subtract = Number(fpSubtrahend);
-    if (Number.isNaN(start) || Number.isNaN(subtract)) {
-      setResultText('Please enter valid integers from -15 to 15.');
-      return;
-    }
-    animateSubtraction(start, subtract);
-  }, [fpMinuend, fpSubtrahend, animateSubtraction]);
+
 
   // ── Cleanup on unmount ───────────────────────────────────────
   useEffect(() => {
@@ -423,6 +377,13 @@ export const ActivityTwoContent: React.FC = () => {
               <img src={dogMarkerImg} alt="dog marker" draggable="false" />
             </div>
           </div>
+          
+          {difficulty === 'easy' && (
+            <div className="a2-dynamic-prompts" style={{ marginTop: '20px', padding: '0 10px' }}>
+              <p className="a2-hint-text">{hintText}</p>
+              {resultText && <p className="a2-result-text">{resultText}</p>}
+            </div>
+          )}
         </div>
 
         {/* Answer Card */}
@@ -446,36 +407,12 @@ export const ActivityTwoContent: React.FC = () => {
           <button className="action-btn a2-step-left-btn" onClick={handleStepLeft}>← Move Left</button>
           <button className="action-btn a2-step-right-btn" onClick={handleStepRight}>Move Right →</button>
           <button className="action-btn a2-reset-btn" onClick={handleReset}>Reset</button>
-          <button className="action-btn hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}>Hint</button>
+          {difficulty === 'easy' && (
+            <button className="action-btn hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}>Hint</button>
+          )}
         </div>
 
-        {/* Free-play / Animate Card */}
-        <div className="a2-freeplay-card">
-          <div className="a2-freeplay-row">
-            <input
-              className="a2-freeplay-input"
-              type="number"
-              min={MIN}
-              max={MAX}
-              placeholder="Minuend"
-              value={fpMinuend}
-              onChange={(e) => setFpMinuend(e.target.value)}
-            />
-            <span className="a2-freeplay-separator">−</span>
-            <input
-              className="a2-freeplay-input"
-              type="number"
-              min={MIN}
-              max={MAX}
-              placeholder="Subtrahend"
-              value={fpSubtrahend}
-              onChange={(e) => setFpSubtrahend(e.target.value)}
-            />
-            <button className="action-btn check-btn" onClick={handleAnimate}>Animate</button>
-          </div>
-          <p className="a2-hint-text">{hintText}</p>
-          {resultText && <p className="a2-result-text">{resultText}</p>}
-        </div>
+
       </div>
 
       {/* Feedback Modal */}
@@ -509,7 +446,7 @@ export const ActivityTwoContent: React.FC = () => {
           <button
             className="action-btn"
             onClick={() => { playSound.click(); setHintModalOpen(false); }}
-            style={{ width: '100%', background: 'linear-gradient(145deg, #4facfe, #00f2fe)', color: 'white', border: 'none' }}
+            style={{ width: '100%', background: '#00E5FF', color: 'white', border: 'none', fontWeight: 'bold', padding: '12px', borderRadius: '9999px', fontSize: '1rem' }}
           >
             Got it!
           </button>
