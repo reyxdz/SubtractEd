@@ -295,15 +295,15 @@ export const ActivityTwoContent: React.FC = () => {
         <div className="difficulty-pills">
           <button
             className={`difficulty-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`}
-            onClick={() => handleDifficultyChange('easy')}
+            style={{ cursor: 'default' }}
           >Easy</button>
           <button
             className={`difficulty-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`}
-            onClick={() => handleDifficultyChange('moderate')}
+            style={{ cursor: 'default' }}
           >Moderate</button>
           <button
             className={`difficulty-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`}
-            onClick={() => handleDifficultyChange('difficult')}
+            style={{ cursor: 'default' }}
           >Difficult</button>
         </div>
 

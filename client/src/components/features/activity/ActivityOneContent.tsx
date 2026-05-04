@@ -137,19 +137,19 @@ export const ActivityOneContent: React.FC = () => {
             <div className="a1-header-right">
               <button 
                 className={`a1-diff-pill a1-pill-easy ${currentIndex < 5 ? 'active' : ''}`} 
-                onClick={() => { playSound.click(); setCurrentIndex(0); setChips([]); setAnswer(''); }}
+                style={{ cursor: 'default' }}
               >
                 Easy (1-5)
               </button>
               <button 
                 className={`a1-diff-pill a1-pill-moderate ${currentIndex >= 5 && currentIndex < 10 ? 'active' : ''}`} 
-                onClick={() => { playSound.click(); setCurrentIndex(5); setChips([]); setAnswer(''); }}
+                style={{ cursor: 'default' }}
               >
                 Moderate (6-10)
               </button>
               <button 
                 className={`a1-diff-pill a1-pill-difficult ${currentIndex >= 10 ? 'active' : ''}`} 
-                onClick={() => { playSound.click(); setCurrentIndex(10); setChips([]); setAnswer(''); }}
+                style={{ cursor: 'default' }}
               >
                 Difficult (11-15)
               </button>

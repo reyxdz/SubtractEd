@@ -174,9 +174,9 @@ export const ActivityThreeContent: React.FC = () => {
 
         {/* Difficulty Selection */}
         <div className="a3-difficulty-row">
-          <button className={`a3-diff-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`} onClick={() => handleDiff('easy')}>Easy (1-5)</button>
-          <button className={`a3-diff-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`} onClick={() => handleDiff('moderate')}>Moderate (6-10)</button>
-          <button className={`a3-diff-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`} onClick={() => handleDiff('difficult')}>Difficult (11-15)</button>
+          <button className={`a3-diff-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`} style={{ cursor: 'default' }}>Easy (1-5)</button>
+          <button className={`a3-diff-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`} style={{ cursor: 'default' }}>Moderate (6-10)</button>
+          <button className={`a3-diff-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`} style={{ cursor: 'default' }}>Difficult (11-15)</button>
         </div>
 
         {/* Directions */}
