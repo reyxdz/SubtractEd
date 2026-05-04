@@ -243,27 +243,7 @@ export const ActivityOneContent: React.FC = () => {
             {/* Middle Action Buttons */}
             <div className="action-buttons-row">
               <button className="nav-btn clear-btn" onClick={() => { playSound.pop(); setChips([]); setAnswer(''); }}>Clear</button>
-              <button 
-                className="nav-btn prev-btn" 
-                onClick={() => { 
-                  playSound.click(); 
-                  if (currentIndex > 0) { 
-                    setCurrentIndex(prev => prev - 1); 
-                    setChips([]); 
-                    setAnswer(''); 
-                  } 
-                }} 
-                disabled={currentIndex === 0}
-              >
-                Previous
-              </button>
-              <button 
-                className="nav-btn next-action-btn" 
-                onClick={handleModalNext} 
-                disabled={currentIndex === activity1Items.length - 1}
-              >
-                Next
-              </button>
+
             </div>
 
             {/* Input Controls */}
