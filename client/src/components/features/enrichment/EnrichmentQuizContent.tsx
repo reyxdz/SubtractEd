@@ -30,16 +30,22 @@ export const EnrichmentQuizContent: React.FC = () => {
 
   // Build a map of all cells keyed by "row-col"
   const cellMap = useCallback(() => {
-    const map: Record<string, CWCell & { shared?: boolean }> = {};
+    const map: Record<string, CWCell & { shared?: boolean; entryIds: number[] }> = {};
     for (const entry of currentLevel.entries) {
       for (const cell of entry.cells) {
         const key = `${cell.row}-${cell.col}`;
         if (map[key]) {
+          map[key].entryIds.push(entry.id);
           // Shared cell (intersection) — keep the blank version
-          if (cell.isBlank) map[key] = { ...cell, shared: true };
-          else map[key] = { ...map[key], shared: true };
+          if (cell.isBlank) {
+            map[key].isBlank = true;
+            map[key].value = cell.value;
+            map[key].shared = true;
+          } else {
+            map[key].shared = true;
+          }
         } else {
-          map[key] = cell;
+          map[key] = { ...cell, entryIds: [entry.id] };
         }
       }
     }
@@ -164,6 +170,16 @@ export const EnrichmentQuizContent: React.FC = () => {
     const map = cellMap();
     const cells: React.ReactNode[] = [];
 
+    // Find all completed entry IDs
+    const completedEntryIds = new Set<number>();
+    for (const entry of currentLevel.entries) {
+      for (const cell of entry.cells) {
+        if (cell.isBlank && correctCells.has(`${cell.row}-${cell.col}`)) {
+          completedEntryIds.add(entry.id);
+        }
+      }
+    }
+
     // Entry number labels
     const entryLabels: Record<string, number> = {};
     for (const entry of currentLevel.entries) {
@@ -178,7 +194,10 @@ export const EnrichmentQuizContent: React.FC = () => {
         const cell = map[key];
         if (!cell) continue;
 
-        const isCorrect = correctCells.has(key);
+        const isCellSpecificallyCorrect = correctCells.has(key);
+        const isPartOfCompletedEntry = cell.entryIds.some(id => completedEntryIds.has(id));
+        const isCorrect = isPartOfCompletedEntry;
+
         const isOp = cell.value === '−' || cell.value === '=';
         const label = entryLabels[key];
         const isFeedback = feedbackCell === key;
@@ -186,14 +205,14 @@ export const EnrichmentQuizContent: React.FC = () => {
         cells.push(
           <div
             key={key}
-            className={`cw-cell ${isOp ? 'cw-op' : ''} ${cell.isBlank && !isCorrect ? 'cw-blank' : ''} ${isCorrect ? 'cw-correct' : ''} ${isFeedback && isCorrect ? 'cw-flash-green' : ''} ${isFeedback && !isCorrect && modalState === 'incorrect' ? 'cw-flash-red' : ''}`}
+            className={`cw-cell ${isOp ? 'cw-op' : ''} ${cell.isBlank && !isCellSpecificallyCorrect ? 'cw-blank' : ''} ${isCorrect ? 'cw-correct' : ''} ${isFeedback && isCellSpecificallyCorrect ? 'cw-flash-green' : ''} ${isFeedback && !isCellSpecificallyCorrect && modalState === 'incorrect' ? 'cw-flash-red' : ''}`}
             style={{
               gridRow: r + 1,
               gridColumn: c + 1,
             }}
           >
             {label && <span className="cw-label">{label}</span>}
-            {cell.isBlank && !isCorrect ? (
+            {cell.isBlank && !isCellSpecificallyCorrect ? (
               <input
                 ref={(el) => { inputRefs.current[key] = el; }}
                 type="text"
