@@ -270,26 +270,39 @@ export const ActivityTwoContent: React.FC = () => {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div className="guide-page-container">
-      {/* Header */}
-      <header className="guide-header activity-one-header">
-        <button className="neo-btn back-chip" onClick={() => { playSound.click(); navigate('/activity'); }}>
-          ← <span>Back</span>
-        </button>
-        <h1 className="guide-title-pill activity-one-title">Activity 2</h1>
-        <TopBar />
-      </header>
+    <div className="activity-two-wrapper" onClick={(e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.a2-directions-box') || target.closest('.a2-question-box') || target.closest('.a2-numberline-card')) {
+        playSound.pop();
+      }
+    }}>
+      <div className="a2-shell">
+        <div className="a2-awning"></div>
+        <div className="a2-content-inner">
+          
+          {/* Header */}
+          <header className="activity-two-header">
+            <button className="a2-back-btn" onClick={() => { playSound.click(); navigate('/activity'); }}>
+              ← Back
+            </button>
+            <div className="a2-title-pill">Activity 2</div>
+            <div className="a2-header-right">
+              <button className={`a2-diff-pill a2-pill-easy ${difficulty === 'easy' ? 'active' : ''}`} style={{ cursor: 'default' }}>Easy (1-5)</button>
+              <button className={`a2-diff-pill a2-pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`} style={{ cursor: 'default' }}>Moderate (6-10)</button>
+              <button className={`a2-diff-pill a2-pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`} style={{ cursor: 'default' }}>Difficult (11-15)</button>
+            </div>
+          </header>
 
-      {/* Progress Bar */}
-      <div className="activity-progress-area">
-        <div className="progress-text-row">
-          <span className="item-count">Question {qIndex + 1} of {totalQuestions}</span>
-          <span className="level-badge">{difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Level</span>
-        </div>
-        <div className="progress-bar-container">
-          <div className="progress-fill" style={{ width: `${progressPercentage}%` }}></div>
-        </div>
-      </div>
+          {/* Progress Bar */}
+          <div className="activity-progress-area">
+            <div className="progress-text-row">
+              <span className="item-count">Question {qIndex + 1} of {totalQuestions}</span>
+              <span className="level-badge">{difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Level</span>
+            </div>
+            <div className="progress-bar-container">
+              <div className="progress-fill" style={{ width: `${progressPercentage}%` }}></div>
+            </div>
+          </div>
 
       <div className="a2-main-body">
         {/* Difficulty Pills */}
@@ -457,6 +470,8 @@ export const ActivityTwoContent: React.FC = () => {
           {currentQ.prompt}
         </p>
       </Modal>
+      </div>
+      </div>
     </div>
   );
 };
