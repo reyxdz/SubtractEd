@@ -3,9 +3,11 @@ import { BookOpen, Edit3, ClipboardCheck, Star } from 'lucide-react';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { Accordion } from '../../common/Accordion';
+import harryAvatar from '../../../assets/researchers/harryArnold.png';
+import imaeAvatar from '../../../assets/researchers/imaeCuesta.png';
 import './HomeContent.css';
 import subtractedLogo from '../../../assets/subtracted_logo.png';
-import textLogo from '../../../assets/text_logo.png';
+import textLogo from '../../../assets/images/text_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { TopBar } from '../../layout/TopBar';
 
@@ -23,14 +25,12 @@ export const HomeContent: React.FC = () => {
       <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
         <TopBar />
       </div>
-      
+
       <img src={subtractedLogo} alt="SubtractEd Logo" className="home-logo" />
       <img src={textLogo} alt="SubtractEd Text Logo" className="home-text-logo" />
 
       <p className="home-description">
-        <strong>Meet SubtractEd:</strong> A fun and interactive platform to master 
-        the rules of integers, designed to help Grade 7 Filipino students. Choose a module 
-        below to get started!
+        <strong>Meet SubtractEd:</strong> A Strategic Intervention Material to help students master subtraction of integers.
       </p>
 
       <div className="cards-grid">
@@ -54,40 +54,40 @@ export const HomeContent: React.FC = () => {
       </div>
 
       <div className="home-accordions-container">
-        <Accordion 
-          title="About the Researchers" 
+        <Accordion
+          title="About the Researchers"
           subtitle="Meet the team behind SubtractEd."
         >
           <div className="researchers-grid">
             <div className="researcher-card">
               <div className="researcher-header">
-                <img src="https://ui-avatars.com/api/?name=Isabel+Reyes&background=bfdbfe&color=1e3a8a&size=150&font-size=0.33" alt="Isabel Reyes" className="researcher-avatar" />
+                <img src={harryAvatar} alt="Harry Arnold C. Salele" className="researcher-avatar" />
                 <div className="researcher-info">
-                  <h4>Isabel Reyes</h4>
-                  <p>Lead Researcher<br/>University of the Philippines</p>
+                  <h4>Harry Arnold C. Salele</h4>
+                  <p>Researcher<br />Biliran Province State University</p>
                 </div>
               </div>
               <p className="researcher-desc">
-                <strong>Isabel</strong> is a dedicated mathematics educator focused on creating engaging and effective learning tools for Filipino students.
+                <strong>Harry</strong> is currently a preservice teacher with a strong interest in making mathematics more accessible and engaging for students. He is a recipient of the DOST Scholarship and has also passed the Civil Service Examination, reflecting his dedication to his professional development.
               </p>
             </div>
             <div className="researcher-card">
               <div className="researcher-header">
-                <img src="https://ui-avatars.com/api/?name=Joseph+Santos&background=bfdbfe&color=1e3a8a&size=150&font-size=0.33" alt="Joseph Santos" className="researcher-avatar" />
+                <img src={imaeAvatar} alt="Imae Cuesta" className="researcher-avatar" />
                 <div className="researcher-info">
-                  <h4>Joseph Santos</h4>
-                  <p>Co-Researcher & Developer<br/>University of the Philippines</p>
+                  <h4>Imae Cuesta</h4>
+                  <p>Researcher<br />Biliran Province State University</p>
                 </div>
               </div>
               <p className="researcher-desc">
-                <strong>Joseph</strong> is a software developer and educator passionate about making math education accessible and fun for Filipino learners.
+                <strong>Imae</strong> is a third-year pre-service teacher with a deep passion for Mathematics. She is known for her persistence and ability to successfully complete tasks, regardless of the difficulty. And now she's currently focus on completing her thesis requirement in the University.
               </p>
             </div>
           </div>
         </Accordion>
 
-        <Accordion 
-          title="References" 
+        <Accordion
+          title="References"
           subtitle="View the sources that helped shape SubtractEd."
         >
           <div className="references-list">
