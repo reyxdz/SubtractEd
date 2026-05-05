@@ -3,6 +3,7 @@ import { BookOpen, Edit3, ClipboardCheck, Star } from 'lucide-react';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { Accordion } from '../../common/Accordion';
+import { InstallAppButton } from '../../common/InstallAppButton';
 import harryAvatar from '../../../assets/researchers/harryArnold.png';
 import imaeAvatar from '../../../assets/researchers/imaeCuesta.png';
 import './HomeContent.css';
@@ -51,6 +52,7 @@ export const HomeContent: React.FC = () => {
         <Button className="start-btn" onClick={() => navigate('/guide')}>
           Start Learning
         </Button>
+        <InstallAppButton />
       </div>
 
       <div className="home-accordions-container">

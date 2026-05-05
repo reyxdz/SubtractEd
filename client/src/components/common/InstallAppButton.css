@@ -1,0 +1,135 @@
+.install-app-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.install-app-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--border-radius-pill, 50px);
+  border: 2px solid var(--theme-primary, #6FA3E6);
+  color: var(--theme-primary, #6FA3E6);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font-family-base, 'Inter', sans-serif);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.install-app-btn:hover {
+  background: var(--theme-primary, #6FA3E6);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(111, 163, 230, 0.3);
+}
+
+.install-app-btn:active {
+  transform: translateY(0);
+}
+
+/* ─── iOS Tooltip ─── */
+.ios-tooltip {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 100;
+  animation: tooltipFadeIn 0.25s ease;
+}
+
+.ios-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: rgba(30, 41, 59, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.ios-tooltip__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.2s;
+}
+
+.ios-tooltip__close:hover {
+  color: #f1f5f9;
+}
+
+.ios-tooltip__text {
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  margin: 0 0 0.5rem 0;
+  font-family: var(--font-family-base, 'Inter', sans-serif);
+}
+
+.ios-tooltip__steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+}
+
+.ios-tooltip__steps li {
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-family: var(--font-family-base, 'Inter', sans-serif);
+  padding: 0.3rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.ios-tooltip__steps li::before {
+  counter-increment: step;
+  content: counter(step) '.';
+  position: absolute;
+  left: 0;
+  font-weight: 600;
+  color: #60a5fa;
+}
+
+.ios-tooltip__icon {
+  vertical-align: middle;
+  color: #60a5fa;
+  margin: 0 0.15rem;
+}
