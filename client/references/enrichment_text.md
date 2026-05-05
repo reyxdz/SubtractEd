@@ -1,0 +1,227 @@
+Kini po ang sa Enrichment Activity, naa po sa drive ang background. This is a crossword puzzle po bali 6 ka ing ani sir.
+For the 1st na ing ani sir, kini ang mga equations.
+No.
+Equation
+1
+15−?=9
+2
+12−?=6
+3
+18−?=13
+4
+14−?=9
+5
+20−?=10
+11
+?−3=7
+6
+17−8=?
+7
+15−4=?
+8
+21−9=?
+9
+14−6=?
+10
+13−5=?
+Teacher's Answer Key:
+6
+6
+5
+5
+10
+9
+11
+12
+8
+8
+10
+An may question mark po is mao na ang blank sa box na need I fill out sa students.
+Naa pud mo pop up nga correct or incorrect sa screen sir if right or wrong ila respectively. 
+Then mu green pud ang 5 na boxes if nakatama na sila. 
+Like This: 
+For 2nd Level (same boxes ghapon po)
+No.
+Equation
+1
+4−?=−8
+2
+7−?=−5
+3
+2−?=−13
+4
+6−?=−9
+5
+3−?=−5
+11
+?−11=−3
+6
+5-14=?
+7
+1-10=?
+8
+9-20=?
+9
+4-18=?
+10
+8-15=?
+Teacher's Answer Key (Negative Integer Focus)
+12
+12
+15
+15
+8
+-9
+-9
+-11
+-14
+-7
+8
+3rd Level
+No.
+Equation
+1
+−4−?=−14
+2
+−8−?=−18
+3
+−5−?=−12
+4
+−12−?=−19
+5
+−9−?=−15
+11
+?−4=−10
+6
+-15 - 5 = ?
+7
+-3 -9=?
+8
+-20 - 10 =?
+9
+-7 - 13=?
+10
+-11-4=?
+Teacher's Answer Key (Negative Minuend Focus)
+10
+10
+7
+7
+6
+-20
+-12
+-30
+-20
+-15
+-6
+4th Level
+No.
+Equation
+1
+5−(?)=13
+2
+12−(?)=20
+3
+4−(?)=15
+4
+9−(?)=20
+5
+10−(?)=16
+11
+(?)−(−3)=−3
+6
+7-(-5)=?
+7
+15-(-10)=?
+8
+3-(-9)=?
+9
+20-(-4)=?
+10
+8-(-12)=?
+Teacher's Answer Key
+-8
+-8
+-11
+-11
+-6
+12
+25
+12
+24
+20
+-6
+5th Level
+No.
+Equation
+1
+−5−(?)=7
+2
+−2−(?)=10
+3
+−3−(?)=12
+4
+−6−(?)=9
+5
+−4−(?)=4
+11
+(?)−(−5)=−3
+6
+-10-(-18)=?
+7
+-1-(-11)=?
+8
+-7-(-20)=?
+9
+-4-(-14)=?
+10
+-11-(-16)=?
+Teacher's Answer Key (Double Negative Focus)
+-12
+-12
+-15
+-15
+-8
+8
+10
+13
+10
+5
+-8
+6th level
+No.
+Equation
+1
+−10−(?)=−15
+2
+−5−(?)=−20
+3
+−12−(?)=−18
+4
+−2−(?)=−28
+5
+−8−(?)=−12
+11
+(?)−(−5)=−15
+6
+-3-(-10)=?
+7
+-11-(-15)=?
+8
+-6-(-20)=?
+9
+-1-(-12)=?
+10
+-9-(-14)=?
+Teacher's Answer Key
+-25
+-25
+-30
+-30
+-20
+-7
+-4
+-14
+-11
+-5
+-20
