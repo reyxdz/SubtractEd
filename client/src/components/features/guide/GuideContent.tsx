@@ -5,6 +5,7 @@ import confusedStudentImg from '../../../assets/student_clip_images/student_scra
 import happyStudentImg from '../../../assets/student_clip_images/student_cheerful_smiling.png';
 import teacherImg from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
 import { TopBar } from '../../layout/TopBar';
+import guideVideo from '../../../assets/videos/guide_page_video.mp4';
 import './GuideContent.css';
 
 // Simple fade-in wrapper that animates on mount
@@ -131,17 +132,16 @@ export const GuideContent: React.FC = () => {
               className="video-player"
               onClick={(e) => e.stopPropagation()}
             >
-              <iframe
+              <video
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/EDCrtkT_JeA"
-                title="SubtractEd Introduction"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-                style={{ border: 'none', display: 'block' }}
-              ></iframe>
+                controls
+                preload="metadata"
+                style={{ border: 'none', display: 'block', borderRadius: '12px' }}
+              >
+                <source src={guideVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </FadeInMount>
