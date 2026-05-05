@@ -15,12 +15,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = resolve(__dirname, '..', 'dist');
 const swPath = resolve(distDir, 'sw.js');
 
-// File extensions to PRECACHE (small, critical assets)
+// File extensions to PRECACHE (all assets for full offline support)
 const PRECACHE_EXTENSIONS = new Set([
   '.html', '.css', '.js',          // App shell
   '.png', '.jpg', '.jpeg', '.svg', // Images
   '.ttf', '.woff', '.woff2',      // Fonts
   '.json',                         // Manifest, data
+  '.mp3', '.flac', '.ogg', '.wav', // Audio
+  '.mp4', '.webm',                 // Video
 ]);
 
 // File patterns to SKIP
