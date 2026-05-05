@@ -1,0 +1,105 @@
+.offline-banner {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  max-width: 420px;
+  width: calc(100% - 2rem);
+  background: rgba(30, 41, 59, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: bannerSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.offline-banner--complete {
+  background: rgba(16, 90, 60, 0.92);
+  border-color: rgba(52, 211, 153, 0.2);
+}
+
+@keyframes bannerSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.offline-banner__content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.offline-banner__icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  color: #34d399;
+}
+
+.offline-banner__icon--spin {
+  color: #93c5fd;
+  animation: spinIcon 1.2s linear infinite;
+}
+
+@keyframes spinIcon {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.offline-banner__details {
+  flex: 1;
+  min-width: 0;
+}
+
+.offline-banner__text {
+  color: #f1f5f9;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-family-base, 'Inter', sans-serif);
+}
+
+.offline-banner__bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  margin-top: 0.4rem;
+  overflow: hidden;
+}
+
+.offline-banner__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #60a5fa, #34d399);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.offline-banner__meta {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-family: var(--font-family-base, 'Inter', sans-serif);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.offline-banner__dismiss {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.offline-banner__dismiss:hover {
+  color: #f1f5f9;
+}

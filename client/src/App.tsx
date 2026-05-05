@@ -14,6 +14,7 @@ import { EnrichmentContent } from './components/features/enrichment/EnrichmentCo
 import { EnrichmentQuizContent } from './components/features/enrichment/EnrichmentQuizContent';
 import { playSound, getAudioContext } from './utils/sound';
 import { musicManager } from './utils/music';
+import { OfflineReadyBanner } from './components/common/OfflineReadyBanner';
 
 function App() {
   const location = useLocation();
@@ -58,6 +59,7 @@ function App() {
 
   return (
     <>
+      <OfflineReadyBanner />
       <Routes>
         <Route path="/activity/1" element={<ActivityOneContent />} />
         <Route path="/activity/2" element={<ActivityTwoContent />} />

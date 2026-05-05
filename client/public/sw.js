@@ -2,10 +2,8 @@
  * SubtractEd Service Worker
  * 
  * Strategy:
- * - PRECACHE: The app shell (HTML, CSS, JS, fonts, images) is cached on install
- *   using a versioned precache manifest injected at build time.
- * - RUNTIME CACHE: Large media files (audio, video) are cached on first access
- *   using a Cache-First strategy, so they don't block the initial install.
+ * - PRECACHE: All app assets are cached on install with progress reporting.
+ *   The precache manifest is injected at build time.
  * - NAVIGATION: All navigation requests fall back to the cached index.html
  *   (SPA support for HashRouter).
  */
@@ -15,19 +13,59 @@ const PRECACHE_MANIFEST = self.__WB_MANIFEST || [];
 const PRECACHE_NAME = 'subtracted-precache-v1';
 const RUNTIME_NAME = 'subtracted-runtime-v1';
 
-// ─── Install: Precache the app shell ───
+// ─── Install: Precache all assets with progress reporting ───
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(PRECACHE_NAME).then((cache) => {
-      const urls = PRECACHE_MANIFEST.map((entry) =>
-        typeof entry === 'string' ? entry : entry.url
-      );
-      return cache.addAll(urls);
-    })
-  );
-  // Activate immediately without waiting for old SW to finish
+  event.waitUntil(precacheWithProgress());
   self.skipWaiting();
 });
+
+async function precacheWithProgress() {
+  const cache = await caches.open(PRECACHE_NAME);
+  const urls = PRECACHE_MANIFEST.map((entry) =>
+    typeof entry === 'string' ? entry : entry.url
+  );
+
+  const total = urls.length;
+  let completed = 0;
+  let cachedBytes = 0;
+
+  // Report initial state
+  broadcastProgress({ status: 'downloading', completed: 0, total, bytes: 0 });
+
+  // Download files one by one to track progress
+  for (const url of urls) {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      cachedBytes += blob.size;
+      await cache.put(url, new Response(blob, {
+        headers: response.headers,
+        status: response.status,
+        statusText: response.statusText,
+      }));
+    } catch (err) {
+      console.warn(`[SW] Failed to cache: ${url}`, err);
+    }
+
+    completed++;
+    broadcastProgress({
+      status: 'downloading',
+      completed,
+      total,
+      bytes: cachedBytes,
+    });
+  }
+
+  broadcastProgress({ status: 'complete', completed: total, total, bytes: cachedBytes });
+}
+
+function broadcastProgress(data) {
+  self.clients.matchAll({ type: 'window' }).then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({ type: 'SW_CACHE_PROGRESS', ...data });
+    });
+  });
+}
 
 // ─── Activate: Clean up old caches ───
 self.addEventListener('activate', (event) => {
@@ -40,7 +78,6 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  // Take control of all open tabs immediately
   self.clients.claim();
 });
 
@@ -48,10 +85,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Only handle GET requests
   if (request.method !== 'GET') return;
-
-  // Skip cross-origin requests (e.g. analytics, external APIs)
   if (!request.url.startsWith(self.location.origin)) return;
 
   event.respondWith(handleFetch(request));
@@ -69,30 +103,18 @@ async function handleFetch(request) {
   // 3. Try network
   try {
     const networkResponse = await fetch(request);
-
-    // Cache successful responses for large media (audio/video)
-    if (networkResponse.ok && isMediaRequest(request.url)) {
-      const cache = await caches.open(RUNTIME_NAME);
-      cache.put(request, networkResponse.clone());
-    }
-
     return networkResponse;
   } catch (error) {
-    // 4. For navigation requests, serve the cached index.html (SPA fallback)
+    // 4. SPA fallback for navigation
     if (request.mode === 'navigate') {
       const fallback = await caches.match('./index.html', { cacheName: PRECACHE_NAME });
       if (fallback) return fallback;
     }
 
-    // Nothing worked — return a basic offline response
     return new Response('Offline', {
       status: 503,
       statusText: 'Service Unavailable',
       headers: { 'Content-Type': 'text/plain' },
     });
   }
-}
-
-function isMediaRequest(url) {
-  return /\.(mp3|flac|ogg|mp4|webm|wav)(\?.*)?$/i.test(url);
 }
