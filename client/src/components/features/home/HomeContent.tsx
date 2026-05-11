@@ -1,114 +1,271 @@
 import React from 'react';
-import { BookOpen, Edit3, ClipboardCheck, Star } from 'lucide-react';
-import { Card } from '../../common/Card';
+import {
+  ArrowRight,
+  BarChart3,
+  BookOpen,
+  ChevronDown,
+  ClipboardCheck,
+  Pencil,
+  Rocket,
+  Sparkles,
+  Star,
+  UsersRound,
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../common/Button';
-import { Accordion } from '../../common/Accordion';
-import { InstallAppButton } from '../../common/InstallAppButton';
+import subtractedLogo from '../../../assets/subtracted_logo.png';
+import textLogo from '../../../assets/images/text_logo.png';
 import harryAvatar from '../../../assets/researchers/harryArnold.png';
 import imaeAvatar from '../../../assets/researchers/imaeCuesta.png';
 import './HomeContent.css';
-import subtractedLogo from '../../../assets/subtracted_logo.png';
-import textLogo from '../../../assets/images/text_logo.png';
-import { useNavigate } from 'react-router-dom';
-import { TopBar } from '../../layout/TopBar';
 
-const MOCK_CARDS = [
-  { id: 1, title: 'Guide Card', icon: BookOpen, gradient: 'blue-gradient', path: '/guide' },
-  { id: 2, title: 'Activity Card', icon: Edit3, gradient: 'red-gradient', path: '/activity' },
-  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, gradient: 'blue-gradient', path: '/assessment' },
-  { id: 4, title: 'Enrichment Card', icon: Star, gradient: 'yellow-gradient', path: '/enrichment' },
+const LEARNING_CARDS = [
+  { id: 1, title: 'Guide Card', icon: BookOpen, accent: 'blue', path: '/guide' },
+  { id: 2, title: 'Activity Card', icon: Pencil, accent: 'green', path: '/activity' },
+  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, accent: 'purple', path: '/assessment' },
+  { id: 4, title: 'Enrichment Card', icon: Star, accent: 'yellow', path: '/enrichment' },
+] as const;
+
+const REFERENCES = [
+  {
+    label: 'Math Isip. Subtraction of Integers.',
+    href: 'https://www.youtube.com/watch?v=Er79fRnUK24',
+  },
+  {
+    label: 'Math with Mr. J. Parts of a Subtraction Problem.',
+    href: 'https://www.youtube.com/watch?v=EDCrtkT_JeA',
+  },
+  {
+    label: 'DepEd Tambayan. Grade 6 Mathematics Module.',
+    href: 'https://depedtambayan.net/grade-6-mathematics-module-subtracting-integers/',
+  },
 ];
+
+const RESEARCHERS = [
+  {
+    name: 'Harry Arnold C. Salele',
+    image: harryAvatar,
+    description:
+      'Harry is currently a preservice teacher with a strong interest in making mathematics more accessible and engaging for students.',
+  },
+  {
+    name: 'Imae Cuesta',
+    image: imaeAvatar,
+    description:
+      'Imae is a third-year pre-service teacher with a deep passion for Mathematics and a strong focus on completing her university thesis work.',
+  },
+] as const;
 
 export const HomeContent: React.FC = () => {
   const navigate = useNavigate();
+  const [openPanel, setOpenPanel] = React.useState<'researchers' | 'references' | null>(null);
+
+  const togglePanel = (panel: 'researchers' | 'references') => {
+    setOpenPanel((current) => (current === panel ? null : panel));
+  };
+
   return (
     <div className="home-container">
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-        <TopBar />
-      </div>
+      <section className="home-hero">
+        <div className="home-hero-copy">
+          <div className="home-kicker">
+            <Sparkles size={16} />
+            <span>Strategic. Engaging. Effective.</span>
+          </div>
 
-      <img src={subtractedLogo} alt="SubtractEd Logo" className="home-logo" />
-      <img src={textLogo} alt="SubtractEd Text Logo" className="home-text-logo" />
+          <h1 className="home-title">
+            Master Integer
+            <br />
+            Subtraction
+            <br />
+            <span>the Smart Way</span>
+          </h1>
 
-      <p className="home-description">
-        <strong>Meet SubtractEd:</strong> A Strategic Intervention Material to help students master subtraction of integers.
-      </p>
+          <p className="home-description">
+            SubtractEd is a strategic intervention material designed to help students
+            build confidence and mastery in subtraction of integers through guided
+            lessons, engaging activities, and meaningful practice.
+          </p>
 
-      <div className="cards-grid">
-        {MOCK_CARDS.map((card) => {
+          <Button className="home-hero-cta" onClick={() => navigate('/guide')}>
+            <Rocket size={18} />
+            <span>Start Learning</span>
+          </Button>
+        </div>
+
+        <div className="home-hero-stage">
+          <div className="home-logo-showcase">
+            <img src={subtractedLogo} alt="SubtractEd logo" className="home-logo-mark" />
+            <img src={textLogo} alt="SubtractEd" className="home-logo-wordmark-image" />
+          </div>
+        </div>
+
+        <aside className="home-progress-card">
+          <div className="home-progress-header">
+            <BarChart3 size={18} />
+            <span>Your Progress</span>
+          </div>
+
+          <div className="home-progress-ring">
+            <div className="home-progress-ring-inner">
+              <strong>72%</strong>
+              <span>Completed</span>
+            </div>
+          </div>
+
+          <div className="home-progress-copy">
+            <h2>Keep it up!</h2>
+            <p>You're doing great.</p>
+          </div>
+
+          <button type="button" className="home-inline-link" onClick={() => navigate('/assessment')}>
+            <span>View Progress</span>
+            <ArrowRight size={16} />
+          </button>
+        </aside>
+      </section>
+
+      <section className="cards-grid">
+        {LEARNING_CARDS.map((card) => {
           const IconComponent = card.icon;
+
           return (
-            <Card key={card.id} className="module-card" onClick={() => navigate(card.path)}>
-              <div className="card-icon-wrapper">
-                <IconComponent size={24} strokeWidth={2.5} className={card.gradient} />
+            <button
+              key={card.id}
+              type="button"
+              className="module-card"
+              onClick={() => navigate(card.path)}
+            >
+              <div className={`card-icon-wrapper card-icon-${card.accent}`}>
+                <IconComponent size={34} strokeWidth={2.3} />
               </div>
-              <h4 className="card-title">{card.title}</h4>
-            </Card>
+
+              <div className="card-copy">
+                <h2 className="card-title">{card.title}</h2>
+              </div>
+
+              <span className={`card-arrow card-arrow-${card.accent}`}>
+                <ArrowRight size={16} />
+              </span>
+            </button>
           );
         })}
-      </div>
+      </section>
 
-      <div className="home-action">
-        <Button className="start-btn" onClick={() => navigate('/guide')}>
-          Start Learning
-        </Button>
-        <InstallAppButton />
-      </div>
-
-      <div className="home-accordions-container">
-        <Accordion
-          title="About the Researchers"
-          subtitle="Meet the team behind SubtractEd."
-        >
-          <div className="researchers-grid">
-            <div className="researcher-card">
-              <div className="researcher-header">
-                <img src={harryAvatar} alt="Harry Arnold C. Salele" className="researcher-avatar" />
-                <div className="researcher-info">
-                  <h4>Harry Arnold C. Salele</h4>
-                  <p>Researcher<br />Biliran Province State University</p>
-                </div>
+      <section className="home-info-grid">
+        <article className={`home-info-card info-card-blue${openPanel === 'researchers' ? ' is-open' : ''}`}>
+          <div className="home-info-summary">
+            <div className="home-info-topline">
+              <div className="home-info-icon">
+                <UsersRound size={30} />
               </div>
-              <p className="researcher-desc">
-                <strong>Harry</strong> is currently a preservice teacher with a strong interest in making mathematics more accessible and engaging for students. He is a recipient of the DOST Scholarship and has also passed the Civil Service Examination, reflecting his dedication to his professional development.
-              </p>
+              <div className="home-info-heading-group">
+                <h3>About the Researchers</h3>
+                <p>
+                  Meet the team behind SubtractEd, educators and researchers
+                  passionate about helping students succeed in mathematics.
+                </p>
+              </div>
             </div>
-            <div className="researcher-card">
-              <div className="researcher-header">
-                <img src={imaeAvatar} alt="Imae Cuesta" className="researcher-avatar" />
-                <div className="researcher-info">
-                  <h4>Imae Cuesta</h4>
-                  <p>Researcher<br />Biliran Province State University</p>
-                </div>
-              </div>
-              <p className="researcher-desc">
-                <strong>Imae</strong> is a third-year pre-service teacher with a deep passion for Mathematics. She is known for her persistence and ability to successfully complete tasks, regardless of the difficulty. And now she's currently focus on completing her thesis requirement in the University.
+            <button
+              type="button"
+              className="home-corner-toggle"
+              aria-expanded={openPanel === 'researchers'}
+              aria-label="Toggle About the Researchers"
+              onClick={() => togglePanel('researchers')}
+            >
+              <ChevronDown size={20} />
+            </button>
+          </div>
+
+          <div className="home-info-actions">
+            <button type="button" className="home-inline-link" onClick={() => navigate('/about')}>
+              <span>Learn More</span>
+              <ArrowRight size={16} />
+            </button>
+          </div>
+
+          <div className="home-info-content">
+            <div className="home-info-expanded">
+              <p>
+                Harry Arnold C. Salele and Imae Cuesta are the researchers behind
+                SubtractEd, bringing classroom-centered mathematics support into a
+                more approachable and engaging format for students.
               </p>
+
+              <div className="home-researcher-list">
+                {RESEARCHERS.map((researcher) => (
+                  <article key={researcher.name} className="home-researcher-item">
+                    <img
+                      src={researcher.image}
+                      alt={researcher.name}
+                      className="home-researcher-item-avatar"
+                    />
+                    <div className="home-researcher-item-copy">
+                      <h4>{researcher.name}</h4>
+                      <p>{researcher.description}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <button type="button" className="home-inline-link" onClick={() => navigate('/about')}>
+                <span>Open About Page</span>
+                <ArrowRight size={16} />
+              </button>
             </div>
           </div>
-        </Accordion>
+        </article>
 
-        <Accordion
-          title="References"
-          subtitle="View the sources that helped shape SubtractEd."
-        >
-          <div className="references-list">
-            <div className="reference-item">
-              <span className="reference-number">1.</span>
-              Math Isip. (2025, January 12). <em>SUBTRACTION OF INTEGERS (3rd) THIRD QUARTER GRADE 7 MATATAG TAGALOG MATH TUTORIAL [Video]</em>. YouTube. <a href="https://www.youtube.com/watch?v=Er79fRnUK24" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=Er79fRnUK24</a>
+        <article className={`home-info-card info-card-lilac${openPanel === 'references' ? ' is-open' : ''}`}>
+          <div className="home-info-summary">
+            <div className="home-info-topline">
+              <div className="home-info-icon home-info-docs">
+                <ClipboardCheck size={28} />
+              </div>
+              <div className="home-info-heading-group">
+                <h3>References</h3>
+                <p>
+                  Explore the research and resources that informed the development
+                  of SubtractEd.
+                </p>
+              </div>
             </div>
-            <div className="reference-item">
-              <span className="reference-number">2.</span>
-              Math with Mr. J. (2020, June 16). <em>Parts of a Subtraction Problem: Minuend, Subtrahend, & Difference | Math with Mr. J [Video]</em>. YouTube. <a href="https://www.youtube.com/watch?v=EDCrtkT_JeA" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=EDCrtkT_JeA</a>
-            </div>
-            <div className="reference-item">
-              <span className="reference-number">3.</span>
-              Tambayan, D. (2026, January 26). <em>Grade 6 Mathematics Module: Subtracting Integers • DepEd Tambayan</em>. DepEd Tambayan. <a href="https://depedtambayan.net/grade-6-mathematics-module-subtracting-integers/" target="_blank" rel="noopener noreferrer">https://depedtambayan.net/grade-6-mathematics-module-subtracting-integers/</a>
+            <button
+              type="button"
+              className="home-corner-toggle"
+              aria-expanded={openPanel === 'references'}
+              aria-label="Toggle References"
+              onClick={() => togglePanel('references')}
+            >
+              <ChevronDown size={20} />
+            </button>
+          </div>
+
+          <div className="home-info-actions">
+            <button
+              type="button"
+              className="home-inline-link"
+              onClick={() => window.open(REFERENCES[2].href, '_blank', 'noopener,noreferrer')}
+            >
+              <span>View References</span>
+              <ArrowRight size={16} />
+            </button>
+          </div>
+
+          <div className="home-info-content">
+            <div className="home-info-expanded">
+              <div className="home-reference-preview">
+                {REFERENCES.map((reference) => (
+                  <a key={reference.href} href={reference.href} target="_blank" rel="noopener noreferrer">
+                    {reference.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
-        </Accordion>
-      </div>
-
+        </article>
+      </section>
     </div>
   );
 };

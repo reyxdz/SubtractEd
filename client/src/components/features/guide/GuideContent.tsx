@@ -1,19 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, MousePointerClick } from 'lucide-react';
+import { Check, ClipboardCheck, MousePointerClick } from 'lucide-react';
 import confusedStudentImg from '../../../assets/student_clip_images/student_scratching_head_wondering.png';
-import happyStudentImg from '../../../assets/student_clip_images/student_cheerful_smiling.png';
+import heroStudentImg from '../../../assets/student_clip_images/student_has_an_idea.png';
 import teacherImg from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
-import { TopBar } from '../../layout/TopBar';
 import guideVideo from '../../../assets/videos/guide_page_video.mp4';
 import './GuideContent.css';
 
-// Simple fade-in wrapper that animates on mount
 const FadeInMount: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isVisible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Small delay to ensure CSS transition triggers after mount
     const timer = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
@@ -32,16 +29,15 @@ export const GuideContent: React.FC = () => {
 
   const handleTap = () => {
     if (currentStep < 5) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
     }
   };
 
-  // Auto-scroll when new content appears
   useEffect(() => {
     if (currentStep > 1 && bottomRef.current) {
       setTimeout(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }, 100); // Wait for render
+      }, 100);
     }
   }, [currentStep]);
 
@@ -51,127 +47,117 @@ export const GuideContent: React.FC = () => {
       onClick={handleTap}
       style={{ cursor: currentStep < 5 ? 'pointer' : 'default', minHeight: '100vh' }}
     >
-      {/* Header */}
-      <header className="guide-header">
-        <button
-          className="neo-btn back-chip"
-          onClick={(e) => { e.stopPropagation(); navigate('/'); }}
-        >
-          ← <span>Back</span>
-        </button>
-        <h1 className="guide-title-pill">Guide Card</h1>
-        <div onClick={(e) => e.stopPropagation()}>
-          <TopBar />
-        </div>
-      </header>
+      <div className="guide-shell">
+        <section className="guide-hero-card">
+          <div className="guide-hero-copy">
+            <div className="guide-hero-heading">
+              <h1 className="guide-title-display">Guide Card</h1>
+              <p className="guide-title-description">
+                Follow this guided lesson to understand how to subtract integers with confidence and clarity.
+              </p>
+            </div>
 
-      {/* Step 1: Intro Scene (Student) */}
-      {currentStep >= 1 && (
-        <FadeInMount>
-          <div className="speech-row left-only">
-            <div className="character-box">
-              <img src={confusedStudentImg} alt="Student confused" className="character-img" />
-            </div>
-            <div className="speech-card speech-cream left-tail">
-              This is so confusing,<br />
-              I cannot subtract integers.
-            </div>
-          </div>
-        </FadeInMount>
-      )}
-
-      {/* Step 2: Intro Scene (Teacher) */}
-      {currentStep >= 2 && (
-        <FadeInMount>
-          <div className="speech-row right-only">
-            <div className="speech-card speech-white right-tail">
-              Do not worry, Intoy. It is actually very simple. <strong>SubtractEd</strong> is here to help you.
-            </div>
-            <div className="character-box">
-              <img src={teacherImg} alt="Teacher helpful" className="character-img" />
-            </div>
-          </div>
-        </FadeInMount>
-      )}
-
-      {/* Step 3: Learning Competency */}
-      {currentStep >= 3 && (
-        <FadeInMount>
-          <div className="competency-layout">
-            <div className="character-box" style={{ paddingBottom: '10px' }}>
-              <img src={happyStudentImg} alt="Student" style={{ width: '100px' }} className="character-img" />
-            </div>
-            <div className="competency-box">
-              <div className="competency-header">
-                <h3>Learning Competency</h3>
-                <div style={{ color: 'var(--color-text-muted)' }}>📋</div>
-              </div>
-              <div className="competency-item">
-                <div className="competency-check">
-                  <Check size={20} strokeWidth={3} />
+            {currentStep >= 1 && (
+              <FadeInMount>
+                <div className="guide-dialogue dialogue-student">
+                  <div className="guide-dialogue-avatar">
+                    <img src={confusedStudentImg} alt="Student confused" className="guide-dialogue-image" />
+                  </div>
+                  <div className="guide-dialogue-bubble guide-dialogue-bubble-cream guide-dialogue-bubble-left">
+                    This is so confusing,
+                    <br />
+                    I cannot subtract integers.
+                  </div>
                 </div>
-                <div>
-                  Subtract integers using concrete models such as counters and integer chips,
-                  pictorial models such as bar models and number lines, and with integers written as numerals.
+              </FadeInMount>
+            )}
+
+            {currentStep >= 2 && (
+              <FadeInMount>
+                <div className="guide-dialogue dialogue-teacher">
+                  <div className="guide-dialogue-bubble guide-dialogue-bubble-white guide-dialogue-bubble-right">
+                    Do not worry, Intoy. It is actually very simple. <strong>SubtractEd</strong> is here to help you.
+                  </div>
+                  <div className="guide-dialogue-avatar guide-dialogue-avatar-small">
+                    <img src={teacherImg} alt="Teacher helpful" className="guide-dialogue-image" />
+                  </div>
                 </div>
+              </FadeInMount>
+            )}
+          </div>
+
+          <div className="guide-hero-figure">
+            <div className="guide-hero-figure-frame">
+              <img src={heroStudentImg} alt="Student learning confidently" className="guide-hero-image" />
+            </div>
+          </div>
+        </section>
+
+        <div className="guide-stage-stack">
+          {currentStep >= 3 && (
+            <FadeInMount>
+              <section className="guide-panel guide-panel-competency">
+                <div className="guide-competency-icon" aria-hidden="true">
+                  <ClipboardCheck size={54} strokeWidth={2.2} />
+                  <div className="guide-competency-icon-badge">
+                    <Check size={20} strokeWidth={3} />
+                  </div>
+                </div>
+                <div className="guide-competency-content">
+                  <h2>Learning Competency</h2>
+                  <p>
+                    Subtract integers using concrete models such as counters and integer chips,
+                    pictorial models such as bar models and number lines, and with integers written as numerals.
+                  </p>
+                </div>
+              </section>
+            </FadeInMount>
+          )}
+
+          {currentStep >= 4 && (
+            <FadeInMount>
+              <section className="guide-panel guide-panel-video">
+                <div className="guide-panel-chip">Introduction</div>
+                <div className="guide-video-frame" onClick={(e) => e.stopPropagation()}>
+                  <video
+                    className="guide-video-element"
+                    controls
+                    preload="metadata"
+                  >
+                    <source src={guideVideo} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </section>
+            </FadeInMount>
+          )}
+
+          {currentStep >= 5 && (
+            <FadeInMount>
+              <div className="complete-btn-wrapper">
+                <button
+                  className="complete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/activity');
+                  }}
+                >
+                  Complete
+                </button>
               </div>
-            </div>
-            <div className="character-box" style={{ paddingBottom: '10px' }}>
-              <img src={teacherImg} alt="Teacher" style={{ width: '100px' }} className="character-img" />
-            </div>
-          </div>
-        </FadeInMount>
-      )}
+            </FadeInMount>
+          )}
 
-      {/* Step 4: Video Block */}
-      {currentStep >= 4 && (
-        <FadeInMount>
-          <div className="video-wrapper" style={{ textAlign: 'center', marginTop: '20px' }}>
-            <div className="video-title-pill">Introduction</div>
-            <div
-              className="video-player"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <video
-                width="100%"
-                height="100%"
-                controls
-                preload="metadata"
-                style={{ border: 'none', display: 'block', borderRadius: '12px' }}
-              >
-                <source src={guideVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+          {currentStep < 5 && (
+            <div className="guide-tap-hint">
+              <MousePointerClick size={24} />
+              <span>Tap anywhere to continue...</span>
             </div>
-          </div>
-        </FadeInMount>
-      )}
-
-      {/* Step 5: Footer Action */}
-      {currentStep >= 5 && (
-        <FadeInMount>
-          <div className="complete-btn-wrapper">
-            <button
-              className="complete-btn"
-              onClick={(e) => { e.stopPropagation(); navigate('/activity'); }}
-            >
-              Complete
-            </button>
-          </div>
-        </FadeInMount>
-      )}
-
-      {/* Tap Hint */}
-      {currentStep < 5 && (
-        <div style={{ textAlign: 'center', opacity: 0.5, margin: '20px 0', animation: 'pulse-glow 2s infinite' }}>
-          <MousePointerClick size={24} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '8px' }} />
-          Tap anywhere to continue...
+          )}
         </div>
-      )}
 
-      {/* Invisible element to scroll to */}
-      <div ref={bottomRef} style={{ height: '1px' }}></div>
+        <div ref={bottomRef} style={{ height: '1px' }}></div>
+      </div>
     </div>
   );
 };
-
