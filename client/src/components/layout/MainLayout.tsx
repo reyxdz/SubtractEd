@@ -1,4 +1,5 @@
 import React from 'react';
+import { LandingHeader } from './LandingHeader';
 import './MainLayout.css';
 
 interface MainLayoutProps {
@@ -8,12 +9,11 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="main-layout">
-      <div className="banig-bg"></div>
-      
-      <div className="app-window">
-        <main className="main-content">
-          {children}
-        </main>
+      <div className="main-content">
+        <div className="main-layout-header">
+          <LandingHeader />
+        </div>
+        <main className="main-layout-body">{children}</main>
       </div>
     </div>
   );

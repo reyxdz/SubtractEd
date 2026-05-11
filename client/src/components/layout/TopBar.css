@@ -11,14 +11,14 @@
 }
 
 .settings-icon-btn {
-  width: 54px;
-  height: 54px;
-  background: rgba(255, 255, 255, 0.7);
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.9);
-  box-shadow: 0 10px 20px rgba(46,58,89,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
-  color: var(--theme-primary);
-  border-radius: 20px;
+  border: 1px solid rgba(226, 234, 251, 0.95);
+  box-shadow: 0 14px 24px rgba(46, 58, 89, 0.08);
+  color: #16203c;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;

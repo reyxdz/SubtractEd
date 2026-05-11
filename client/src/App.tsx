@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { HomeContent } from './components/features/home/HomeContent';
+import { AboutContent } from './components/features/about/AboutContent';
 import { GuideContent } from './components/features/guide/GuideContent';
 import { ActivityContent } from './components/features/activity/ActivityContent';
 import { ActivityOneContent } from './components/features/activity/ActivityOneContent';
@@ -77,6 +78,7 @@ function App() {
           <MainLayout>
             <Routes>
               <Route path="/" element={<HomeContent />} />
+              <Route path="/about" element={<AboutContent />} />
               <Route path="/guide" element={<GuideContent />} />
               <Route path="/activity" element={<ActivityContent />} />
               <Route path="/activity/:id/intro" element={<ActivityVideoGatekeeper />} />

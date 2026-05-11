@@ -1,75 +1,50 @@
 .main-layout {
   min-height: 100vh;
-  background-color: var(--theme-bg-soft);
-  display: flex;
-  flex-direction: column; /* Allow natural flow */
-  position: relative;
-  padding: 2rem;
+  background:
+    radial-gradient(circle at top left, rgba(var(--theme-primary-rgb), 0.34), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.95), transparent 24%),
+    radial-gradient(circle at 85% 70%, rgba(var(--theme-bg-soft-rgb), 0.88), transparent 18%),
+    radial-gradient(circle at 12% 88%, rgba(var(--theme-primary-rgb), 0.18), transparent 20%),
+    linear-gradient(
+      180deg,
+      rgba(var(--theme-bg-soft-rgb), 0.92) 0%,
+      #f8fbff 52%,
+      rgba(var(--theme-bg-soft-rgb), 0.72) 100%
+    );
+  padding: 1.9rem 2rem 2.6rem;
   box-sizing: border-box;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.main-layout-header {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  padding-top: 0.2rem;
+}
+
+.main-layout-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
   .main-layout {
     padding: 1rem;
   }
-  .app-window {
-    padding: 0.5rem;
-    border-radius: 16px;
-  }
-  .main-content {
-    padding: 0.5rem;
-  }
 }
 
 @media (max-width: 480px) {
   .main-layout {
-    padding: 0;
+    padding: 0.75rem;
   }
-  .app-window {
-    border-radius: 0;
-    border: none;
-    min-height: 100vh;
-  }
-}
-
-.banig-bg {
-  position: fixed; /* Keep background static on scroll */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* Extremely subtle woven banig effect */
-  background-image: 
-    linear-gradient(45deg, rgba(0, 0, 0, 0.008) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.008) 75%, rgba(0, 0, 0, 0.008)), 
-    linear-gradient(45deg, rgba(0, 0, 0, 0.008) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.008) 75%, rgba(0, 0, 0, 0.008));
-  background-size: 10px 10px;
-  background-position: 0 0, 5px 5px;
-  z-index: 0;
-}
-
-.app-window {
-  position: relative;
-  width: 100%;
-  max-width: 1024px;
-  min-height: 500px;
-  flex: 1; /* Stretch to maximize vertical space */
-  margin: auto; /* Centered visually without clipping */
-  z-index: 10;
-  border-radius: 24px;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  /* The overarching thick glassmorphism of the main panel */
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04), inset 0 0 20px rgba(255,255,255,0.5);
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
 }

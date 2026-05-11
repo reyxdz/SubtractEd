@@ -1,4 +1,4 @@
-/* Inter Font — Bundled Locally for Offline Use */
+/* Inter Font - Bundled Locally for Offline Use */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -36,55 +36,74 @@
 }
 
 :root {
-  /* Constant Base Colors */
-  --color-primary-blue: #6FA3E6;
-  --color-bg-soft-blue: #DCE6F5;
-  --color-accent-blue: #5B8FD9;
+  --color-primary-blue: #6fa3e6;
+  --color-bg-soft-blue: #dce6f5;
+  --color-accent-blue: #5b8fd9;
 
-  --color-primary-green: #8FCB9B;
-  --color-bg-soft-green: #E3F1E7;
-  --color-accent-green: #6FBF84;
+  --color-primary-green: #8fcb9b;
+  --color-bg-soft-green: #e3f1e7;
+  --color-accent-green: #6fbf84;
 
-  --color-primary-red: #E88A8A;
-  --color-bg-soft-red: #F6E3E3;
-  --color-accent-red: #D96C6C;
+  --color-primary-red: #e88a8a;
+  --color-bg-soft-red: #f6e3e3;
+  --color-accent-red: #d96c6c;
 
-  --color-text-dark: #2E3A59;
-  --color-text-muted: #64748B;
-  --color-white: #FFFFFF;
-  
-  /* Active Theme Mapping (Default: Blue) */
+  --color-text-dark: #2e3a59;
+  --color-text-muted: #64748b;
+  --color-white: #ffffff;
+
   --theme-primary: var(--color-primary-blue);
   --theme-bg-soft: var(--color-bg-soft-blue);
   --theme-accent: var(--color-accent-blue);
+  --theme-primary-rgb: 111, 163, 230;
+  --theme-bg-soft-rgb: 220, 230, 245;
+  --theme-accent-rgb: 91, 143, 217;
 
-  /* Typography */
   --font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-size-base: 16px;
   --line-height-base: 1.5;
 
-  /* Global Elements */
+  /* Reusable type scale */
+  --font-size-body-sm: 0.92rem;
+  --font-size-body-md: 1rem;
+  --font-size-title-sm: clamp(1.15rem, 1.4vw, 1.45rem);
+  --font-size-title-md: clamp(1.35rem, 2vw, 1.8rem);
+  --font-size-title-lg: clamp(1.9rem, 3vw, 2.5rem);
+
+  /* Reusable icon scale */
+  --icon-size-sm: 1rem;
+  --icon-size-md: 1.5rem;
+  --icon-size-lg: 2rem;
+  --icon-surface-sm: 2rem;
+  --icon-surface-md: 4rem;
+  --icon-surface-lg: 5.25rem;
+
   --border-radius-sm: 8px;
   --border-radius-md: 16px;
   --border-radius-lg: 24px;
   --border-radius-pill: 9999px;
   --transition-speed: 0.2s;
-  --box-shadow-soft: 0 8px 32px 0 rgba(111, 163, 230, 0.15); /* Tinted subtle shadow */
+  --box-shadow-soft: 0 8px 32px 0 rgba(111, 163, 230, 0.15);
   --box-shadow-elevated: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
-/* Theme Overrides via data attribute */
-:root[data-theme="green"] {
+:root[data-theme='green'] {
   --theme-primary: var(--color-primary-green);
   --theme-bg-soft: var(--color-bg-soft-green);
   --theme-accent: var(--color-accent-green);
+  --theme-primary-rgb: 143, 203, 155;
+  --theme-bg-soft-rgb: 227, 241, 231;
+  --theme-accent-rgb: 111, 191, 132;
   --box-shadow-soft: 0 8px 32px 0 rgba(143, 203, 155, 0.2);
 }
 
-:root[data-theme="red"] {
+:root[data-theme='red'] {
   --theme-primary: var(--color-primary-red);
   --theme-bg-soft: var(--color-bg-soft-red);
   --theme-accent: var(--color-accent-red);
+  --theme-primary-rgb: 232, 138, 138;
+  --theme-bg-soft-rgb: 246, 227, 227;
+  --theme-accent-rgb: 217, 108, 108;
   --box-shadow-soft: 0 8px 32px 0 rgba(232, 138, 138, 0.15);
 }
 
@@ -123,7 +142,6 @@ a:hover {
   color: var(--theme-accent);
 }
 
-/* Glassmorphism Utility */
 .glass {
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(12px);

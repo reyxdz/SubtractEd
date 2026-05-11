@@ -1,0 +1,119 @@
+.landing-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
+  padding: 0.7rem 1.1rem;
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(221, 232, 252, 0.9);
+  box-shadow: 0 18px 40px rgba(105, 139, 193, 0.12);
+}
+
+.landing-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.landing-brand-mark {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.landing-brand-text {
+  width: 165px;
+  max-width: 100%;
+  height: auto;
+}
+
+.landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.8vw, 2rem);
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.landing-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0.25rem 0.2rem;
+  color: #1b2440;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.landing-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -0.35rem;
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--theme-primary), var(--theme-accent));
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.landing-nav-link.active {
+  color: var(--theme-primary);
+}
+
+.landing-nav-link.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.landing-header-settings {
+  justify-self: end;
+}
+
+@media (max-width: 1120px) {
+  .landing-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .landing-nav {
+    grid-column: 1 / -1;
+    order: 3;
+    justify-content: flex-start;
+    padding-top: 0.25rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .landing-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-header {
+    gap: 1rem;
+    padding: 0.75rem 0.95rem;
+    border-radius: 1.5rem;
+  }
+
+  .landing-brand-mark {
+    width: 44px;
+    height: 44px;
+  }
+
+  .landing-brand-text {
+    width: 138px;
+  }
+
+  .landing-nav-link {
+    font-size: 0.98rem;
+  }
+}
