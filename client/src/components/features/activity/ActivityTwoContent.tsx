@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
 import dogMarkerImg from '../../../assets/images/dog_marker.png';
+import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
 import './ActivityTwoContent.css';
 import '../guide/GuideContent.css';
 
@@ -41,6 +42,7 @@ const activity2Questions: Record<Difficulty, Question[]> = {
 
 const MIN = -15;
 const MAX = 15;
+const initialQuestion = activity2Questions.easy[0];
 
 // ── Helpers ────────────────────────────────────────────────────
 function clamp(value: number) {
@@ -64,10 +66,10 @@ export const ActivityTwoContent: React.FC = () => {
   const [qIndex, setQIndex] = useState(0);
 
   // Number line state
-  const [startValue, setStartValue] = useState(0);
-  const [currentValue, setCurrentValue] = useState(0);
+  const [startValue, setStartValue] = useState(initialQuestion.start);
+  const [currentValue, setCurrentValue] = useState(initialQuestion.start);
   const [moveValue, setMoveValue] = useState(0);
-  const [activeTickValue, setActiveTickValue] = useState<number | null>(null);
+  const [activeTickValue, setActiveTickValue] = useState<number | null>(initialQuestion.start);
 
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -87,8 +89,8 @@ export const ActivityTwoContent: React.FC = () => {
   const [hintModalOpen, setHintModalOpen] = useState(false);
 
   // Free-play state removed
-  const [hintText, setHintText] = useState('Drag the dog to the starting point. That becomes the minuend.');
-  const [resultText, setResultText] = useState('');
+  const [hintText, setHintText] = useState(`Target expression: ${initialQuestion.start} − (${initialQuestion.subtract}). Drag the dog to begin.`);
+  const [resultText, setResultText] = useState('Place the dog on the minuend, then move to show the subtraction.');
 
   // Current question helper
   const currentQ = activity2Questions[difficulty][qIndex];
@@ -115,6 +117,13 @@ export const ActivityTwoContent: React.FC = () => {
   }, [difficulty, qIndex, clearTimers]);
 
   useEffect(() => {
+    if (!isActivityUnlocked(2)) {
+      navigate('/activity');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadQuestion();
   }, [loadQuestion]);
 
@@ -241,7 +250,7 @@ export const ActivityTwoContent: React.FC = () => {
       setDifficulty('difficult');
       setQIndex(0);
     } else {
-      alert('Activity 2 Complete!');
+      markActivityComplete(2);
       navigate('/activity');
     }
   }, [qIndex, totalQuestions, difficulty, navigate]);

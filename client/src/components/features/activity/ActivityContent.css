@@ -1,208 +1,421 @@
-.activity-page-container {
-  /* Override .guide-page-container to prevent scrolling */
-  min-height: 0 !important;
-  height: 100% !important;
-  flex: 1; /* Stretch to fill the newly maximized app-window */
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+.activity-showcase-page {
   width: 100%;
+  height: calc(100dvh - 205px);
+  max-height: calc(100dvh - 205px);
+  display: flex;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
-.activity-layout {
-  display: flex;
-  gap: 2vw;
-  margin-top: 1vh;
-  align-items: center;
-  width: 100%;
-  flex: 1;
-  min-height: 0; /* allows shrinking */
-}
-
-.activity-main-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
+.activity-showcase-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.62fr);
+  align-items: end;
+  gap: clamp(1rem, 2vw, 2rem);
+  min-height: 100%;
   height: 100%;
+  padding: clamp(0.6rem, 1vw, 1rem) 0 0.35rem;
+  overflow: visible;
 }
 
-.activity-side-character {
-  width: min(250px, 20vw);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.teacher-image {
-  width: 100%;
-  max-width: 200px;
-  max-height: 40vh; /* Don't grow too tall on short screens */
-  object-fit: contain;
-  filter: drop-shadow(0 1vh 2vh rgba(0,0,0,0.15));
-  animation: float 4s ease-in-out infinite;
-  position: relative;
-  z-index: 2;
-}
-
-.activity-side-character::before {
+.activity-showcase-hero::before,
+.activity-showcase-hero::after {
   content: '';
   position: absolute;
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.activity-showcase-hero::before {
+  width: 420px;
+  height: 420px;
+  top: -30px;
+  left: -120px;
+  background: rgba(var(--theme-primary-rgb), 0.09);
+}
+
+.activity-showcase-hero::after {
+  width: 530px;
+  height: 530px;
+  right: -120px;
+  bottom: -110px;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+}
+
+.activity-showcase-copy,
+.activity-showcase-visual {
+  position: relative;
   z-index: 1;
-  animation: pulse-glow 3s infinite alternate;
 }
 
-@keyframes pulse-glow {
-  0% { transform: scale(0.9); opacity: 0.6; }
-  100% { transform: scale(1.1); opacity: 1; }
+.activity-showcase-copy h1 {
+  margin: 0;
+  font-size: clamp(2.7rem, 5.6vw, 4.7rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  color: #0f1a48;
+  font-weight: 900;
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-1vh); }
-  100% { transform: translateY(0px); }
+.activity-showcase-copy>p {
+  margin: 0.8rem 0 0;
+  max-width: 700px;
+  font-size: clamp(0.98rem, 1.45vw, 1.22rem);
+  line-height: 1.5;
+  color: rgba(27, 36, 64, 0.94);
 }
 
-.activity-options-grid {
+.activity-card-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5vw;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.6rem;
+  max-width: 860px;
+}
+
+.activity-showcase-card {
+  position: relative;
+  min-height: 338px;
+  padding: 1px;
+  border-radius: 2rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(225, 236, 252, 0.75));
+  box-shadow: 0 24px 48px rgba(110, 139, 191, 0.16);
+}
+
+.activity-showcase-card-inner {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.35rem 1.15rem 1.05rem;
+  border-radius: calc(2rem - 1px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 253, 255, 0.95));
+  overflow: hidden;
+}
+
+.activity-showcase-card-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 12%, rgba(var(--theme-primary-rgb), 0.09), transparent 28%);
+  pointer-events: none;
+}
+
+.activity-showcase-card h2,
+.activity-showcase-card p,
+.activity-showcase-cta,
+.activity-showcase-lock,
+.activity-showcase-icon-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.activity-showcase-icon-wrap {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.98), rgba(232, 241, 255, 0.9));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 14px 28px rgba(111, 163, 230, 0.12);
+}
+
+.activity-showcase-card h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 1.8vw, 2rem);
+  line-height: 1.05;
+  color: #0f1a48;
+}
+
+.activity-showcase-card p {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.94rem;
+  line-height: 1.35;
+  color: #5a6f9f;
+}
+
+.activity-showcase-cta {
+  margin-top: auto;
   width: 100%;
-  height: 100%; /* Stretch to fill available space */
-  max-height: 65vh; /* Increased from 50vh to make cards taller */
-  min-height: 40vh; /* Ensure they don't get too squat on wide/short screens */
+  border: 0;
+  border-radius: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(180deg, #2b75ff 0%, #1656f1 100%);
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 18px 24px rgba(43, 117, 255, 0.24);
+}
+
+.activity-showcase-lock {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  margin-top: auto;
+  width: 84px;
+  height: 84px;
+  border-radius: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 253, 0.96));
+  box-shadow: 0 18px 34px rgba(98, 129, 184, 0.22);
+  border: 1px solid rgba(223, 232, 248, 0.95);
+}
+
+.activity-showcase-card.is-locked .activity-showcase-card-inner {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(248, 251, 255, 0.72));
+}
+
+.activity-showcase-card.is-locked .activity-showcase-card-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.activity-showcase-card.is-locked .activity-showcase-icon-wrap,
+.activity-showcase-card.is-locked h2,
+.activity-showcase-card.is-locked p {
+  filter: blur(4px);
+  opacity: 0.58;
+}
+
+.activity-showcase-card.is-locked .activity-showcase-lock svg {
+  color: #7a859f;
+  filter: none;
+}
+
+.activity-showcase-card.is-complete {
+  box-shadow: 0 26px 52px rgba(43, 117, 255, 0.18);
+}
+
+.activity-chip-icon {
+  position: relative;
+  width: 78px;
+  height: 72px;
+}
+
+.activity-chip {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.7rem;
+  font-weight: 700;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.18), 0 10px 16px rgba(0, 0, 0, 0.14);
+}
+
+.activity-chip-negative {
+  top: 0;
+  left: 20px;
+  background: linear-gradient(180deg, #ff6f67 0%, #ea3323 100%);
+}
+
+.activity-chip-positive-left {
+  left: 3px;
+  bottom: 0;
+  background: linear-gradient(180deg, #53a7ff 0%, #1458f4 100%);
+}
+
+.activity-chip-positive-right {
+  right: 3px;
+  bottom: 0;
+  background: linear-gradient(180deg, #58df64 0%, #14a92d 100%);
+}
+
+.activity-numberline-icon {
+  position: relative;
+  width: 92px;
+  height: 68px;
+}
+
+.activity-numberline-track {
+  position: absolute;
+  top: 26px;
+  left: 10px;
+  right: 10px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1c1f70, #1c1f70 70%, #13b755);
+}
+
+.activity-numberline-arrows {
+  position: absolute;
+  top: 18px;
+  left: 6px;
+  color: #1c1f70;
+}
+
+.activity-numberline-tick {
+  position: absolute;
+  top: 17px;
+  width: 3px;
+  border-radius: 999px;
+  background: #1c1f70;
+}
+
+.activity-numberline-tick.tick-left {
+  left: 16px;
+  height: 16px;
+}
+
+.activity-numberline-tick.tick-mid-left {
+  left: 33px;
+  height: 12px;
+}
+
+.activity-numberline-tick.tick-zero {
+  left: 46px;
+  height: 20px;
+}
+
+.activity-numberline-tick.tick-mid-right {
+  left: 60px;
+  height: 12px;
+}
+
+.activity-numberline-tick.tick-right {
+  left: 76px;
+  height: 16px;
+  background: #13b755;
+}
+
+.activity-numberline-neg,
+.activity-numberline-zero,
+.activity-numberline-pos {
+  position: absolute;
+  bottom: 0;
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+.activity-numberline-neg {
+  left: 23px;
+  color: #ff3c30;
+}
+
+.activity-numberline-zero {
+  left: 43px;
+  color: #1c1f70;
+}
+
+.activity-numberline-pos {
+  right: 20px;
+  color: #13b755;
+}
+
+.activity-rules-icon {
+  color: #7a44e5;
+}
+
+.activity-showcase-visual {
+  position: absolute;
+  right: -15rem;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow: visible;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.activity-showcase-visual-frame {
+  position: relative;
+  width: 480px;
+  padding-top: 0.4rem;
+}
+
+.activity-showcase-visual-frame::before,
+.activity-showcase-visual-frame::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(var(--theme-primary-rgb), 0.11);
+}
+
+.activity-showcase-visual-frame::before {
+  width: 94%;
+  height: 72%;
+  right: 0;
+  bottom: 0;
+}
+
+.activity-showcase-visual-frame::after {
+  width: 62%;
+  height: 36%;
+  left: 2%;
+  bottom: 10%;
+}
+
+.activity-showcase-student {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: calc(100dvh - 280px);
+  filter: drop-shadow(0 18px 22px rgba(80, 109, 162, 0.14));
+}
+
+@media (max-width: 1220px) {
+  .activity-showcase-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-showcase-visual {
+    order: 2;
+    justify-content: flex-end;
+  }
+
+  .activity-card-grid {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 900px) {
-  .activity-options-grid {
+  .activity-card-grid {
     grid-template-columns: 1fr;
-    max-height: none;
-    overflow-y: auto; /* Fallback for very small screens if they stack */
-    padding-bottom: 2vh;
   }
-  .activity-page-container {
-    overflow-y: auto; /* Fallback for very narrow screens */
+
+  .activity-showcase-card {
+    min-height: 340px;
   }
-  .activity-layout {
-    flex-direction: column;
-    height: auto;
+
+  .activity-showcase-visual-frame {
+    width: min(100%, 360px);
   }
 }
 
-.activity-option-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  padding: 3vh 1.5vw 2vh;
-  cursor: pointer;
-  border-radius: 3vh;
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 0.5vh 1.5vh rgba(0, 0, 0, 0.03);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  box-sizing: border-box;
-}
+@media (max-width: 640px) {
+  .activity-showcase-copy h1 {
+    font-size: 3rem;
+  }
 
-.activity-option-card:hover {
-  transform: translateY(-1vh);
-  box-shadow: 0 2vh 4vh rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.08);
-}
+  .activity-showcase-copy>p {
+    font-size: 1rem;
+  }
 
-.activity-badge {
-  position: absolute;
-  top: 1vh;
-  right: 1vw;
-  padding: 0.4vh 1vw;
-  border-radius: 2vh;
-  font-size: clamp(0.6rem, 1.2vh, 0.7rem);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.badge-easy { background: #e8f5e9; color: #2e7d32; }
-.badge-moderate { background: #e3f2fd; color: #1565c0; }
-.badge-difficult { background: #fff3e0; color: #e65100; }
-
-.activity-icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2vh;
-  margin-bottom: 1vh;
-  width: min(8vw, 8vh);
-  height: min(8vw, 8vh);
-  border-radius: 50%;
-  background: rgba(30, 58, 138, 0.08);
-  color: var(--theme-primary, #1e3a8a);
-  transition: all 0.3s ease;
-}
-
-.activity-icon-container svg {
-  width: 50%;
-  height: 50%;
-}
-
-.activity-option-card:hover .activity-icon-container {
-  transform: scale(1.1);
-  background: var(--theme-primary, #1e3a8a);
-  color: white;
-  box-shadow: 0 1vh 2vh rgba(30, 58, 138, 0.2);
-}
-
-.activity-text-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5vh;
-  margin-bottom: 2vh;
-}
-
-.activity-option-card h3 {
-  font-size: clamp(1.2rem, 2.5vh, 1.5rem);
-  font-weight: 800;
-  color: var(--theme-primary, #1e3a8a);
-  margin: 0;
-}
-
-.activity-option-card p {
-  color: var(--color-text-muted, #6b7280);
-  font-size: clamp(0.8rem, 1.5vh, 0.95rem);
-  line-height: 1.2;
-  margin: 0;
-  font-weight: 500;
-}
-
-.activity-start-btn {
-  width: 100%;
-  padding: 1.2vh;
-  font-size: clamp(0.8rem, 1.5vh, 0.95rem);
-  background: white;
-  color: var(--theme-primary, #1e3a8a);
-  border: 2px solid var(--theme-primary, #1e3a8a);
-  border-radius: 1.5vh;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  margin-top: auto;
-}
-
-.activity-option-card:hover .activity-start-btn {
-  background: var(--theme-primary, #1e3a8a);
-  color: white;
-  transform: translateY(-0.2vh);
-  box-shadow: 0 0.5vh 1.5vh rgba(30, 58, 138, 0.2);
+  .activity-showcase-card-inner {
+    padding: 1.4rem 1.1rem 1.1rem;
+  }
 }

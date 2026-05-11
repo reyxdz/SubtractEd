@@ -1,4 +1,8 @@
-/* Activity 1 Specific Layout Redesign */
+/* ================================================================
+   Activity 1 — Revised Layout
+   Bigger questions, black directions, editable counters,
+   scrollable working area, Delete Positive/Negative/Clear All
+   ================================================================ */
 
 .activity-one-wrapper {
   position: fixed;
@@ -18,9 +22,9 @@
   width: 100%;
   max-width: 1200px;
   height: 100%;
-  background-color: #fcf8f2; /* Cream inner bg */
+  background-color: #fcf8f2;
   border-radius: 3vh;
-  border: 4px solid #f2e3d5; /* Subtle border */
+  border: 4px solid #f2e3d5;
   box-shadow: 0 2vh 4vh rgba(0,0,0,0.1);
   position: relative;
   overflow: hidden;
@@ -28,7 +32,7 @@
   flex-direction: column;
 }
 
-/* Decorative Awning matching reference */
+/* Decorative Awning */
 .sari-awning {
   height: 5vh;
   min-height: 30px;
@@ -51,16 +55,16 @@
 
 .sari-content-inner {
   flex: 1;
-  padding: 6vh 3vw 2vh; /* Padding top to clear awning */
+  padding: 6vh 3vw 2vh;
   display: flex;
   flex-direction: column;
   z-index: 2;
   position: relative;
-  overflow: hidden; /* No scrolling */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
-/* Header Elements */
+/* ── Header ─────────────────────────────────────────────────── */
 .activity-one-header {
   display: flex;
   justify-content: space-between;
@@ -135,7 +139,7 @@
 .a1-pill-moderate { background: #e3f2fd; color: #1565c0; }
 .a1-pill-difficult { background: #fff3e0; color: #e65100; }
 
-/* Progress Area */
+/* ── Progress ───────────────────────────────────────────────── */
 .activity-progress-area {
   width: 100%;
   margin-bottom: 1.5vh;
@@ -165,17 +169,18 @@
   transition: width 0.3s ease;
 }
 
-/* Main Body layout to keep it tight */
+/* ── Main Body ──────────────────────────────────────────────── */
 .activity-main-body {
   display: flex;
   flex-direction: column;
-  gap: 1.5vh;
+  gap: 1.2vh;
   align-items: center;
   flex: 1;
-  overflow: hidden; /* keep bounds tight */
+  overflow: hidden;
 }
 
-.directions-box, .question-box {
+/* ── Directions — BLACK text ────────────────────────────────── */
+.directions-box {
   background: white;
   padding: 1.5vh 3vw;
   border-radius: 3vh;
@@ -187,18 +192,32 @@
 }
 
 .directions-box p {
-  color: #9e9e9e;
-  font-size: clamp(0.7rem, 1.5vh, 0.95rem);
+  color: #333333;
+  font-size: clamp(0.75rem, 1.5vh, 0.95rem);
   margin: 0;
+}
+
+/* ── Question — BIGGER text ─────────────────────────────────── */
+.question-box {
+  background: white;
+  padding: 1.5vh 3vw;
+  border-radius: 3vh;
+  box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.03);
+  text-align: center;
+  width: fit-content;
+  max-width: 90%;
+  flex-shrink: 0;
 }
 
 .question-box p {
-  color: #424242;
-  font-size: clamp(0.9rem, 1.8vh, 1.1rem);
+  color: #333333;
+  font-size: clamp(1.1rem, 2.2vh, 1.4rem);
   font-weight: bold;
   margin: 0;
+  line-height: 1.5;
 }
 
+/* ── Equation Display ───────────────────────────────────────── */
 .equation-display h2 {
   background: white;
   padding: 1vh 4vw;
@@ -210,7 +229,7 @@
   flex-shrink: 0;
 }
 
-/* Game Area */
+/* ── Working Area Layout ────────────────────────────────────── */
 .working-area-layout {
   display: flex;
   align-items: center;
@@ -218,8 +237,8 @@
   gap: 2vw;
   width: 100%;
   max-width: 1000px;
-  flex: 1; /* Take up remaining space */
-  min-height: 0; /* Important for flex-shrink to work inside */
+  flex: 1;
+  min-height: 0;
 }
 
 .side-tools {
@@ -261,21 +280,18 @@
 }
 
 .positive-btn, .zero-pair-btn {
-  background: #a5d6a7; /* Light green */
-}
-.zero-pair-btn {
   background: #a5d6a7;
 }
 
 .negative-btn {
-  background: #ce93d8; /* Light purple */
+  background: #ce93d8;
 }
 
-/* Working Area Container */
+/* ── Working Area Container — Scrollable ────────────────────── */
 .working-area-container {
   flex: 1;
-  background: #9fa8da; /* Soft purple */
-  border: 0.5vh solid #ffb74d; /* Orange border */
+  background: #9fa8da;
+  border: 0.5vh solid #ffb74d;
   border-radius: 3vh;
   position: relative;
   height: 100%;
@@ -283,7 +299,7 @@
   flex-direction: column;
   box-shadow: inset 0 0 2vh rgba(0,0,0,0.05);
   box-sizing: border-box;
-  overflow: hidden; /* Prevent scrolling on the container itself */
+  overflow: hidden;
 }
 
 .working-area-label {
@@ -300,14 +316,35 @@
   flex: 1;
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 1vh 2vw;
   box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for working area */
+.working-area-half::-webkit-scrollbar {
+  width: 8px;
+}
+
+.working-area-half::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.working-area-half::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+}
+
+.working-area-half::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .positive-half {
-  padding-top: 3.5vh; /* Clear the top label */
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* subtle separator */
+  padding-top: 3.5vh;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .working-area-side-label {
@@ -319,13 +356,69 @@
   font-weight: 800;
   font-size: clamp(0.6rem, 1.2vh, 0.8rem);
   letter-spacing: 0.1vw;
+  z-index: 1;
 }
 
+/* ── Editable Counter Input ─────────────────────────────────── */
+.counter-input-wrap {
+  position: absolute;
+  right: 1.5vw;
+  top: 0.8vh;
+  z-index: 10;
+}
+
+.positive-half .counter-input-wrap {
+  top: 0.8vh;
+}
+
+.negative-half .counter-input-wrap {
+  top: 0.8vh;
+}
+
+.counter-input {
+  width: 50px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: clamp(0.9rem, 1.6vh, 1.1rem);
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  -moz-appearance: textfield;
+}
+
+.counter-input::-webkit-outer-spin-button,
+.counter-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.counter-input:focus {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.counter-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.counter-input.positive-counter {
+  border-color: rgba(100, 181, 246, 0.6);
+}
+
+.counter-input.negative-counter {
+  border-color: rgba(239, 83, 80, 0.6);
+}
+
+/* ── Chips ──────────────────────────────────────────────────── */
 .chips-container {
   display: flex;
   flex-wrap: wrap;
   gap: 1vh;
-  width: 90%; /* leave space for the side label */
+  width: 85%;
   align-items: center;
   align-content: flex-start;
   z-index: 2;
@@ -353,16 +446,16 @@
 }
 
 .chip.positive {
-  background: #64b5f6; /* Blue for positive chips in working area */
+  background: #64b5f6;
 }
 
 .chip.negative {
-  background: #ef5350; /* Red for negative chips in working area */
+  background: #ef5350;
 }
 
 .chip.cancelled {
   opacity: 0.5;
-  background: #bdbdbd; /* Gray out */
+  background: #bdbdbd;
 }
 
 .cancel-x {
@@ -372,25 +465,27 @@
   pointer-events: none;
 }
 
-/* Action Buttons */
+/* ── Action Buttons — Delete Positive / Delete Negative / Clear All ── */
 .action-buttons-row {
   display: flex;
   gap: 1.5vw;
   margin-top: 0.5vh;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .nav-btn {
-  background: #e57373; /* Red/pinkish */
+  background: #e57373;
   color: white;
   border: none;
-  padding: 1vh 3vw;
+  padding: 1vh 2.5vw;
   border-radius: 3vh;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.1);
   transition: transform 0.2s;
-  font-size: clamp(0.8rem, 1.5vh, 1rem);
+  font-size: clamp(0.75rem, 1.4vh, 0.95rem);
 }
 
 .nav-btn:hover:not(:disabled) {
@@ -402,7 +497,19 @@
   cursor: not-allowed;
 }
 
-/* Input Controls Row */
+.delete-pos-btn {
+  background: #e57373;
+}
+
+.delete-neg-btn {
+  background: #e57373;
+}
+
+.clear-btn {
+  background: #e57373;
+}
+
+/* ── Input Controls Row — BIGGER Answer ─────────────────────── */
 .input-controls-row {
   display: flex;
   align-items: center;
@@ -436,7 +543,7 @@
   display: flex;
   align-items: center;
   background: white;
-  padding: 0.5vh 1.5vw;
+  padding: 0.8vh 2vw;
   border-radius: 3vh;
   box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.05);
 }
@@ -445,24 +552,105 @@
   font-weight: bold;
   color: #8b5a2b;
   margin-right: 1vw;
-  font-size: clamp(0.8rem, 1.5vh, 1rem);
+  font-size: clamp(1rem, 2vh, 1.3rem);
 }
 
 .answer-input {
   border: none;
   background: #f5f5f5;
-  padding: 0.5vh 1.5vw;
+  padding: 1vh 1.5vw;
   border-radius: 2vh;
-  width: min(20vw, 150px);
+  width: min(22vw, 170px);
   text-align: center;
   font-weight: bold;
   color: #424242;
   outline: none;
-  font-size: clamp(0.9rem, 1.8vh, 1.1rem);
+  font-size: clamp(1.1rem, 2.2vh, 1.4rem);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .a1-header-right {
+    gap: 4px;
+  }
+
+  .a1-diff-pill {
+    padding: 0.8vh 0.8vw;
+    font-size: 0.65rem;
+  }
+
+  .a1-title-pill {
+    font-size: 0.85rem;
+    padding: 0.8vh 2vw;
+  }
+
+  .question-box p {
+    font-size: 1rem;
+  }
+
+  .counter-input {
+    width: 40px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+
+  .action-buttons-row {
+    gap: 8px;
+  }
+
+  .nav-btn {
+    padding: 0.8vh 2vw;
+    font-size: 0.7rem;
+  }
 }
 
 @media (max-width: 600px) {
   .working-area-side-label {
     display: none;
+  }
+
+  .a1-header-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .activity-one-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .a1-title-pill {
+    position: static;
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .sari-content-inner {
+    padding: 6vh 2vw 1vh;
+  }
+
+  .question-box p {
+    font-size: 0.9rem;
+  }
+
+  .directions-box p {
+    font-size: 0.7rem;
+  }
+
+  .input-label {
+    font-size: 0.85rem;
+  }
+
+  .answer-input {
+    font-size: 0.95rem;
+    width: min(30vw, 130px);
+  }
+
+  .counter-input {
+    width: 36px;
+    height: 28px;
+    font-size: 0.8rem;
   }
 }

@@ -1,29 +1,22 @@
 import React, { useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-import { TopBar } from '../../layout/TopBar';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import teacherIdea from '../../../assets/teacher_clip_images/teacher_has_an_idea.png';
 import teacherNotes from '../../../assets/teacher_clip_images/teacher_laughing_taking_notes.png';
 import teacherClap from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
 import gatekeeperVideo from '../../../assets/videos/gatekeeper_full_video_for_activities.mp4';
+import { isActivityUnlocked } from '../../../utils/activityProgress';
 import { playSound } from '../../../utils/sound';
-import '../guide/GuideContent.css'; // For the generic container layout
+import '../guide/GuideContent.css';
 import './ActivityVideoGatekeeper.css';
 
-// Teacher images for each activity
 const teacherImages: Record<string, string> = {
   '1': teacherIdea,
   '2': teacherNotes,
   '3': teacherClap,
 };
 
-// Video timestamps (in seconds) for each activity segment
-// Source video: gatekeeper_full_video_for_activities.mp4
-// Act 1: 0:00 - 8:33 (0s to 513s)
-// Act 2: 8:33 - 12:22 (513s to 742s)
-// Act 3: 12:22 - 18:31 (742s to 1111s)
 const videoTimestamps: Record<string, { start: number; end: number }> = {
   '1': { start: 0, end: 513 },
   '2': { start: 513, end: 742 },
@@ -38,7 +31,13 @@ export const ActivityVideoGatekeeper: React.FC = () => {
   const timestamps = id && videoTimestamps[id] ? videoTimestamps[id] : videoTimestamps['1'];
   const teacherImg = id && teacherImages[id] ? teacherImages[id] : teacherIdea;
 
-  // Set start time and enforce end time boundary
+  useEffect(() => {
+    const activityId = Number(id) as 1 | 2 | 3;
+    if (![1, 2, 3].includes(activityId) || !isActivityUnlocked(activityId)) {
+      navigate('/activity');
+    }
+  }, [id, navigate]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -67,14 +66,17 @@ export const ActivityVideoGatekeeper: React.FC = () => {
   };
 
   return (
-    <div className="guide-container theme-violet">
-      <header className="guide-header">
-        <button className="neo-btn back-chip" onClick={handleBack}>
-          ← <span>Back</span>
+    <div className="guide-page-container theme-violet">
+      <section className="gk-page-intro">
+        <button className="gk-back-link" onClick={handleBack}>
+          Back to Activities
         </button>
-        <h1 className="guide-title-pill">Activity {id} Intro</h1>
-        <TopBar />
-      </header>
+        <div className="gk-page-copy">
+          <p className="gk-page-kicker">Activity {id} Intro</p>
+          <h1>Watch Before You Start</h1>
+          <p>Review the lesson video for this activity first, then proceed once you are ready to solve the tasks.</p>
+        </div>
+      </section>
 
       <div className="gk-layout">
         <div className="gk-main-content">
@@ -98,7 +100,7 @@ export const ActivityVideoGatekeeper: React.FC = () => {
             </Button>
           </Card>
         </div>
-        
+
         <div className="gk-side-character">
           <img src={teacherImg} alt="Teacher" className="gk-teacher-image" draggable="false" />
         </div>
@@ -106,4 +108,3 @@ export const ActivityVideoGatekeeper: React.FC = () => {
     </div>
   );
 };
-

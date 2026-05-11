@@ -1,67 +1,118 @@
 import React from 'react';
+import { ArrowRight, ClipboardCheck, Lock, MoveHorizontal } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, FileEdit, Search } from 'lucide-react';
-import { Card } from '../../common/Card';
-import { TopBar } from '../../layout/TopBar';
-import teacherClip from '../../../assets/teacher_clip_images/teacher_has_an_idea.png';
+import heroStudentImg from '../../../assets/student_clip_images/student_waving_smiling_holding_pencil.png';
+import { getActivityProgress, isActivityUnlocked } from '../../../utils/activityProgress';
 import './ActivityContent.css';
-import '../guide/GuideContent.css'; // Reuse header styles
+
+type ActivityCardData = {
+  id: 1 | 2 | 3;
+  title: string;
+  subtitle: string;
+};
+
+const ACTIVITY_CARDS: ActivityCardData[] = [
+  { id: 1, title: 'Activity 1', subtitle: 'Integer Chip' },
+  { id: 2, title: 'Activity 2', subtitle: 'Number line' },
+  { id: 3, title: 'Activity 3', subtitle: 'Integer Rules' },
+];
+
+const IntegerChipIcon: React.FC = () => (
+  <div className="activity-chip-icon" aria-hidden="true">
+    <div className="activity-chip activity-chip-negative">−</div>
+    <div className="activity-chip activity-chip-positive-left">+</div>
+    <div className="activity-chip activity-chip-positive-right">+</div>
+  </div>
+);
+
+const NumberLineIcon: React.FC = () => (
+  <div className="activity-numberline-icon" aria-hidden="true">
+    <div className="activity-numberline-track" />
+    <div className="activity-numberline-tick tick-left" />
+    <div className="activity-numberline-tick tick-mid-left" />
+    <div className="activity-numberline-tick tick-zero" />
+    <div className="activity-numberline-tick tick-mid-right" />
+    <div className="activity-numberline-tick tick-right" />
+    <MoveHorizontal size={20} className="activity-numberline-arrows" />
+    <span className="activity-numberline-neg">−</span>
+    <span className="activity-numberline-zero">0</span>
+    <span className="activity-numberline-pos">+</span>
+  </div>
+);
+
+const IntegerRulesIcon: React.FC = () => (
+  <div className="activity-rules-icon" aria-hidden="true">
+    <ClipboardCheck size={64} strokeWidth={1.8} />
+  </div>
+);
+
+function renderCardIcon(activityId: 1 | 2 | 3) {
+  if (activityId === 1) return <IntegerChipIcon />;
+  if (activityId === 2) return <NumberLineIcon />;
+  return <IntegerRulesIcon />;
+}
 
 export const ActivityContent: React.FC = () => {
   const navigate = useNavigate();
+  const [completed, setCompleted] = React.useState<number[]>([]);
+
+  React.useEffect(() => {
+    setCompleted(getActivityProgress().completed);
+  }, []);
 
   return (
-    <div className="guide-page-container activity-page-container">
-      <header className="guide-header">
-        <button className="neo-btn back-chip" onClick={() => navigate('/')}>
-          ← <span>Back</span>
-        </button>
-        <h1 className="guide-title-pill">Activity Card</h1>
-        <TopBar />
-      </header>
+    <div className="activity-showcase-page">
+      <section className="activity-showcase-hero">
+        <div className="activity-showcase-copy">
+          <h1>Activity Card</h1>
+          <p>
+            Choose an activity to strengthen your understanding of integers through interactive practice and
+            real-world examples.
+          </p>
 
-      <div className="activity-layout">
-        <div className="activity-main-content">
-          <div className="activity-options-grid">
-            <Card className="activity-option-card" onClick={() => navigate('/activity/1/intro')}>
-              <div className="activity-icon-container">
-                <ShoppingCart size={40} strokeWidth={2} />
-              </div>
-              <div className="activity-text-content">
-                <h3>Activity 1</h3>
-                <p>Integer Chip</p>
-              </div>
-              <button className="neo-btn activity-start-btn">Start Activity</button>
-            </Card>
-            
-            <Card className="activity-option-card" onClick={() => navigate('/activity/2/intro')}>
-              <div className="activity-icon-container">
-                <FileEdit size={40} strokeWidth={2} />
-              </div>
-              <div className="activity-text-content">
-                <h3>Activity 2</h3>
-                <p>Number line</p>
-              </div>
-              <button className="neo-btn activity-start-btn">Start Activity</button>
-            </Card>
+          <div className="activity-card-grid">
+            {ACTIVITY_CARDS.map((card) => {
+              const unlocked = isActivityUnlocked(card.id);
+              const completedCard = completed.includes(card.id);
 
-            <Card className="activity-option-card" onClick={() => navigate('/activity/3/intro')}>
-              <div className="activity-icon-container">
-                <Search size={40} strokeWidth={2} />
-              </div>
-              <div className="activity-text-content">
-                <h3>Activity 3</h3>
-                <p>Integer Rules</p>
-              </div>
-              <button className="neo-btn activity-start-btn">Start Activity</button>
-            </Card>
+              return (
+                <article
+                  key={card.id}
+                  className={`activity-showcase-card${unlocked ? '' : ' is-locked'}${completedCard ? ' is-complete' : ''}`}
+                >
+                  <div className="activity-showcase-card-inner">
+                    <div className="activity-showcase-icon-wrap">
+                      {renderCardIcon(card.id)}
+                    </div>
+                    <h2>{card.title}</h2>
+                    <p>{card.subtitle}</p>
+
+                    {unlocked ? (
+                      <button
+                        className="activity-showcase-cta"
+                        onClick={() => navigate(`/activity/${card.id}/intro`)}
+                      >
+                        <span>Start Activity</span>
+                        <ArrowRight size={22} strokeWidth={3} />
+                      </button>
+                    ) : (
+                      <div className="activity-showcase-lock" aria-label={`${card.title} is locked`}>
+                        <Lock size={42} strokeWidth={2.4} />
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
-        
-        <div className="activity-side-character">
-          <img src={teacherClip} alt="Teacher" className="teacher-image" />
+
+        <div className="activity-showcase-visual">
+          <div className="activity-showcase-visual-frame">
+            <img src={heroStudentImg} alt="Student ready for activities" className="activity-showcase-student" />
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
