@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactElement } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { HomeContent } from './components/features/home/HomeContent';
@@ -21,7 +21,7 @@ import { isPrimaryNavPathUnlocked } from './utils/learningProgress';
 
 type UnlockGuardProps = {
   path: string;
-  children: JSX.Element;
+  children: ReactElement;
 };
 
 const UnlockGuard = ({ path, children }: UnlockGuardProps) => {
