@@ -50,6 +50,7 @@
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
 .landing-nav-link::after {
@@ -72,6 +73,16 @@
 
 .landing-nav-link.active::after {
   transform: translateX(-50%) scaleX(1);
+}
+
+.landing-nav-link.is-locked {
+  color: #8a93ab;
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.landing-nav-link.is-locked::after {
+  display: none;
 }
 
 .landing-header-settings {
