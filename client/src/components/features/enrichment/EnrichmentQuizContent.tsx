@@ -6,6 +6,7 @@ import { musicManager } from '../../../utils/music';
 import { crosswordLevels, GRID_ROWS, GRID_COLS } from './crosswordData';
 import type { CWCell } from './crosswordData';
 import enrichmentBg from '../../../assets/images/enrichment_bg.png';
+import { markEnrichmentComplete } from '../../../utils/learningProgress';
 import './EnrichmentQuizContent.css';
 
 type Theme = 'violet' | 'green' | 'red' | 'blue';
@@ -80,6 +81,12 @@ export const EnrichmentQuizContent: React.FC = () => {
     if (isMusicEnabled) musicManager.play();
     else musicManager.pause();
   }, [isMusicEnabled]);
+
+  useEffect(() => {
+    if (!isFinished) return;
+
+    markEnrichmentComplete();
+  }, [isFinished]);
 
   const totalBlanks = blankCells().length;
   const totalAllBlanks = crosswordLevels.reduce((sum, lvl) => {
