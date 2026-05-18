@@ -5,6 +5,7 @@ import confusedStudentImg from '../../../assets/student_clip_images/student_scra
 import heroStudentImg from '../../../assets/student_clip_images/student_has_an_idea.png';
 import teacherImg from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
 import guideVideo from '../../../assets/videos/guide_page_video.mp4';
+import { markGuideComplete } from '../../../utils/learningProgress';
 import './GuideContent.css';
 
 const FadeInMount: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -139,6 +140,7 @@ export const GuideContent: React.FC = () => {
                   className="complete-btn"
                   onClick={(e) => {
                     e.stopPropagation();
+                    markGuideComplete();
                     navigate('/activity');
                   }}
                 >
