@@ -1,3 +1,5 @@
+import { emitProgressUpdated } from './progressEvents';
+
 export type ActivityId = 1 | 2 | 3;
 
 const STORAGE_KEY = 'subtracted-activity-progress';
@@ -43,6 +45,14 @@ export function markActivityComplete(activityId: ActivityId) {
   };
 
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+  emitProgressUpdated();
+}
+
+export function resetActivityProgress() {
+  if (!isBrowser()) return;
+
+  window.localStorage.removeItem(STORAGE_KEY);
+  emitProgressUpdated();
 }
 
 export function isActivityComplete(activityId: ActivityId) {
