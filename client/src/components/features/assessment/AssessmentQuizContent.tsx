@@ -4,6 +4,7 @@ import { Settings, X, Music, Palette, CheckCircle2, XCircle, ArrowLeft, RefreshC
 import { playSound } from '../../../utils/sound';
 import { musicManager } from '../../../utils/music';
 import { assessmentData } from './assessmentData';
+import { markAssessmentComplete } from '../../../utils/learningProgress';
 import './AssessmentContent.css';
 
 type Theme = 'violet' | 'green' | 'red' | 'blue';
@@ -58,6 +59,12 @@ export const AssessmentQuizContent: React.FC = () => {
     }
     return () => clearTimeout(timer);
   }, [modalState, isLastQuestion]);
+
+  useEffect(() => {
+    if (!isFinished) return;
+
+    markAssessmentComplete();
+  }, [isFinished]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
