@@ -13,17 +13,21 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../common/Button';
+import { Modal } from '../../common/Modal';
 import subtractedLogo from '../../../assets/subtracted_logo.png';
 import textLogo from '../../../assets/images/text_logo.png';
 import harryAvatar from '../../../assets/researchers/harryArnold.png';
 import imaeAvatar from '../../../assets/researchers/imaeCuesta.png';
+import { useLearningProgressMetrics } from '../../../hooks/useLearningProgressMetrics';
+import { useNavigationUnlockState } from '../../../hooks/useNavigationUnlockState';
+import { resetLearningProgress } from '../../../utils/learningProgress';
 import './HomeContent.css';
 
 const LEARNING_CARDS = [
-  { id: 1, title: 'Guide Card', icon: BookOpen, accent: 'blue', path: '/guide' },
-  { id: 2, title: 'Activity Card', icon: Pencil, accent: 'green', path: '/activity' },
-  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, accent: 'purple', path: '/assessment' },
-  { id: 4, title: 'Enrichment Card', icon: Star, accent: 'yellow', path: '/enrichment' },
+  { id: 1, title: 'Guide Card', icon: BookOpen, accent: 'blue', path: '/guide', unlockKey: 'guide' },
+  { id: 2, title: 'Activity Card', icon: Pencil, accent: 'green', path: '/activity', unlockKey: 'activities' },
+  { id: 3, title: 'Assessment Card', icon: ClipboardCheck, accent: 'purple', path: '/assessment', unlockKey: 'assessments' },
+  { id: 4, title: 'Enrichment Card', icon: Star, accent: 'yellow', path: '/enrichment', unlockKey: 'enrichment' },
 ] as const;
 
 const REFERENCES = [
@@ -59,9 +63,38 @@ const RESEARCHERS = [
 export const HomeContent: React.FC = () => {
   const navigate = useNavigate();
   const [openPanel, setOpenPanel] = React.useState<'researchers' | 'references' | null>(null);
+  const [isResetModalOpen, setIsResetModalOpen] = React.useState(false);
+  const unlockState = useNavigationUnlockState();
+  const progress = useLearningProgressMetrics();
+  const progressLabel = Number.isInteger(progress.exactPercentage)
+    ? `${progress.exactPercentage}%`
+    : `${progress.exactPercentage.toFixed(2)}%`;
+
+  const progressHeading = progress.exactPercentage === 100
+    ? 'All done!'
+    : progress.exactPercentage >= 75
+      ? 'Almost there!'
+      : progress.exactPercentage >= 25
+        ? 'Keep it up!'
+        : 'Great start!';
+
+  const progressMessage = progress.enrichmentCompleted
+    ? 'You completed every card.'
+    : !progress.guideCompleted
+      ? 'Finish the guide to unlock more.'
+      : progress.completedActivities < 3
+        ? `${3 - progress.completedActivities} activit${3 - progress.completedActivities === 1 ? 'y' : 'ies'} left to finish.`
+        : !progress.assessmentCompleted
+          ? 'Assessment is ready for you.'
+          : 'Finish enrichment to reach 100%.';
 
   const togglePanel = (panel: 'researchers' | 'references') => {
     setOpenPanel((current) => (current === panel ? null : panel));
+  };
+
+  const handleResetProgress = () => {
+    resetLearningProgress();
+    setIsResetModalOpen(false);
   };
 
   return (
@@ -106,35 +139,54 @@ export const HomeContent: React.FC = () => {
             <span>Your Progress</span>
           </div>
 
-          <div className="home-progress-ring">
+          <div
+            className="home-progress-ring"
+            style={{ background: `conic-gradient(var(--theme-primary) 0 ${progress.exactPercentage}%, #e9effa ${progress.exactPercentage}% 100%)` }}
+          >
             <div className="home-progress-ring-inner">
-              <strong>72%</strong>
+              <strong>{progressLabel}</strong>
               <span>Completed</span>
             </div>
           </div>
 
           <div className="home-progress-copy">
-            <h2>Keep it up!</h2>
-            <p>You're doing great.</p>
+            <h2>{progressHeading}</h2>
+            <p>{progressMessage}</p>
           </div>
 
-          <button type="button" className="home-inline-link" onClick={() => navigate('/assessment')}>
-            <span>View Progress</span>
-            <ArrowRight size={16} />
-          </button>
+          <div className="home-progress-actions">
+            <button
+              type="button"
+              className="home-inline-link"
+              onClick={() => navigate('/progress')}
+            >
+              <span>View Progress</span>
+              <ArrowRight size={16} />
+            </button>
+
+            <button
+              type="button"
+              className="home-inline-link home-inline-link-reset"
+              onClick={() => setIsResetModalOpen(true)}
+            >
+              <span>Reset</span>
+            </button>
+          </div>
         </aside>
       </section>
 
       <section className="cards-grid">
         {LEARNING_CARDS.map((card) => {
           const IconComponent = card.icon;
+          const unlocked = unlockState[card.unlockKey];
 
           return (
             <button
               key={card.id}
               type="button"
-              className="module-card"
-              onClick={() => navigate(card.path)}
+              className={`module-card${unlocked ? '' : ' is-locked'}`}
+              onClick={unlocked ? () => navigate(card.path) : undefined}
+              disabled={!unlocked}
             >
               <div className={`card-icon-wrapper card-icon-${card.accent}`}>
                 <IconComponent size={34} strokeWidth={2.3} />
@@ -266,6 +318,42 @@ export const HomeContent: React.FC = () => {
           </div>
         </article>
       </section>
+
+      <Modal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        title="Reset Progress?"
+        type="error"
+        contentClassName="home-reset-dialog"
+        actions={(
+          <div className="home-reset-actions">
+            <button
+              type="button"
+              className="home-reset-btn home-reset-btn-cancel"
+              onClick={() => setIsResetModalOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="home-reset-btn home-reset-btn-confirm"
+              onClick={handleResetProgress}
+            >
+              Reset Progress
+            </button>
+          </div>
+        )}
+      >
+        <div className="home-reset-copy">
+          <p>
+            This will clear all saved progress for this user on this device.
+          </p>
+          <p>
+            Guide, activities, assessment, and enrichment progress will all be reset to zero.
+          </p>
+        </div>
+      </Modal>
+
     </div>
   );
 };
