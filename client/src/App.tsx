@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { HomeContent } from './components/features/home/HomeContent';
 import { AboutContent } from './components/features/about/AboutContent';
@@ -13,9 +13,24 @@ import { AssessmentContent } from './components/features/assessment/AssessmentCo
 import { AssessmentQuizContent } from './components/features/assessment/AssessmentQuizContent';
 import { EnrichmentContent } from './components/features/enrichment/EnrichmentContent';
 import { EnrichmentQuizContent } from './components/features/enrichment/EnrichmentQuizContent';
+import { ProgressContent } from './components/features/progress/ProgressContent';
 import { playSound, getAudioContext } from './utils/sound';
 import { musicManager } from './utils/music';
 import { OfflineReadyBanner } from './components/common/OfflineReadyBanner';
+import { isPrimaryNavPathUnlocked } from './utils/learningProgress';
+
+type UnlockGuardProps = {
+  path: string;
+  children: JSX.Element;
+};
+
+const UnlockGuard = ({ path, children }: UnlockGuardProps) => {
+  if (!isPrimaryNavPathUnlocked(path)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 function App() {
   const location = useLocation();
@@ -62,11 +77,11 @@ function App() {
     <>
       <OfflineReadyBanner />
       <Routes>
-        <Route path="/activity/1" element={<ActivityOneContent />} />
-        <Route path="/activity/2" element={<ActivityTwoContent />} />
-        <Route path="/activity/3" element={<ActivityThreeContent />} />
-        <Route path="/assessment/quiz" element={<AssessmentQuizContent />} />
-        <Route path="/enrichment/quiz" element={<EnrichmentQuizContent />} />
+        <Route path="/activity/1" element={<UnlockGuard path="/activity/1"><ActivityOneContent /></UnlockGuard>} />
+        <Route path="/activity/2" element={<UnlockGuard path="/activity/2"><ActivityTwoContent /></UnlockGuard>} />
+        <Route path="/activity/3" element={<UnlockGuard path="/activity/3"><ActivityThreeContent /></UnlockGuard>} />
+        <Route path="/assessment/quiz" element={<UnlockGuard path="/assessment/quiz"><AssessmentQuizContent /></UnlockGuard>} />
+        <Route path="/enrichment/quiz" element={<UnlockGuard path="/enrichment/quiz"><EnrichmentQuizContent /></UnlockGuard>} />
       </Routes>
       <Routes>
         <Route path="/activity/1" element={null} />
@@ -80,10 +95,11 @@ function App() {
               <Route path="/" element={<HomeContent />} />
               <Route path="/about" element={<AboutContent />} />
               <Route path="/guide" element={<GuideContent />} />
-              <Route path="/activity" element={<ActivityContent />} />
-              <Route path="/activity/:id/intro" element={<ActivityVideoGatekeeper />} />
-              <Route path="/assessment" element={<AssessmentContent />} />
-              <Route path="/enrichment" element={<EnrichmentContent />} />
+              <Route path="/progress" element={<ProgressContent />} />
+              <Route path="/activity" element={<UnlockGuard path="/activity"><ActivityContent /></UnlockGuard>} />
+              <Route path="/activity/:id/intro" element={<UnlockGuard path="/activity/intro"><ActivityVideoGatekeeper /></UnlockGuard>} />
+              <Route path="/assessment" element={<UnlockGuard path="/assessment"><AssessmentContent /></UnlockGuard>} />
+              <Route path="/enrichment" element={<UnlockGuard path="/enrichment"><EnrichmentContent /></UnlockGuard>} />
             </Routes>
           </MainLayout>
         } />
