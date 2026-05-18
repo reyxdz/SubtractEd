@@ -9,9 +9,22 @@ interface ModalProps {
   type?: 'success' | 'error' | 'info';
   children: React.ReactNode;
   actions?: React.ReactNode;
+  overlayClassName?: string;
+  contentClassName?: string;
+  bodyClassName?: string;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, type = 'info', children, actions }) => {
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  type = 'info',
+  children,
+  actions,
+  overlayClassName = '',
+  contentClassName = '',
+  bodyClassName = '',
+}) => {
   const [render, setRender] = useState(isOpen);
 
   useEffect(() => {
@@ -30,12 +43,12 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, type = 'in
 
   return (
     <div 
-      className={`modal-overlay ${isOpen ? 'open' : 'closed'}`} 
+      className={`modal-overlay ${isOpen ? 'open' : 'closed'} ${overlayClassName}`.trim()} 
       onClick={onClose}
       onAnimationEnd={handleAnimationEnd}
     >
       <div 
-        className={`modal-content modal-${type}`} 
+        className={`modal-content modal-${type} ${contentClassName}`.trim()} 
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
@@ -47,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, type = 'in
           <h2>{title}</h2>
         </div>
         
-        <div className="modal-body">
+        <div className={`modal-body ${bodyClassName}`.trim()}>
           {children}
         </div>
 
