@@ -91,6 +91,12 @@
   transform: scale(1.05);
 }
 
+.a1-title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .a1-title-pill {
   background: white;
   border: 0.3vh solid #e0cdb5;
@@ -102,42 +108,21 @@
   box-shadow: 0 0.5vh 0 #e0cdb5;
   text-transform: uppercase;
   letter-spacing: 0.1vw;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 5;
 }
 
-.a1-header-right {
-  display: flex;
-  gap: 0.5vw;
+.a1-header-spacer {
+  width: 100px;
 }
 
-.a1-diff-pill {
-  border: none;
-  padding: 1vh 1vw;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: clamp(0.7rem, 1.2vh, 0.9rem);
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.2s, transform 0.2s;
-  box-shadow: 0 0.2vh 0.5vh rgba(0,0,0,0.05);
+.current-difficulty-text {
+  font-size: clamp(1.1rem, 2.2vh, 1.6rem);
+  font-weight: 800;
+  color: #c9823a;
+  text-align: center;
+  margin-top: 2px;
+  letter-spacing: 0.05vw;
 }
-
-.a1-diff-pill:hover {
-  opacity: 0.8;
-}
-
-.a1-diff-pill.active {
-  opacity: 1;
-  transform: scale(1.05);
-  box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.1);
-}
-
-.a1-pill-easy { background: #e8f5e9; color: #2e7d32; }
-.a1-pill-moderate { background: #e3f2fd; color: #1565c0; }
-.a1-pill-difficult { background: #fff3e0; color: #e65100; }
 
 /* ── Progress ───────────────────────────────────────────────── */
 .activity-progress-area {
@@ -167,6 +152,66 @@
   background: linear-gradient(90deg, #81c784, #64b5f6);
   border-radius: 4px;
   transition: width 0.3s ease;
+}
+
+/* ── Progress Circles ──────────────────────────────────────────── */
+.progress-circles-container {
+  width: 100%;
+  margin-bottom: 1.5vh;
+  flex-shrink: 0;
+}
+
+.progress-circles {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.progress-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.progress-circle.current {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px #c9823a;
+  z-index: 2;
+}
+
+.progress-circle .circle-number {
+  color: #666;
+  font-size: 11px;
+}
+
+.progress-circle .circle-icon {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.progress-circle.correctFirst {
+  background: #fdd835;
+}
+
+.progress-circle.correctSecond {
+  background: #ff9800;
+}
+
+.progress-circle.wrong {
+  background: #f44336;
 }
 
 /* ── Main Body ──────────────────────────────────────────────── */
@@ -570,15 +615,6 @@
 
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .a1-header-right {
-    gap: 4px;
-  }
-
-  .a1-diff-pill {
-    padding: 0.8vh 0.8vw;
-    font-size: 0.65rem;
-  }
-
   .a1-title-pill {
     font-size: 0.85rem;
     padding: 0.8vh 2vw;
@@ -609,20 +645,14 @@
     display: none;
   }
 
-  .a1-header-right {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
   .activity-one-header {
     flex-wrap: wrap;
     justify-content: center;
     gap: 6px;
   }
 
-  .a1-title-pill {
-    position: static;
-    transform: none;
+  .a1-header-spacer {
+    display: none;
   }
 }
 
