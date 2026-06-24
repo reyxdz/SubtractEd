@@ -2,18 +2,18 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
-import { activity3Questions } from './activity3Data';
-import type { Difficulty, A3Question } from './activity3Data';
+import { pickDifficultPairs, buildA3FromExpr, type A3Question, type A3QuestionPair, type Difficulty } from './activity3Data';
+import { activity3Bank, pickFivePairs, type QPair } from '../../../utils/questionBank';
 import storeBg from '../../../assets/images/activity3_bg.png';
 import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
 import './ActivityThreeContent.css';
 
-// ── Helpers ────────────────────────────────────────────────────
+// ── Helpers ──
 function normalizeValue(s: string): string {
   return s.replace(/\s+/g, '').replace(/[()]/g, '').replace(/[−–]/g, '-').toLowerCase();
 }
 
-// ── Step Cards (Left Panel) ────────────────────────────────────
+// ── Step Cards (Left Panel) ──
 const StepCards: React.FC<{
   question: A3Question;
   difficulty: Difficulty;
@@ -70,37 +70,80 @@ const StepCards: React.FC<{
   );
 };
 
-// ── Main Component ─────────────────────────────────────────────
+// ── Build bank items into A3Question pairs ──
+function buildBankQuestions(pairs: QPair[]): { ft: A3Question; st: A3Question }[] {
+  return pairs.map(p => ({
+    ft: buildA3FromExpr(p.ftExpr, p.ftAns),
+    st: buildA3FromExpr(p.stExpr, p.stAns),
+  }));
+}
+
+// ── Main Component ──
 export const ActivityThreeContent: React.FC = () => {
   const navigate = useNavigate();
 
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [bankItems, setBankItems] = useState<A3QuestionPair[]>([]);
   const [qIndex, setQIndex] = useState(0);
+  const [tryNum, setTryNum] = useState<'first' | 'second'>('first');
+  const [consecutiveStFails, setConsecutiveStFails] = useState(0);
+  const [showingAnswer, setShowingAnswer] = useState(false);
+  const [itemResults, setItemResults] = useState<string[]>(Array(15).fill('unanswered'));
+
+  // Current question
+  const currentQ: A3Question | null = (() => {
+    const item = bankItems[qIndex];
+    if (!item) return null;
+    return tryNum === 'first' ? item.ft : item.st;
+  })();
+
+  // Input boxes
   const [boxKeep, setBoxKeep] = useState('');
   const [boxOp, setBoxOp] = useState('');
   const [boxChange, setBoxChange] = useState('');
   const [boxAnswer, setBoxAnswer] = useState('');
   const [activeStep, setActiveStep] = useState<number | null>(null);
+
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     type: 'success' | 'error' | 'info';
     title: string;
     message: string;
-  }>({ isOpen: false, type: 'info', title: '', message: '' });
+    showNext: boolean;
+  }>({ isOpen: false, type: 'info', title: '', message: '', showNext: false });
   const [hintModalOpen, setHintModalOpen] = useState(false);
+  const [videoRedirectModal, setVideoRedirectModal] = useState(false);
 
   const keepRef = useRef<HTMLInputElement>(null);
   const opRef = useRef<HTMLInputElement>(null);
   const changeRef = useRef<HTMLInputElement>(null);
   const answerRef = useRef<HTMLInputElement>(null);
 
-  const currentQ = activity3Questions[difficulty][qIndex];
-  const total = activity3Questions[difficulty].length;
-  const pct = ((qIndex + 1) / total) * 100;
+  const total = 5;
   const showSteps = difficulty !== 'difficult';
   const showHint = difficulty !== 'difficult';
   const showNumberSentence = difficulty !== 'difficult';
+  const levelOffset = difficulty === 'easy' ? 0 : difficulty === 'moderate' ? 5 : 10;
+  const globalIdx = levelOffset + qIndex;
+  const difficultyLabel = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
 
+  // ── Initialize items on difficulty change ──
+  useEffect(() => {
+    if (difficulty === 'difficult') {
+      setBankItems(pickDifficultPairs());
+    } else {
+      const bank = difficulty === 'easy' ? activity3Bank.easy : activity3Bank.moderate;
+      const picked = pickFivePairs(bank);
+      setBankItems(buildBankQuestions(picked));
+    }
+    setQIndex(0);
+    setTryNum('first');
+    setConsecutiveStFails(0);
+    setShowingAnswer(false);
+    clearInputs();
+  }, [difficulty]);
+
+  // ── Guard ──
   useEffect(() => {
     if (!isActivityUnlocked(3)) {
       navigate('/activity');
@@ -115,7 +158,28 @@ export const ActivityThreeContent: React.FC = () => {
     setActiveStep(null);
   }, []);
 
+  // ── Go to next item ──
+  const goToNext = useCallback(() => {
+    clearInputs();
+    setTryNum('first');
+    setShowingAnswer(false);
+    if (qIndex < total - 1) {
+      setQIndex(i => i + 1);
+    } else if (difficulty === 'easy') {
+      setDifficulty('moderate');
+      setQIndex(0);
+    } else if (difficulty === 'moderate') {
+      setDifficulty('difficult');
+      setQIndex(0);
+    } else {
+      markActivityComplete(3);
+      navigate('/activity');
+    }
+  }, [qIndex, total, difficulty, navigate, clearInputs]);
+
+  // ── Check answer ──
   const handleCheck = useCallback(() => {
+    if (!currentQ) return;
     if (!boxKeep.trim() || !boxOp.trim() || !boxChange.trim() || !boxAnswer.trim()) return;
 
     const keepOk = normalizeValue(boxKeep) === normalizeValue(currentQ.expectedKeep);
@@ -128,27 +192,66 @@ export const ActivityThreeContent: React.FC = () => {
 
     if (keepOk && opOk && changeOk && ansOk) {
       playSound.success();
-      setModalState({ isOpen: true, type: 'success', title: 'Great Job!', message: 'Your answer is correct!' });
-    } else {
-      playSound.error();
+      const result = tryNum === 'first' ? 'correctFirst' : 'correctSecond';
+      setItemResults(prev => {
+        const next = [...prev];
+        next[globalIdx] = result;
+        return next;
+      });
       setModalState({
         isOpen: true,
-        type: 'error',
-        title: currentQ.errorTitle,
-        message: currentQ.errorMessage
+        type: 'success',
+        title: 'Great Job!',
+        message: 'Your answer is correct!',
+        showNext: true,
       });
+    } else {
+      if (tryNum === 'first') {
+        playSound.pop();
+        setTryNum('second');
+        setModalState({
+          isOpen: true,
+          type: 'info',
+          title: 'Try Again!',
+          message: 'That was your first attempt. Here is a similar question for your second try.',
+          showNext: false,
+        });
+        clearInputs();
+      } else {
+        playSound.error();
+        setItemResults(prev => {
+          const next = [...prev];
+          next[globalIdx] = 'wrong';
+          return next;
+        });
+        const newFails = consecutiveStFails + 1;
+        setConsecutiveStFails(newFails);
+
+        if (newFails >= 3) {
+          setVideoRedirectModal(true);
+          setConsecutiveStFails(0);
+          return;
+        }
+
+        setShowingAnswer(true);
+        setModalState({
+          isOpen: true,
+          type: 'error',
+          title: currentQ.errorTitle,
+          message: `The correct answer is ${currentQ.answer}. ${currentQ.errorMessage}`,
+          showNext: true,
+        });
+      }
     }
-  }, [boxKeep, boxOp, boxChange, boxAnswer, currentQ]);
+  }, [currentQ, boxKeep, boxOp, boxChange, boxAnswer, tryNum, consecutiveStFails, clearInputs]);
 
   const handleNext = useCallback(() => {
     playSound.click();
     setModalState(p => ({ ...p, isOpen: false }));
-    clearInputs();
-    if (qIndex < total - 1) { setQIndex(i => i + 1); }
-    else if (difficulty === 'easy') { setDifficulty('moderate'); setQIndex(0); }
-    else if (difficulty === 'moderate') { setDifficulty('difficult'); setQIndex(0); }
-    else { markActivityComplete(3); navigate('/activity'); }
-  }, [qIndex, total, difficulty, navigate, clearInputs]);
+    if (showingAnswer || modalState.showNext) {
+      goToNext();
+    }
+  }, [goToNext, showingAnswer, modalState.showNext]);
 
   const handleRetry = useCallback(() => {
     playSound.click();
@@ -156,7 +259,14 @@ export const ActivityThreeContent: React.FC = () => {
     clearInputs();
   }, [clearInputs]);
 
-  // Handle focus on colored boxes to highlight steps
+  const handleVideoRedirect = useCallback(() => {
+    playSound.click();
+    setVideoRedirectModal(false);
+    setConsecutiveStFails(0);
+    navigate('/activity/3/intro');
+  }, [navigate]);
+
+  // Focus handlers
   const handleBoxFocus = useCallback((stepNum: number) => {
     setActiveStep(stepNum);
   }, []);
@@ -173,24 +283,33 @@ export const ActivityThreeContent: React.FC = () => {
           <button className="a3-back-btn" onClick={() => { playSound.click(); navigate('/activity'); }}>
             ← Back
           </button>
-          <div className="a3-title-pill">Activity 3</div>
+          <div className="a3-title-section">
+            <div className="a3-title-pill">Activity 3</div>
+            <div className="current-difficulty-text">{difficultyLabel}</div>
+          </div>
+          <div className="a3-header-spacer"></div>
         </div>
 
-        {/* Progress */}
-        <div className="a3-progress">
-          <div className="a3-progress-text">
-            <span>Item {qIndex + 1} of {total}</span>
+        {/* Progress Circles */}
+        <div className="progress-circles-container">
+          <div className="progress-circles">
+            {Array.from({ length: 15 }, (_, i) => {
+              const status = itemResults[i];
+              const itemNum = i + 1;
+              const isCurrent = i === globalIdx;
+              return (
+                <div key={i} className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}>
+                  {status === 'correctFirst' || status === 'correctSecond' ? (
+                    <span className="circle-icon">&#10003;</span>
+                  ) : status === 'wrong' ? (
+                    <span className="circle-icon">&#10007;</span>
+                  ) : (
+                    <span className="circle-number">{itemNum}</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          <div className="a3-progress-bar">
-            <div className="a3-progress-fill" style={{ width: `${pct}%` }}></div>
-          </div>
-        </div>
-
-        {/* Difficulty Selection */}
-        <div className="a3-difficulty-row">
-          <button className={`a3-diff-pill pill-easy ${difficulty === 'easy' ? 'active' : ''}`} style={{ cursor: 'default' }}>Easy (1-5)</button>
-          <button className={`a3-diff-pill pill-moderate ${difficulty === 'moderate' ? 'active' : ''}`} style={{ cursor: 'default' }}>Moderate (6-10)</button>
-          <button className={`a3-diff-pill pill-difficult ${difficulty === 'difficult' ? 'active' : ''}`} style={{ cursor: 'default' }}>Difficult (11-15)</button>
         </div>
 
         {/* Directions */}
@@ -198,94 +317,97 @@ export const ActivityThreeContent: React.FC = () => {
           <p>Use the <strong>KEEP-CHANGE-CHANGE</strong> rule to turn the subtraction sentence into an addition sentence. Follow the three steps, then write your new number sentence and answer.</p>
         </div>
 
-        {/* Main Content Area — Steps (left) + Question (right) */}
+        {/* Main Content */}
         <div className={`a3-main-content ${showSteps ? 'with-steps' : 'no-steps'}`}>
-          {/* Steps panel (Easy & Moderate) */}
-          {showSteps && <StepCards question={currentQ} difficulty={difficulty} activeStep={activeStep} />}
+          {showSteps && currentQ && <StepCards question={currentQ} difficulty={difficulty} activeStep={activeStep} />}
 
-          {/* Question + Number Sentence Card */}
-          <div className="a3-question-card">
-            <div className="a3-q-section">
-              <div className="a3-q-badge">Question:</div>
-              <p className="a3-q-text">{currentQ.question}</p>
-            </div>
-            {showNumberSentence && (
-              <div className="a3-s-section">
-                <div className="a3-s-badge">Number Sentence:</div>
-                <div className="a3-s-display">{currentQ.sentence}</div>
+          {/* Question Card */}
+          {currentQ && (
+            <div className="a3-question-card">
+              <div className="a3-q-section">
+                <div className="a3-q-badge">Question:</div>
+                <p className="a3-q-text">{currentQ.question}</p>
               </div>
-            )}
-          </div>
+              {showNumberSentence && (
+                <div className="a3-s-section">
+                  <div className="a3-s-badge">Number Sentence:</div>
+                  <div className="a3-s-display">{currentQ.sentence}</div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Colored Input Boxes */}
-        <div className="a3-input-area">
-          <div className="a3-sentence-boxes">
-            <div className="a3-box-label-row">Write Your New Number Sentence:</div>
-            <div className="a3-boxes-row">
-              <div className="a3-color-box green-box">
-                <input
-                  ref={keepRef}
-                  type="text"
-                  value={boxKeep}
-                  onChange={e => { playSound.tick(); setBoxKeep(e.target.value); }}
-                  onFocus={() => handleBoxFocus(1)}
-                  onBlur={handleBoxBlur}
-                  placeholder=""
-                  aria-label="Keep the minuend"
-                />
-              </div>
-              <div className="a3-color-box blue-box">
-                <input
-                  ref={opRef}
-                  type="text"
-                  value={boxOp}
-                  onChange={e => { playSound.tick(); setBoxOp(e.target.value); }}
-                  onFocus={() => handleBoxFocus(2)}
-                  onBlur={handleBoxBlur}
-                  placeholder=""
-                  aria-label="Change the operation"
-                />
-              </div>
-              <div className="a3-color-box yellow-box">
-                <input
-                  ref={changeRef}
-                  type="text"
-                  value={boxChange}
-                  onChange={e => { playSound.tick(); setBoxChange(e.target.value); }}
-                  onFocus={() => handleBoxFocus(3)}
-                  onBlur={handleBoxBlur}
-                  placeholder=""
-                  aria-label="Change the sign"
-                />
-              </div>
-
-              <div className="a3-equals-sign">=</div>
-
-              <div className="a3-answer-section">
-                <div className="a3-answer-label">Answer:</div>
-                <div className="a3-color-box red-box">
+        {currentQ && (
+          <div className="a3-input-area">
+            <div className="a3-sentence-boxes">
+              <div className="a3-box-label-row">Write Your New Number Sentence:</div>
+              <div className="a3-boxes-row">
+                <div className="a3-color-box green-box">
                   <input
-                    ref={answerRef}
+                    ref={keepRef}
                     type="text"
-                    value={boxAnswer}
-                    onChange={e => { playSound.tick(); setBoxAnswer(e.target.value); }}
-                    onKeyDown={e => { if (e.key === 'Enter') handleCheck(); }}
-                    onFocus={() => setActiveStep(null)}
+                    value={boxKeep}
+                    onChange={e => { playSound.tick(); setBoxKeep(e.target.value); }}
+                    onFocus={() => handleBoxFocus(1)}
+                    onBlur={handleBoxBlur}
                     placeholder=""
-                    aria-label="Final answer"
+                    aria-label="Keep the minuend"
                   />
+                </div>
+                <div className="a3-color-box blue-box">
+                  <input
+                    ref={opRef}
+                    type="text"
+                    value={boxOp}
+                    onChange={e => { playSound.tick(); setBoxOp(e.target.value); }}
+                    onFocus={() => handleBoxFocus(2)}
+                    onBlur={handleBoxBlur}
+                    placeholder=""
+                    aria-label="Change the operation"
+                  />
+                </div>
+                <div className="a3-color-box yellow-box">
+                  <input
+                    ref={changeRef}
+                    type="text"
+                    value={boxChange}
+                    onChange={e => { playSound.tick(); setBoxChange(e.target.value); }}
+                    onFocus={() => handleBoxFocus(3)}
+                    onBlur={handleBoxBlur}
+                    placeholder=""
+                    aria-label="Change the sign"
+                  />
+                </div>
+
+                <div className="a3-equals-sign">=</div>
+
+                <div className="a3-answer-section">
+                  <div className="a3-answer-label">Answer:</div>
+                  <div className="a3-color-box red-box">
+                    <input
+                      ref={answerRef}
+                      type="text"
+                      value={boxAnswer}
+                      onChange={e => { playSound.tick(); setBoxAnswer(e.target.value); }}
+                      onKeyDown={e => { if (e.key === 'Enter') handleCheck(); }}
+                      onFocus={() => setActiveStep(null)}
+                      placeholder=""
+                      aria-label="Final answer"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Buttons */}
-          <div className="a3-action-buttons">
-            <button className="a3-check-btn" onClick={handleCheck}>Check Answer</button>
-            {showHint && <button className="a3-hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}>💡 Hint</button>}
+            {/* Buttons */}
+            <div className="a3-action-buttons">
+              <button className="a3-check-btn" onClick={handleCheck}>Check Answer</button>
+              {showHint && <button className="a3-hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}> Hint</button>}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Success Modal */}
@@ -298,8 +420,16 @@ export const ActivityThreeContent: React.FC = () => {
 
       {/* Error Modal */}
       {modalState.type === 'error' && (
-        <Modal isOpen={modalState.isOpen} type="error" title={modalState.title} onClose={handleRetry}
-          actions={<button className="action-btn" onClick={handleRetry} style={{ width: '100%', background: 'linear-gradient(145deg, #e57373, #d32f2f)', color: 'white', border: 'none' }}>Got It! I'll Try Again</button>}>
+        <Modal isOpen={modalState.isOpen} type="error" title={modalState.title} onClose={handleNext}
+          actions={<button className="action-btn" onClick={handleNext} style={{ width: '100%', background: 'linear-gradient(145deg, #e57373, #d32f2f)', color: 'white', border: 'none' }}>Next Question</button>}>
+          <p>{modalState.message}</p>
+        </Modal>
+      )}
+
+      {/* Info / Second Try Modal */}
+      {modalState.type === 'info' && (
+        <Modal isOpen={modalState.isOpen} type="info" title={modalState.title} onClose={handleRetry}
+          actions={<button className="action-btn" onClick={handleRetry} style={{ width: '100%', background: 'linear-gradient(145deg, #ffb74d, #ff9800)', color: 'white', border: 'none' }}>Got it!</button>}>
           <p>{modalState.message}</p>
         </Modal>
       )}
@@ -309,7 +439,28 @@ export const ActivityThreeContent: React.FC = () => {
         onClose={() => { playSound.click(); setHintModalOpen(false); }}
         actions={<button className="action-btn" onClick={() => { playSound.click(); setHintModalOpen(false); }} style={{ width: '100%', background: '#00E5FF', color: 'white', border: 'none', fontWeight: 'bold', padding: '12px', borderRadius: '9999px', fontSize: '1rem' }}>Got it!</button>}>
         <p style={{ fontSize: '1.2rem', fontWeight: '500', color: '#1e293b' }}>
-          {currentQ.hint || 'No hint available for this level.'}
+          {currentQ?.hint || 'Use KEEP-CHANGE-CHANGE: keep the first number, change minus to plus, flip the sign of the second number.'}
+        </p>
+      </Modal>
+
+      {/* Video Redirect Modal */}
+      <Modal
+        isOpen={videoRedirectModal}
+        type="info"
+        title="Time to Review!"
+        onClose={handleVideoRedirect}
+        actions={
+          <button
+            className="action-btn"
+            onClick={handleVideoRedirect}
+            style={{ width: '100%', background: 'linear-gradient(145deg, #6a1b9a, #4a148c)', color: 'white', fontWeight: 'bold', padding: '12px', borderRadius: '9999px', fontSize: '1rem' }}
+          >
+            Watch Video Tutorial
+          </button>
+        }
+      >
+        <p style={{ fontSize: '1.1rem', fontWeight: '500', color: '#1e293b' }}>
+          It looks like you are having trouble. Let us review the video tutorial before continuing!
         </p>
       </Modal>
     </div>
