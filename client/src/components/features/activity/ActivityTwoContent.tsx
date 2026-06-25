@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
@@ -53,7 +53,10 @@ export const ActivityTwoContent: React.FC = () => {
   const [itemResults, setItemResults] = useState<string[]>(Array(15).fill('unanswered'));
 
   // Current question resolved from items + try
-  const currentQ = getCurrentQuestion(difficulty, items, qIndex, tryNum);
+  const currentQ = useMemo(
+    () => getCurrentQuestion(difficulty, items, qIndex, tryNum),
+    [difficulty, items, qIndex, tryNum]
+  );
 
   // Number line state
   const [startValue, setStartValue] = useState(currentQ?.start ?? 0);
