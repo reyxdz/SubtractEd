@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
 import { markActivityComplete } from '../../../utils/activityProgress';
+import { ResultsSummary } from './ResultsSummary';
+import { ProgressLegend } from '../../common/ProgressLegend';
 import { activity1Bank, pickFivePairs, type QPair } from '../../../utils/questionBank';
 import './ActivityOneContent.css';
 
@@ -56,11 +58,14 @@ export const ActivityOneContent: React.FC = () => {
     isOpen: boolean;
     type: 'success' | 'error' | 'info';
     title: string;
-    message: string;
+    message: React.ReactNode;
     showNext: boolean;
   }>({ isOpen: false, type: 'info', title: '', message: '', showNext: false });
   const [hintModalOpen, setHintModalOpen] = useState(false);
   const [videoRedirectModal, setVideoRedirectModal] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [startTime] = useState(new Date());
+  const [endTime, setEndTime] = useState<Date | null>(null);
 
   // Initialize items when level changes
   useEffect(() => {
@@ -141,8 +146,8 @@ export const ActivityOneContent: React.FC = () => {
       if (levelIdx < LEVEL_ORDER.length - 1) {
         setLevel(LEVEL_ORDER[levelIdx + 1]);
       } else {
-        markActivityComplete(1);
-        navigate('/activity');
+        setEndTime(new Date());
+        setShowSummary(true);
       }
     }
   }, [currentIndex, totalItems, level, navigate]);
@@ -212,7 +217,11 @@ export const ActivityOneContent: React.FC = () => {
           isOpen: true,
           type: 'error',
           title: 'Incorrect',
-          message: `The correct answer is ${currentAnswer}. Let's move to the next question.`,
+          message: (
+            <>
+              The correct answer is <strong>{currentAnswer}</strong>. Let's move to the next question.
+            </>
+          ),
           showNext: true,
         });
       }
@@ -323,6 +332,21 @@ export const ActivityOneContent: React.FC = () => {
   const posChips = chips.filter(c => c.type === 'positive');
   const negChips = chips.filter(c => c.type === 'negative');
 
+  if (showSummary && endTime) {
+    return (
+      <ResultsSummary
+        activityNum={1}
+        itemResults={itemResults}
+        startTime={startTime}
+        endTime={endTime}
+        onProceed={() => {
+          markActivityComplete(1);
+          navigate('/activity');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="activity-one-wrapper" onClick={(e) => {
       const target = e.target as HTMLElement;
@@ -347,7 +371,7 @@ export const ActivityOneContent: React.FC = () => {
           </header>
 
           {/* Progress Circles */}
-          <div className="progress-circles-container">
+          <div className="progress-circles-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="progress-circles">
               {Array.from({ length: 15 }, (_, i) => {
                 const status = itemResults[i];
@@ -366,6 +390,7 @@ export const ActivityOneContent: React.FC = () => {
                 );
               })}
             </div>
+            <ProgressLegend />
           </div>
 
           <div className="activity-main-body">
