@@ -13,4 +13,5 @@ export const MAIN_NAV_ITEMS: NavigationItem[] = [
   { label: 'Assessments', path: '/assessment', unlockKey: 'assessments' },
   { label: 'Enrichment', path: '/enrichment', unlockKey: 'enrichment' },
   { label: 'About', path: '/about', unlockKey: 'about' },
+  { label: 'References', path: '/references', unlockKey: 'about' },
 ];

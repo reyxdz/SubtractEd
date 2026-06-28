@@ -26,6 +26,7 @@ const FadeInMount: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 export const GuideContent: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isVideoFinished, setIsVideoFinished] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const handleTap = () => {
@@ -110,6 +111,12 @@ export const GuideContent: React.FC = () => {
                     Subtract integers using concrete models such as counters and integer chips,
                     pictorial models such as bar models and number lines, and with integers written as numerals.
                   </p>
+                  <h2 style={{ marginTop: '1rem' }}>Objectives</h2>
+                  <ul style={{ listStyleType: 'none', padding: 0, margin: '0.5rem 0' }}>
+                    <li style={{ marginBottom: '0.25rem' }}><strong>Objective 1:</strong> Solve integer subtraction problems using virtual chips inside the digital workspace.</li>
+                    <li style={{ marginBottom: '0.25rem' }}><strong>Objective 2:</strong> Solve integer subtraction problems by moving an interactive character along a horizontal number line.</li>
+                    <li><strong>Objective 3:</strong> Solve integer subtraction problems written as numerals by executing the three-step Keep-Change-Change rule.</li>
+                  </ul>
                 </div>
               </section>
             </FadeInMount>
@@ -124,6 +131,7 @@ export const GuideContent: React.FC = () => {
                     className="guide-video-element"
                     controls
                     preload="metadata"
+                    onEnded={() => setIsVideoFinished(true)}
                   >
                     <source src={guideVideo} type="video/mp4" />
                     Your browser does not support the video tag.
@@ -140,12 +148,20 @@ export const GuideContent: React.FC = () => {
                   className="complete-btn"
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (!isVideoFinished) return;
                     markGuideComplete();
                     navigate('/activity');
                   }}
+                  disabled={!isVideoFinished}
+                  style={{ opacity: isVideoFinished ? 1 : 0.6, cursor: isVideoFinished ? 'pointer' : 'not-allowed' }}
                 >
                   Complete
                 </button>
+                {!isVideoFinished && (
+                  <p style={{ marginTop: '1rem', color: '#666', fontSize: '0.9rem', textAlign: 'center' }}>
+                    Note: You can only click “Complete” when you have FINISHED the video.
+                  </p>
+                )}
               </div>
             </FadeInMount>
           )}
