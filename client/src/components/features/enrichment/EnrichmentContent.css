@@ -1,0 +1,171 @@
+.enrichment-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 1.5rem auto 2.5rem;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16);
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  background-color: #e5f3fd;
+  aspect-ratio: 900 / 506;
+  user-select: none;
+}
+
+.map-background-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Level node positioning container */
+.level-node-container {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+  width: 160px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.level-node-container.locked {
+  cursor: not-allowed;
+}
+
+/* Hover scales up the unlocked icons slightly */
+.level-node-container.unlocked:hover {
+  transform: translate(-50%, -54%) scale(1.1);
+  z-index: 15;
+}
+
+/* Level Icon Wrapper */
+.level-icon-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.level-icon-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Locked level icon image adjustment: dimming and desaturating */
+.level-node-container.locked .level-icon-img {
+  filter: brightness(0.65) saturate(0.7) contrast(0.95);
+}
+
+/* Gold padlock overlay directly on level graphics, centered over the illustration part */
+.level-lock-overlay {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+  animation: padlockPulse 2s infinite ease-in-out;
+}
+
+.level-lock-icon {
+  width: 32px;
+  height: 32px;
+  color: #f1c40f;
+  fill: #f39c12;
+  stroke: #5c3c15;
+  stroke-width: 2.2px;
+  filter: drop-shadow(0 0 12px rgba(241, 196, 15, 0.9)) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+@keyframes padlockPulse {
+  0%, 100% { transform: scale(1) translate(-50%, -50%); }
+  50% { transform: scale(1.08) translate(-46%, -46%); }
+}
+
+/* UNLOCK ANIMATIONS */
+@keyframes shakeLock {
+  0%, 100% { transform: scale(1) translate(-50%, -50%) rotate(0deg); }
+  12%, 37%, 62%, 87% { transform: scale(1.15) translate(-43%, -43%) rotate(-10deg); }
+  25%, 50%, 75% { transform: scale(1.15) translate(-43%, -43%) rotate(10deg); }
+}
+
+@keyframes dissolveLock {
+  0% { transform: scale(1) translate(-50%, -50%); opacity: 1; filter: drop-shadow(0 0 0 gold); }
+  45% { transform: scale(1.6) translate(-31%, -31%); opacity: 0.9; filter: drop-shadow(0 0 15px gold); }
+  100% { transform: scale(0) translate(0, 0); opacity: 0; filter: none; }
+}
+
+@keyframes unlockFlash {
+  0% { filter: brightness(0.65) saturate(0.7) contrast(0.95); transform: scale(1); }
+  45% { filter: brightness(1.25) saturate(1.2) contrast(1.15); transform: scale(1.15); }
+  100% { filter: none; transform: scale(1); }
+}
+
+.animating-unlock .level-lock-overlay {
+  animation: dissolveLock 1.4s forwards cubic-bezier(0.25, 0.8, 0.25, 1);
+  animation-delay: 0.5s;
+}
+
+.animating-unlock.shaking .level-lock-overlay {
+  animation: shakeLock 0.5s ease-in-out;
+}
+
+.animating-unlock .level-icon-img {
+  animation: unlockFlash 1.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  animation-delay: 0.4s;
+}
+
+/* Confetti particles for unlock celebration */
+.unlock-confetti {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 20;
+  animation: confettiExplode 1.3s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+  animation-delay: 0.8s;
+}
+
+@keyframes confettiExplode {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+    opacity: 0;
+  }
+}
