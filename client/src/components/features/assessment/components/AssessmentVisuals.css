@@ -1,0 +1,201 @@
+.ass-chip-visual-container {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.ass-chip-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.ass-chip-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  min-height: 36px;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.ass-chip-section.negative {
+  background: rgba(46, 125, 50, 0.1);
+  border: 1px dashed rgba(46, 125, 50, 0.3);
+}
+
+.ass-chip-section.positive {
+  background: rgba(198, 40, 40, 0.1);
+  border: 1px dashed rgba(198, 40, 40, 0.3);
+}
+
+.ass-visual-chip {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ass-visual-chip.negative {
+  background: #2E7D32; /* Green for negative */
+}
+
+.ass-visual-chip.positive {
+  background: #C62828; /* Red for positive */
+}
+
+.ass-visual-chip.cancelled {
+  opacity: 0.4;
+  filter: grayscale(0.8);
+}
+
+.cancel-x {
+  position: absolute;
+  font-size: 1.4rem;
+  color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.ass-takeaway-indicator {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: var(--ass-primary);
+  font-weight: bold;
+}
+
+/* Number Line Visuals */
+.ass-numberline-visual {
+  width: 100%;
+  padding: 20px 15px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ass-nl-track {
+  position: relative;
+  height: 2px;
+  background: #333;
+  margin: 20px 0;
+}
+
+.ass-nl-main-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.ass-nl-ticks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.ass-nl-tick {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ass-nl-tick-line {
+  width: 2px;
+  height: 12px;
+  background: #333;
+}
+
+.ass-nl-tick-label {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.ass-nl-start-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #1565C0;
+  border-radius: 50%;
+  top: -5px;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.ass-nl-end-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #C62828;
+  border-radius: 50%;
+  top: -5px;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.ass-nl-arrow-container {
+  position: absolute;
+  top: -20px;
+  height: 20px;
+}
+
+.ass-nl-arrow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.ass-nl-arrow-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ass-primary);
+  border-radius: 2px;
+}
+
+.ass-nl-arrow-head {
+  position: absolute;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid var(--ass-primary);
+  border-right: 2px solid var(--ass-primary);
+}
+
+.ass-nl-arrow.right .ass-nl-arrow-head {
+  right: 0;
+  transform: rotate(45deg);
+}
+
+.ass-nl-arrow.left .ass-nl-arrow-head {
+  left: 0;
+  transform: rotate(-135deg);
+}
+
+.ass-nl-arrow-label {
+  position: absolute;
+  top: -15px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--ass-primary);
+}

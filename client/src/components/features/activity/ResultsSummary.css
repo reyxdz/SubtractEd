@@ -1,0 +1,334 @@
+.rs-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f8fafc;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.rs-modal {
+  position: relative;
+  background: white;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 30px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+/* Header */
+
+.rs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.rs-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.rs-icon-star {
+  background: #fde047;
+  color: #ca8a04;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 6px rgba(250, 204, 21, 0.2);
+}
+
+.rs-titles h2 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  color: #1e293b;
+}
+
+.rs-titles p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.rs-time-section {
+  display: flex;
+  gap: 15px;
+  background: #f8fafc;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.rs-time-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rs-time-block:not(:last-child) {
+  padding-right: 15px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.rs-time-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.rs-time-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.rs-time-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Cards */
+
+.rs-cards-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.rs-card {
+  flex: 1;
+  min-width: 160px;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  background: white;
+}
+
+.rs-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+}
+
+.bg-green { background: #22c55e; }
+.bg-orange { background: #f59e0b; }
+.bg-red { background: #ef4444; }
+.bg-blue { background: #3b82f6; }
+
+.card-green { border: 2px solid #bbf7d0; background: #f0fdf4; }
+.card-orange { border: 2px solid #fef08a; background: #fefce8; }
+.card-red { border: 2px solid #fecaca; background: #fef2f2; }
+.card-blue-wide { border: 2px solid #bfdbfe; background: #eff6ff; flex: 1.5; flex-direction: row; justify-content: center; gap: 20px;}
+
+.rs-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.rs-card-info.v-center {
+  align-items: flex-start;
+}
+
+.rs-card-num {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.text-green { color: #16a34a; }
+.text-orange { color: #d97706; }
+.text-red { color: #dc2626; }
+
+.rs-card-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.2;
+}
+
+.rs-card-score {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e3a8a;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.rs-card-status {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rs-percent-pill {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+}
+
+/* Table */
+
+.rs-table-container {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.rs-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.rs-table th {
+  background: #1e3a8a;
+  color: white;
+  padding: 12px 15px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rs-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #475569;
+}
+
+.rs-table tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.rs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.rs-col-bold {
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.rs-check-green { color: #22c55e; font-weight: bold; font-size: 18px; }
+.rs-check-orange { color: #f59e0b; font-weight: bold; font-size: 18px; }
+.rs-cross-red { color: #ef4444; font-weight: bold; font-size: 18px; }
+
+.rs-text-green { color: #16a34a; font-weight: 600; }
+.rs-text-orange { color: #d97706; font-weight: 600; }
+.rs-text-red { color: #dc2626; font-weight: 600; }
+
+.rs-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-correct {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-wrong {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.rs-pill-icon {
+  font-weight: bold;
+}
+
+/* Actions */
+
+.rs-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.rs-btn-outline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rs-btn-outline:hover {
+  background: #eff6ff;
+}
+
+.rs-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #16a34a;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
+}
+
+.rs-btn-primary:hover {
+  background: #15803d;
+}
+
+/* Confetti decorative dots */
+.rs-confetti-1, .rs-confetti-2, .rs-confetti-3, .rs-confetti-4 {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.rs-confetti-1 { top: -10px; left: -10px; background: #fde047; transform: scale(1.5); }
+.rs-confetti-2 { top: 20px; right: -15px; background: #60a5fa; transform: scale(1.2); }
+.rs-confetti-3 { bottom: 40px; left: -20px; background: #f472b6; }
+.rs-confetti-4 { bottom: -10px; right: 20%; background: #34d399; }

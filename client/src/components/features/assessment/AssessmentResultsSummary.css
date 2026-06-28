@@ -1,0 +1,342 @@
+.ars-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.ars-modal {
+  position: relative;
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  margin: auto;
+  box-sizing: border-box;
+  color: #1e293b;
+}
+
+/* Header */
+.ars-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ars-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ars-icon-star {
+  background: #fde047;
+  color: #ca8a04;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transform: rotate(-10deg);
+}
+
+.ars-titles h2 {
+  margin: 0 0 4px 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ars-titles p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.ars-time-section {
+  display: flex;
+  gap: 16px;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.ars-time-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ars-time-block:not(:last-child) {
+  padding-right: 16px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.ars-icon {
+  color: #94a3b8;
+}
+
+.ars-time-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ars-time-label {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ars-time-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* Cards */
+.ars-cards-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.ars-card {
+  flex: 1;
+  min-width: 150px;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  background: white;
+  transition: transform 0.2s;
+}
+
+.ars-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.bg-blue { background: #3b82f6; }
+.bg-red { background: #ef4444; }
+.bg-green { background: #10b981; }
+
+.card-blue-outline { border: 2px solid #dbeafe; background: #f8faff; }
+.card-red-outline { border: 2px solid #fee2e2; background: #fffafb; }
+.card-summary { border: 2px solid #dcfce7; background: #f0fdf4; flex: 1.4; flex-direction: row; justify-content: center; gap: 24px; }
+
+.ars-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ars-card-info.v-center {
+  align-items: flex-start;
+}
+
+.ars-card-num {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.text-blue { color: #1d4ed8; }
+.text-red { color: #b91c1c; }
+
+.ars-card-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.2;
+}
+
+.ars-card-score {
+  font-size: 32px;
+  font-weight: 800;
+  color: #065f46;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.ars-card-status {
+  font-size: 13px;
+  color: #065f46;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ars-percent-pill {
+  background: #059669;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+}
+
+/* Table */
+.ars-table-container {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  margin-bottom: 32px;
+}
+
+.ars-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.ars-table th {
+  background: #1e293b;
+  color: white;
+  padding: 16px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ars-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #334155;
+}
+
+.ars-col-bold {
+  font-weight: 800;
+  color: #3b82f6;
+}
+
+.ars-result-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.ars-status-pill {
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-correct { background: #dcfce7; color: #15803d; }
+.status-incorrect { background: #fee2e2; color: #b91c1c; }
+
+/* Actions */
+.ars-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ars-main-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.ars-btn-outline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: white;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ars-btn-outline:hover { background: #eff6ff; }
+
+.ars-btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ars-btn-secondary:hover { background: #e2e8f0; }
+
+.ars-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.ars-btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+
+/* Confetti decorations */
+.ars-confetti-1, .ars-confetti-2, .ars-confetti-3, .ars-confetti-4 {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.ars-confetti-1 { top: -5px; left: 10%; background: #fde047; }
+.ars-confetti-2 { top: 20px; right: -5px; background: #60a5fa; }
+.ars-confetti-3 { bottom: 40px; left: -5px; background: #f472b6; }
+.ars-confetti-4 { bottom: -5px; right: 20%; background: #34d399; }
+
+@media (max-width: 640px) {
+  .ars-modal { padding: 24px; }
+  .ars-header { flex-direction: column; align-items: center; text-align: center; }
+  .ars-time-section { width: 100%; justify-content: center; }
+  .ars-actions { flex-direction: column; width: 100%; }
+  .ars-main-actions { width: 100%; }
+  .ars-btn-outline, .ars-btn-secondary, .ars-btn-primary { width: 100%; justify-content: center; }
+}
