@@ -1,19 +1,28 @@
 /* gk stands for GateKeeper */
-.gk-page-intro {
+
+/* ── Header Row ── */
+.gk-header-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  align-items: flex-start;
+  justify-content: center;
   width: min(100%, 1320px);
   margin: 0 auto;
-  padding-top: 0.5rem;
+  padding: 1rem 1rem 0.5rem;
+  gap: 1.5rem;
+}
+
+.gk-header-text-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .gk-back-link {
-  width: fit-content;
   border: 0;
   background: rgba(255, 255, 255, 0.72);
   color: var(--theme-primary);
-  padding: 0.7rem 1rem;
+  padding: 0.3rem 0.85rem;
+  margin-bottom: 0.5rem;
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
@@ -31,54 +40,61 @@
 
 .gk-page-copy h1 {
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
   line-height: 1.05;
   color: #15204a;
 }
 
 .gk-page-copy p:last-child {
   margin: 0.45rem 0 0;
-  max-width: 760px;
-  font-size: 1.05rem;
+  max-width: 600px;
+  font-size: 1rem;
   line-height: 1.6;
   color: rgba(46, 58, 89, 0.88);
 }
 
-.gk-layout {
+.gk-side-character {
+  flex-shrink: 0;
+  width: 90px;
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 4vw;
-  flex: 1;
-  width: 100%;
-  padding: 6vh 4vw 2vh;
-  max-width: 1500px;
-  margin: 0 auto;
+  animation: float 6s ease-in-out infinite;
 }
 
-.gk-main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 1100px;
+.gk-teacher-image {
   width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ── Video Section ── */
+.gk-video-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem 2rem 2rem;
 }
 
 .gk-video-card {
   width: 100%;
-  padding: 3vh 3vw;
+  max-width: 960px;
+  padding: 2rem 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 2vh;
+  gap: 1.25rem;
   align-items: center;
   background: rgba(255, 255, 255, 0.9);
 }
 
 .gk-video-title {
-  font-size: clamp(1.2rem, 3vh, 1.8rem);
+  font-size: clamp(1.2rem, 3vh, 1.6rem);
   color: var(--theme-primary);
   text-align: center;
   margin: 0;
@@ -97,46 +113,33 @@
 .gk-proceed-btn {
   width: 100%;
   max-width: 400px;
-  padding: 2vh;
-  font-size: clamp(1rem, 2.5vh, 1.4rem);
+  padding: 1rem;
+  font-size: clamp(1rem, 2.5vh, 1.2rem);
   background: linear-gradient(145deg, var(--theme-primary), var(--theme-accent));
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.gk-side-character {
-  flex-shrink: 0;
-  width: 15vw;
-  max-width: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: float 6s ease-in-out infinite;
-}
-
-.gk-teacher-image {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
 @media (max-width: 768px) {
-  .gk-layout {
+  .gk-header-row {
     flex-direction: column;
-    padding: 2vh 2vw;
+    align-items: center;
+    text-align: center;
+    padding: 0.75rem;
   }
 
-  .gk-page-intro {
-    padding-bottom: 0.5rem;
+  .gk-header-text-block {
+    align-items: center;
   }
-  
+
   .gk-side-character {
-    width: 40vw;
-    margin-top: 2vh;
+    width: 70px;
+  }
+
+  .gk-video-card {
+    padding: 1rem;
+  }
+
+  .gk-video-section {
+    padding: 0.5rem 0.75rem 1.5rem;
   }
 }
