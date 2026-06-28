@@ -1,0 +1,106 @@
+.progress-legend-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.progress-legend-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #a8a8a8;
+  color: white;
+  border: 2px solid white;
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background 0.2s, transform 0.2s;
+  padding: 0;
+}
+
+.progress-legend-btn:hover,
+.progress-legend-btn.active {
+  background: #7a7a7a;
+  transform: scale(1.05);
+}
+
+.progress-legend-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 200px;
+  z-index: 100;
+  border: 1px solid #f0f0f0;
+}
+
+/* Optional caret/arrow pointing up */
+.progress-legend-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  transform: rotate(45deg);
+  border-left: 1px solid #f0f0f0;
+  border-top: 1px solid #f0f0f0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.legend-icon.correct-first {
+  background: #2196f3; /* Based on image: blue for correct first */
+}
+/* Wait, is Activity 1 using yellow/orange for correctFirst normally? Let's check existing progress-circle CSS */
+
+/* The actual colors in the UI image provided by user:
+   Blue check: Correct first try
+   Orange check: Correct second try
+   Red X: Incorrect
+   Grey: Unanswered
+*/
+
+.legend-icon.correct-second {
+  background: #ff9800;
+}
+
+.legend-icon.wrong {
+  background: #f44336;
+}
+
+.legend-icon.unanswered {
+  background: #d0d0d0;
+}
