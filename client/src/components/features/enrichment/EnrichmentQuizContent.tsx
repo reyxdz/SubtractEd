@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Settings, X, Music, Palette, CheckCircle2, XCircle, ArrowLeft, RefreshCw, Home, Trophy } from 'lucide-react';
 import { playSound } from '../../../utils/sound';
 import { musicManager } from '../../../utils/music';
 import { crosswordLevels, GRID_ROWS, GRID_COLS } from './crosswordData';
 import type { CWCell } from './crosswordData';
 import enrichmentBg from '../../../assets/images/enrichment_bg.png';
-import { markEnrichmentComplete } from '../../../utils/learningProgress';
+import {
+  markEnrichmentComplete,
+  getEnrichmentHighestUnlockedLevel,
+  setEnrichmentHighestUnlockedLevel,
+  setEnrichmentJustUnlockedLevel,
+} from '../../../utils/learningProgress';
 import './EnrichmentQuizContent.css';
 
 type Theme = 'violet' | 'green' | 'red' | 'blue';
@@ -14,8 +19,25 @@ type ModalState = 'none' | 'settings' | 'correct' | 'incorrect' | 'level-complet
 
 export const EnrichmentQuizContent: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [levelIndex, setLevelIndex] = useState(0);
+  const getInitialLevelIndex = () => {
+    const params = new URLSearchParams(location.search);
+    const lvlParam = params.get('level');
+    if (lvlParam) {
+      const parsed = parseInt(lvlParam, 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 6) {
+        return parsed - 1;
+      }
+    }
+    if (location.state && typeof (location.state as any).levelIndex === 'number') {
+      const idx = (location.state as any).levelIndex;
+      if (idx >= 0 && idx < 6) return idx;
+    }
+    return 0; // Default to Level 1
+  };
+
+  const [levelIndex, setLevelIndex] = useState(getInitialLevelIndex);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [correctCells, setCorrectCells] = useState<Set<string>>(new Set());
   const [score, setScore] = useState(0);
@@ -125,6 +147,14 @@ export const EnrichmentQuizContent: React.FC = () => {
       const allBlanks = blankCells();
       const newCorrectCount = correctCells.size + 1;
       if (newCorrectCount >= allBlanks.length) {
+        if (levelIndex < crosswordLevels.length - 1) {
+          const nextLevelNum = levelIndex + 2; // e.g. lvl 1 (index 0) completes, nextLevelNum = 2
+          const currentHighest = getEnrichmentHighestUnlockedLevel();
+          if (nextLevelNum > currentHighest) {
+            setEnrichmentHighestUnlockedLevel(nextLevelNum);
+            setEnrichmentJustUnlockedLevel(nextLevelNum);
+          }
+        }
         setTimeout(() => {
           if (levelIndex < crosswordLevels.length - 1) {
             setModalState('level-complete');
@@ -150,7 +180,7 @@ export const EnrichmentQuizContent: React.FC = () => {
   const handleNextLevel = () => {
     playSound.click();
     setModalState('none');
-    setLevelIndex(prev => prev + 1);
+    navigate('/enrichment');
   };
 
   const handleRestart = () => {
