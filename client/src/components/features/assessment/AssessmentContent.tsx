@@ -27,8 +27,7 @@ export const AssessmentContent: React.FC = () => {
 
             <h2>Check Your Understanding</h2>
             <p>
-              Welcome to the Assessment Card page. This section is intended for quizzes or evaluation tasks to measure
-              student understanding of subtraction of integers.
+              Welcome to the Assessment Card. This section is intended to measure student understanding of subtraction of integers.
             </p>
 
             <button className="assessment-feature-cta" onClick={() => navigate('/assessment/quiz')}>
