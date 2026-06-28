@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { HomeContent } from './components/features/home/HomeContent';
 import { AboutContent } from './components/features/about/AboutContent';
+import { ReferencesContent } from './components/features/references/ReferencesContent';
 import { GuideContent } from './components/features/guide/GuideContent';
 import { ActivityContent } from './components/features/activity/ActivityContent';
 import { ActivityOneContent } from './components/features/activity/ActivityOneContent';
@@ -94,6 +95,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomeContent />} />
               <Route path="/about" element={<AboutContent />} />
+              <Route path="/references" element={<ReferencesContent />} />
               <Route path="/guide" element={<GuideContent />} />
               <Route path="/progress" element={<ProgressContent />} />
               <Route path="/activity" element={<UnlockGuard path="/activity"><ActivityContent /></UnlockGuard>} />
