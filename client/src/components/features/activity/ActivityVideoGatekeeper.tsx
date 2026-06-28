@@ -67,43 +67,42 @@ export const ActivityVideoGatekeeper: React.FC = () => {
 
   return (
     <div className="guide-page-container theme-violet">
-      <section className="gk-page-intro">
-        <button className="gk-back-link" onClick={handleBack}>
-          Back to Activities
-        </button>
-        <div className="gk-page-copy">
-          <p className="gk-page-kicker">Activity {id} Intro</p>
-          <h1>Watch Before You Start</h1>
-          <p>Review the lesson video for this activity first, then proceed once you are ready to solve the tasks.</p>
-        </div>
-      </section>
-
-      <div className="gk-layout">
-        <div className="gk-main-content">
-          <Card className="gk-video-card">
-            <h2 className="gk-video-title">Watch this video before starting Activity {id}!</h2>
-            <div className="gk-video-wrapper">
-              <video
-                ref={videoRef}
-                width="100%"
-                height="100%"
-                controls
-                preload="metadata"
-                style={{ borderRadius: '12px' }}
-              >
-                <source src={gatekeeperVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            <Button className="gk-proceed-btn" onClick={handleProceed}>
-              Proceed to Activity {id}
-            </Button>
-          </Card>
-        </div>
-
+      <section className="gk-header-row">
         <div className="gk-side-character">
           <img src={teacherImg} alt="Teacher" className="gk-teacher-image" draggable="false" />
         </div>
+        <div className="gk-header-text-block">
+          <button className="gk-back-link" onClick={handleBack}>
+            ← Back
+          </button>
+          <div className="gk-page-copy">
+            <p className="gk-page-kicker">Activity {id} Intro</p>
+            <h1>Watch Before You Start</h1>
+            <p>Review the lesson video for this activity first, then proceed once you are ready to solve the tasks.</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="gk-video-section">
+        <Card className="gk-video-card">
+          <h2 className="gk-video-title">Watch this video before starting Activity {id}!</h2>
+          <div className="gk-video-wrapper">
+            <video
+              ref={videoRef}
+              width="100%"
+              height="100%"
+              controls
+              preload="metadata"
+              style={{ borderRadius: '12px' }}
+            >
+              <source src={gatekeeperVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <Button className="gk-proceed-btn" onClick={handleProceed}>
+            Proceed to Activity {id}
+          </Button>
+        </Card>
       </div>
     </div>
   );
