@@ -6,6 +6,8 @@ import { pickDifficultPairs, buildA3FromExpr, type A3Question, type A3QuestionPa
 import { activity3Bank, pickFivePairs, type QPair } from '../../../utils/questionBank';
 import storeBg from '../../../assets/images/activity3_bg.png';
 import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
+import { ResultsSummary } from './ResultsSummary';
+import { ProgressLegend } from '../../common/ProgressLegend';
 import './ActivityThreeContent.css';
 
 // ── Helpers ──
@@ -82,66 +84,64 @@ function buildBankQuestions(pairs: QPair[]): { ft: A3Question; st: A3Question }[
 export const ActivityThreeContent: React.FC = () => {
   const navigate = useNavigate();
 
-  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
-  const [bankItems, setBankItems] = useState<A3QuestionPair[]>([]);
+  const [allQuestions, setAllQuestions] = useState<A3QuestionPair[]>([]);
   const [qIndex, setQIndex] = useState(0);
   const [tryNum, setTryNum] = useState<'first' | 'second'>('first');
   const [consecutiveStFails, setConsecutiveStFails] = useState(0);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [itemResults, setItemResults] = useState<string[]>(Array(15).fill('unanswered'));
 
-  // Current question
-  const currentQ: A3Question | null = (() => {
-    const item = bankItems[qIndex];
-    if (!item) return null;
-    return tryNum === 'first' ? item.ft : item.st;
-  })();
+  const [storedAnswers, setStoredAnswers] = useState<Record<number, {
+    keep: string, op: string, change: string, answer: string, subExp1: string, subExp2: string, subExp3: string, tryNum: 'first'|'second'
+  }>>({});
 
   // Input boxes
   const [boxKeep, setBoxKeep] = useState('');
   const [boxOp, setBoxOp] = useState('');
   const [boxChange, setBoxChange] = useState('');
   const [boxAnswer, setBoxAnswer] = useState('');
+  const [subExp1, setSubExp1] = useState('');
+  const [subExp2, setSubExp2] = useState('');
+  const [subExp3, setSubExp3] = useState('');
   const [activeStep, setActiveStep] = useState<number | null>(null);
 
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     type: 'success' | 'error' | 'info';
     title: string;
-    message: string;
+    message: React.ReactNode;
     showNext: boolean;
   }>({ isOpen: false, type: 'info', title: '', message: '', showNext: false });
   const [hintModalOpen, setHintModalOpen] = useState(false);
   const [videoRedirectModal, setVideoRedirectModal] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [startTime] = useState(new Date());
+  const [endTime, setEndTime] = useState<Date | null>(null);
 
   const keepRef = useRef<HTMLInputElement>(null);
   const opRef = useRef<HTMLInputElement>(null);
   const changeRef = useRef<HTMLInputElement>(null);
   const answerRef = useRef<HTMLInputElement>(null);
 
-  const total = 5;
+  const isReviewMode = itemResults[qIndex] && itemResults[qIndex] !== 'unanswered';
+  const difficulty: Difficulty = qIndex < 5 ? 'easy' : qIndex < 10 ? 'moderate' : 'difficult';
+  const displayTryNum = isReviewMode ? storedAnswers[qIndex]?.tryNum || 'first' : tryNum;
+  
+  const currentPair = allQuestions[qIndex];
+  const currentQ: A3Question | null = currentPair ? (displayTryNum === 'first' ? currentPair.ft : currentPair.st) : null;
+  
   const showSteps = difficulty !== 'difficult';
-  const showHint = difficulty !== 'difficult';
-  const showNumberSentence = difficulty !== 'difficult';
-  const levelOffset = difficulty === 'easy' ? 0 : difficulty === 'moderate' ? 5 : 10;
-  const globalIdx = levelOffset + qIndex;
+  const showHint = difficulty !== 'difficult' && !isReviewMode;
+  const globalIdx = qIndex;
   const difficultyLabel = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
 
-  // ── Initialize items on difficulty change ──
+  // ── Initialize items on mount ──
   useEffect(() => {
-    if (difficulty === 'difficult') {
-      setBankItems(pickDifficultPairs());
-    } else {
-      const bank = difficulty === 'easy' ? activity3Bank.easy : activity3Bank.moderate;
-      const picked = pickFivePairs(bank);
-      setBankItems(buildBankQuestions(picked));
-    }
-    setQIndex(0);
-    setTryNum('first');
-    setConsecutiveStFails(0);
-    setShowingAnswer(false);
-    clearInputs();
-  }, [difficulty]);
+    const easyBank = buildBankQuestions(pickFivePairs(activity3Bank.easy));
+    const modBank = buildBankQuestions(pickFivePairs(activity3Bank.moderate));
+    const diffBank = pickDifficultPairs();
+    setAllQuestions([...easyBank, ...modBank, ...diffBank]);
+  }, []);
 
   // ── Guard ──
   useEffect(() => {
@@ -155,32 +155,45 @@ export const ActivityThreeContent: React.FC = () => {
     setBoxOp('');
     setBoxChange('');
     setBoxAnswer('');
+    setSubExp1('');
+    setSubExp2('');
+    setSubExp3('');
     setActiveStep(null);
   }, []);
 
+  // Restore existing answers if they exist
+  useEffect(() => {
+    if (storedAnswers[qIndex]) {
+      const ans = storedAnswers[qIndex];
+      setBoxKeep(ans.keep); setBoxOp(ans.op); setBoxChange(ans.change); setBoxAnswer(ans.answer);
+      setSubExp1(ans.subExp1); setSubExp2(ans.subExp2); setSubExp3(ans.subExp3);
+    } else {
+      clearInputs();
+    }
+  }, [qIndex, storedAnswers, clearInputs]);
+
   // ── Go to next item ──
   const goToNext = useCallback(() => {
-    clearInputs();
     setTryNum('first');
     setShowingAnswer(false);
-    if (qIndex < total - 1) {
-      setQIndex(i => i + 1);
-    } else if (difficulty === 'easy') {
-      setDifficulty('moderate');
-      setQIndex(0);
-    } else if (difficulty === 'moderate') {
-      setDifficulty('difficult');
-      setQIndex(0);
+    const nextIdx = itemResults.findIndex((r) => r === 'unanswered');
+    if (nextIdx !== -1) {
+      setQIndex(nextIdx);
     } else {
-      markActivityComplete(3);
-      navigate('/activity');
+      setEndTime(new Date());
+      setShowSummary(true);
     }
-  }, [qIndex, total, difficulty, navigate, clearInputs]);
+  }, [itemResults]);
 
   // ── Check answer ──
   const handleCheck = useCallback(() => {
-    if (!currentQ) return;
-    if (!boxKeep.trim() || !boxOp.trim() || !boxChange.trim() || !boxAnswer.trim()) return;
+    if (!currentQ || isReviewMode) return;
+    
+    if (difficulty === 'difficult') {
+      if (!subExp1.trim() || !subExp2.trim() || !subExp3.trim() || !boxKeep.trim() || !boxOp.trim() || !boxChange.trim() || !boxAnswer.trim()) return;
+    } else {
+      if (!boxKeep.trim() || !boxOp.trim() || !boxChange.trim() || !boxAnswer.trim()) return;
+    }
 
     const keepOk = normalizeValue(boxKeep) === normalizeValue(currentQ.expectedKeep);
     const opOk = normalizeValue(boxOp) === normalizeValue(currentQ.expectedOp);
@@ -190,8 +203,25 @@ export const ActivityThreeContent: React.FC = () => {
     const numAns = Number(cleanAnswer);
     const ansOk = numAns === currentQ.answer;
 
-    if (keepOk && opOk && changeOk && ansOk) {
+    let subExpOk = true;
+    if (difficulty === 'difficult') {
+      subExpOk = normalizeValue(subExp1) === String(currentQ.minuend) &&
+                 normalizeValue(subExp2) === '-' &&
+                 normalizeValue(subExp3) === String(currentQ.subtrahend);
+    }
+
+    const allOk = keepOk && opOk && changeOk && ansOk && subExpOk;
+
+    const storeUserAns = () => {
+      setStoredAnswers(prev => ({
+        ...prev,
+        [globalIdx]: { keep: boxKeep, op: boxOp, change: boxChange, answer: boxAnswer, subExp1, subExp2, subExp3, tryNum }
+      }));
+    };
+
+    if (allOk) {
       playSound.success();
+      storeUserAns();
       const result = tryNum === 'first' ? 'correctFirst' : 'correctSecond';
       setItemResults(prev => {
         const next = [...prev];
@@ -207,18 +237,43 @@ export const ActivityThreeContent: React.FC = () => {
       });
     } else {
       if (tryNum === 'first') {
-        playSound.pop();
-        setTryNum('second');
-        setModalState({
-          isOpen: true,
-          type: 'info',
-          title: 'Try Again!',
-          message: 'That was your first attempt. Here is a similar question for your second try.',
-          showNext: false,
-        });
-        clearInputs();
+        if (difficulty === 'difficult') {
+          playSound.error();
+          storeUserAns();
+          setItemResults(prev => {
+            const next = [...prev];
+            next[globalIdx] = 'wrong';
+            return next;
+          });
+          setShowingAnswer(true);
+          setModalState({
+            isOpen: true,
+            type: 'error',
+            title: currentQ.errorTitle,
+            message: (
+              <>
+                <strong>Answers are incorrect.</strong><br/><br/>
+                <div>Correct Subtraction Expression: <strong>{currentQ.minuend} - {currentQ.subtrahend}</strong></div>
+                <div>Correct Number Sentence: <strong>{currentQ.newSentence} = {currentQ.answer}</strong></div>
+              </>
+            ),
+            showNext: true,
+          });
+        } else {
+          playSound.pop();
+          setTryNum('second');
+          setModalState({
+            isOpen: true,
+            type: 'info',
+            title: 'Try Again!',
+            message: 'That was your first attempt. Here is a similar question for your second try.',
+            showNext: false,
+          });
+          clearInputs();
+        }
       } else {
         playSound.error();
+        storeUserAns();
         setItemResults(prev => {
           const next = [...prev];
           next[globalIdx] = 'wrong';
@@ -238,12 +293,17 @@ export const ActivityThreeContent: React.FC = () => {
           isOpen: true,
           type: 'error',
           title: currentQ.errorTitle,
-          message: `The correct answer is ${currentQ.answer}. ${currentQ.errorMessage}`,
+          message: (
+            <>
+              <strong>Answers are incorrect.</strong><br/><br/>
+              The correct number sentence is <strong>{currentQ.newSentence} = {currentQ.answer}</strong>.
+            </>
+          ),
           showNext: true,
         });
       }
     }
-  }, [currentQ, boxKeep, boxOp, boxChange, boxAnswer, tryNum, consecutiveStFails, clearInputs]);
+  }, [currentQ, boxKeep, boxOp, boxChange, boxAnswer, subExp1, subExp2, subExp3, difficulty, tryNum, consecutiveStFails, isReviewMode, globalIdx, clearInputs]);
 
   const handleNext = useCallback(() => {
     playSound.click();
@@ -275,6 +335,21 @@ export const ActivityThreeContent: React.FC = () => {
     setActiveStep(null);
   }, []);
 
+  if (showSummary && endTime) {
+    return (
+      <ResultsSummary
+        activityNum={3}
+        itemResults={itemResults}
+        startTime={startTime}
+        endTime={endTime}
+        onProceed={() => {
+          markActivityComplete(3);
+          navigate('/activity');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="a3-page-container" style={{ '--a3-store-bg': `url(${storeBg})` } as React.CSSProperties}>
       <div className="a3-frame">
@@ -291,14 +366,25 @@ export const ActivityThreeContent: React.FC = () => {
         </div>
 
         {/* Progress Circles */}
-        <div className="progress-circles-container">
+        <div className="progress-circles-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="progress-circles">
             {Array.from({ length: 15 }, (_, i) => {
               const status = itemResults[i];
               const itemNum = i + 1;
               const isCurrent = i === globalIdx;
               return (
-                <div key={i} className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}>
+                <div 
+                  key={i} 
+                  className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}
+                  onClick={() => {
+                    if (status !== 'unanswered') {
+                      setQIndex(i);
+                    } else if (i === itemResults.findIndex(r => r === 'unanswered')) {
+                      setQIndex(i); // Navigating back to the current active unanswered question
+                    }
+                  }}
+                  style={{ cursor: (status !== 'unanswered' || i === itemResults.findIndex(r => r === 'unanswered')) ? 'pointer' : 'default' }}
+                >
                   {status === 'correctFirst' || status === 'correctSecond' ? (
                     <span className="circle-icon">&#10003;</span>
                   ) : status === 'wrong' ? (
@@ -310,11 +396,16 @@ export const ActivityThreeContent: React.FC = () => {
               );
             })}
           </div>
+          <ProgressLegend />
         </div>
 
         {/* Directions */}
         <div className="a3-directions">
-          <p>Use the <strong>KEEP-CHANGE-CHANGE</strong> rule to turn the subtraction sentence into an addition sentence. Follow the three steps, then write your new number sentence and answer.</p>
+          {difficulty === 'difficult' ? (
+            <p>Convert the word problem into a subtraction expression. Then, using the KCC (Keep-Change-Change) rule, convert the subtraction expression into an addition expression and find the answer.</p>
+          ) : (
+            <p>Use the <strong>KEEP-CHANGE-CHANGE</strong> rule to turn the subtraction sentence into an addition sentence. Follow the three steps, then write your new number sentence and answer.</p>
+          )}
         </div>
 
         {/* Main Content */}
@@ -323,15 +414,31 @@ export const ActivityThreeContent: React.FC = () => {
 
           {/* Question Card */}
           {currentQ && (
-            <div className="a3-question-card">
-              <div className="a3-q-section">
-                <div className="a3-q-badge">Question:</div>
-                <p className="a3-q-text">{currentQ.question}</p>
-              </div>
-              {showNumberSentence && (
-                <div className="a3-s-section">
-                  <div className="a3-s-badge">Number Sentence:</div>
-                  <div className="a3-s-display">{currentQ.sentence}</div>
+            <div className="a3-question-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+              {difficulty === 'difficult' ? (
+                <>
+                  <div className="a3-q-badge" style={{ alignSelf: 'flex-start' }}>QUESTION:</div>
+                  <div className="a3-q-text" style={{ textAlign: 'center', marginBottom: '20px', fontSize: '1.4rem' }}>
+                    {currentQ.question}
+                  </div>
+                  <div className="a3-sub-exp-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#333', textTransform: 'uppercase' }}>SUBTRACTION EXPRESSION</div>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <div className="a3-color-box green-box" style={{ width: '80px', height: '80px' }}>
+                        <input type="text" value={subExp1} onChange={e => { playSound.tick(); setSubExp1(e.target.value); }} readOnly={isReviewMode} />
+                      </div>
+                      <div className="a3-color-box blue-box" style={{ width: '80px', height: '80px' }}>
+                        <input type="text" value={subExp2} onChange={e => { playSound.tick(); setSubExp2(e.target.value); }} readOnly={isReviewMode} />
+                      </div>
+                      <div className="a3-color-box yellow-box" style={{ width: '80px', height: '80px' }}>
+                        <input type="text" value={subExp3} onChange={e => { playSound.tick(); setSubExp3(e.target.value); }} readOnly={isReviewMode} />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="a3-s-display" style={{ position: 'static', textAlign: 'center', fontSize: '6rem', color: '#000' }}>
+                  {currentQ.sentence}
                 </div>
               )}
             </div>
@@ -342,46 +449,53 @@ export const ActivityThreeContent: React.FC = () => {
         {currentQ && (
           <div className="a3-input-area">
             <div className="a3-sentence-boxes">
-              <div className="a3-box-label-row">Write Your New Number Sentence:</div>
-              <div className="a3-boxes-row">
-                <div className="a3-color-box green-box">
-                  <input
-                    ref={keepRef}
-                    type="text"
-                    value={boxKeep}
-                    onChange={e => { playSound.tick(); setBoxKeep(e.target.value); }}
-                    onFocus={() => handleBoxFocus(1)}
-                    onBlur={handleBoxBlur}
-                    placeholder=""
-                    aria-label="Keep the minuend"
-                  />
-                </div>
-                <div className="a3-color-box blue-box">
-                  <input
-                    ref={opRef}
-                    type="text"
-                    value={boxOp}
-                    onChange={e => { playSound.tick(); setBoxOp(e.target.value); }}
-                    onFocus={() => handleBoxFocus(2)}
-                    onBlur={handleBoxBlur}
-                    placeholder=""
-                    aria-label="Change the operation"
-                  />
-                </div>
-                <div className="a3-color-box yellow-box">
-                  <input
-                    ref={changeRef}
-                    type="text"
-                    value={boxChange}
-                    onChange={e => { playSound.tick(); setBoxChange(e.target.value); }}
-                    onFocus={() => handleBoxFocus(3)}
-                    onBlur={handleBoxBlur}
-                    placeholder=""
-                    aria-label="Change the sign"
-                  />
+              <div className="a3-boxes-row" style={{ alignItems: 'flex-end', display: 'flex' }}>
+                
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div className="a3-box-label-row">Write Your New Number Sentence:</div>
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div className="a3-color-box green-box">
+                      <input
+                        ref={keepRef}
+                        type="text"
+                        value={boxKeep}
+                        onChange={e => { playSound.tick(); setBoxKeep(e.target.value); }}
+                        onFocus={() => handleBoxFocus(1)}
+                        onBlur={handleBoxBlur}
+                        placeholder=""
+                        aria-label="Keep the minuend"
+                      />
+                    </div>
+                    <div className="a3-color-box blue-box">
+                      <input
+                        ref={opRef}
+                        type="text"
+                        value={boxOp}
+                        onChange={e => { playSound.tick(); setBoxOp(e.target.value); }}
+                        onFocus={() => handleBoxFocus(2)}
+                        onBlur={handleBoxBlur}
+                        placeholder=""
+                        aria-label="Change the operation"
+                        readOnly={isReviewMode}
+                      />
+                    </div>
+                    <div className="a3-color-box yellow-box">
+                      <input
+                        ref={changeRef}
+                        type="text"
+                        value={boxChange}
+                        onChange={e => { playSound.tick(); setBoxChange(e.target.value); }}
+                        onFocus={() => handleBoxFocus(3)}
+                        onBlur={handleBoxBlur}
+                        placeholder=""
+                        aria-label="Change the sign"
+                        readOnly={isReviewMode}
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="a3-equals-sign">=</div>
+                <div className="a3-equals-sign" style={{ paddingBottom: '16px' }}>=</div>
 
                 <div className="a3-answer-section">
                   <div className="a3-answer-label">Answer:</div>
@@ -395,6 +509,7 @@ export const ActivityThreeContent: React.FC = () => {
                       onFocus={() => setActiveStep(null)}
                       placeholder=""
                       aria-label="Final answer"
+                      readOnly={isReviewMode}
                     />
                   </div>
                 </div>
@@ -402,9 +517,20 @@ export const ActivityThreeContent: React.FC = () => {
             </div>
 
             {/* Buttons */}
-            <div className="a3-action-buttons">
-              <button className="a3-check-btn" onClick={handleCheck}>Check Answer</button>
-              {showHint && <button className="a3-hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}> Hint</button>}
+            <div className="a3-action-buttons" style={{ flexDirection: 'row' }}>
+              {isReviewMode ? (
+                <button className="a3-check-btn" onClick={() => {
+                  playSound.click();
+                  const nextIdx = itemResults.findIndex((r) => r === 'unanswered');
+                  if (nextIdx !== -1) setQIndex(nextIdx);
+                  else { setEndTime(new Date()); setShowSummary(true); }
+                }}>Back to Current Question</button>
+              ) : (
+                <>
+                  {showHint && <button className="a3-hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}> Hint</button>}
+                  <button className="a3-check-btn" onClick={handleCheck}>Check Answer</button>
+                </>
+              )}
             </div>
           </div>
         )}
