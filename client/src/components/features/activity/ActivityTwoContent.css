@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2vh 2vw;
+  padding: 1vh 2vw;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -50,7 +50,7 @@
 
 .a2-content-inner {
   flex: 1;
-  padding: 6vh 3vw 2vh;
+  padding: 5.5vh 2vw 1vh;
   display: flex;
   flex-direction: column;
   z-index: 2;
@@ -191,7 +191,7 @@
 }
 
 .progress-circle.correctFirst {
-  background: #fdd835;
+  background: #2196f3;
 }
 
 .progress-circle.correctSecond {
@@ -202,10 +202,10 @@
   background: #f44336;
 }
 
-.current-difficulty-text {
+.activity-two-wrapper .current-difficulty-text {
   font-size: clamp(1.1rem, 2.2vh, 1.6rem);
   font-weight: 800;
-  color: #c9823a;
+  color: #a86c2e;
   text-align: center;
   margin-top: 2px;
   letter-spacing: 0.05vw;
@@ -231,7 +231,7 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: var(--border-radius-lg);
-  padding: 1vh 2vw;
+  padding: 0.5vh 2vw;
   text-align: center;
   box-shadow: 0 8px 24px rgba(46, 58, 89, 0.08);
 }
@@ -299,10 +299,10 @@
 
 .a2-numberline-container {
   position: relative;
-  height: 18vh;
-  min-height: 80px;
-  max-height: 160px;
-  margin: 1vh 0;
+  height: 20vh;
+  min-height: 90px;
+  max-height: 150px;
+  margin: 0.5vh 0;
   user-select: none;
   touch-action: none;
 }
@@ -314,8 +314,8 @@
   right: 3vw;
   top: 50%;
   transform: translateY(-50%);
-  height: 1vh;
-  min-height: 6px;
+  height: 1.5vh;
+  min-height: 8px;
   border-radius: var(--border-radius-pill);
   background: linear-gradient(90deg,
     rgba(217, 227, 251, 0.9),
@@ -396,21 +396,21 @@
 /* Individual Tick */
 .a2-tick {
   position: absolute;
-  top: 0;
+  top: 20%;
   transform: translateX(-50%);
   text-align: center;
   background: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
-  width: 28px;
+  width: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .a2-tick-label {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 8px;
   transition: color 0.2s;
@@ -429,14 +429,14 @@
   transition: background 0.2s, transform 0.2s;
 }
 
-.a2-tick-line.tall { height: 3vh; max-height: 26px; }
-.a2-tick-line.short { height: 2vh; max-height: 18px; }
+.a2-tick-line.tall { height: 4vh; max-height: 34px; }
+.a2-tick-line.short { height: 3vh; max-height: 26px; }
 .a2-tick-line.zero-line { background: #6b55c6; }
 .a2-tick-line.active { background: #f0a43a; transform: scaleY(1.15); }
 
 .a2-tick-dot {
-  width: clamp(8px, 1.5vw, 14px);
-  height: clamp(8px, 1.5vw, 14px);
+  width: clamp(10px, 2vw, 18px);
+  height: clamp(10px, 2vw, 18px);
   border-radius: 50%;
   margin: 0.5vh auto 0;
   border: 2px solid #ffffff;
@@ -456,29 +456,25 @@
   box-shadow: 0 0 0 7px rgba(240, 164, 58, 0.16), 0 10px 16px rgba(46, 58, 89, 0.22);
 }
 
-/* Dog Marker */
+/* Circle Marker Instead of Dog */
 .a2-marker {
   position: absolute;
-  top: 18%;
-  width: clamp(30px, 6vh, 52px);
-  height: clamp(30px, 6vh, 52px);
-  transform: translateX(-50%);
+  top: 20%;
+  transform: translate(-50%, -4px);
+  width: clamp(28px, 4vh, 34px);
+  height: clamp(28px, 4vh, 34px);
+  background-color: rgba(251, 191, 36, 0.7);
+  border-radius: 50%;
   transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 5;
   cursor: grab;
   touch-action: none;
+  pointer-events: auto;
 }
 
 .a2-marker.dragging {
   cursor: grabbing;
   transition: none;
-}
-
-.a2-marker img {
-  width: 100%;
-  height: 100%;
-  user-select: none;
-  pointer-events: none;
 }
 
 /* Answer Row */
@@ -491,7 +487,7 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: var(--border-radius-lg);
-  padding: 1vh 2vw;
+  padding: 0.8vh 2vw;
   box-shadow: 0 8px 24px rgba(46, 58, 89, 0.08);
 }
 
@@ -568,7 +564,7 @@
   justify-content: center;
   gap: 1vw;
   flex-wrap: wrap;
-  margin-top: 0.5vh;
+  margin-top: 0vh;
 }
 
 .a2-step-left-btn {
@@ -654,7 +650,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 8px;
 }
 
 /* Responsive */
@@ -664,13 +660,13 @@
   }
 
   .a2-marker {
-    width: 40px;
-    height: 40px;
-    top: 44px;
+    width: 28px;
+    height: 28px;
+    top: 20%;
   }
 
   .a2-tick-label {
-    font-size: 10px;
+    font-size: 14px;
   }
 
   .a2-tick-dot {
@@ -731,8 +727,8 @@
   }
 
   .a2-marker {
-    width: 34px;
-    height: 34px;
-    top: 48px;
+    width: 24px;
+    height: 24px;
+    top: 20%;
   }
 }
