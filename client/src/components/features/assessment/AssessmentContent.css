@@ -2,14 +2,6 @@
 
 /* Theme Variables */
 .assessment-container {
-  /* Violet (Default) */
-  --theme-violet-bg: #1A0B42;
-  --theme-violet-primary: #7B2CBF;
-  --theme-violet-secondary: #3C096C;
-  --theme-violet-card: rgba(60, 9, 108, 0.6);
-  --theme-violet-text: #FFFFFF;
-  --theme-violet-glow: rgba(123, 44, 191, 0.4);
-
   /* Green */
   --theme-green-bg: #E8F5E9;
   --theme-green-primary: #2E7D32;
@@ -34,13 +26,13 @@
   --theme-blue-text: #0D47A1;
   --theme-blue-glow: rgba(21, 101, 192, 0.4);
 
-  /* Default assignments (Fallback to Violet) */
-  --ass-bg: var(--theme-violet-bg);
-  --ass-primary: var(--theme-violet-primary);
-  --ass-secondary: var(--theme-violet-secondary);
-  --ass-card: var(--theme-violet-card);
-  --ass-text: var(--theme-violet-text);
-  --ass-glow: var(--theme-violet-glow);
+  /* Default assignments (Fallback to Blue) */
+  --ass-bg: var(--theme-blue-bg);
+  --ass-primary: var(--theme-blue-primary);
+  --ass-secondary: var(--theme-blue-secondary);
+  --ass-card: var(--theme-blue-card);
+  --ass-text: var(--theme-blue-text);
+  --ass-glow: var(--theme-blue-glow);
 
   position: fixed;
   inset: 0;
@@ -57,15 +49,6 @@
 }
 
 /* Theme Classes */
-.assessment-container.theme-violet {
-  --ass-bg: var(--theme-violet-bg);
-  --ass-primary: var(--theme-violet-primary);
-  --ass-secondary: var(--theme-violet-secondary);
-  --ass-card: var(--theme-violet-card);
-  --ass-text: var(--theme-violet-text);
-  --ass-glow: var(--theme-violet-glow);
-}
-
 .assessment-container.theme-green {
   --ass-bg: var(--theme-green-bg);
   --ass-primary: var(--theme-green-primary);
@@ -156,36 +139,61 @@
   color: #fff;
 }
 
-/* Header Center */
+/* Header Center - History Circles */
 .ass-header-center {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.ass-progress-history {
+  display: flex;
+  gap: 10px;
   background: var(--ass-card);
-  padding: 8px 24px;
+  padding: 8px 16px;
   border-radius: 9999px;
   border: 1px solid var(--ass-glow);
   backdrop-filter: blur(10px);
 }
 
-.ass-counter {
-  font-weight: 800;
-  font-size: 1.1rem;
+.ass-history-item {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+  border: 2px solid transparent;
 }
 
-.ass-progress-track {
-  width: 200px;
-  height: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 9999px;
-  overflow: hidden;
+.ass-history-item.active {
+  transform: scale(1.2);
+  border-color: #fff;
+  box-shadow: 0 0 10px var(--ass-glow);
 }
 
-.ass-progress-fill {
-  height: 100%;
-  background: #00E676;
-  border-radius: 9999px;
-  transition: width 0.4s ease-out;
+.ass-history-item.correct {
+  background: #1565C0; /* Blue for correct */
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ass-history-item.incorrect {
+  background: #C62828; /* Red for incorrect */
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ass-history-item.pending {
+  background: rgba(128, 128, 128, 0.2);
+}
+
+.ass-pending-dot {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
 }
 
 /* Header Right */
@@ -242,9 +250,9 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--ass-glow);
   border-radius: 24px;
-  padding: 40px;
-  width: 100%;
-  max-width: 600px;
+  padding: 24px 40px;
+  width: 95%;
+  max-width: 800px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -267,12 +275,115 @@
   box-shadow: 0 2px 8px rgba(0, 191, 255, 0.4);
 }
 
-.ass-equation {
-  font-size: 4rem;
+.ass-question-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 16px 0 12px;
+  line-height: 1.3;
+  color: var(--ass-text);
+  max-width: 90%;
+}
+
+.ass-question-visual-container {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+.ass-question-image-container {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 4px solid var(--ass-glow);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: #fff;
+}
+
+.ass-question-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ass-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.ass-options-grid.has-visuals {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.ass-option-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--ass-card);
+  border: 2px solid var(--ass-glow);
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--ass-text);
+  width: 100%;
+}
+
+.ass-option-btn.with-visual {
+  padding: 12px;
+}
+
+.ass-option-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.ass-option-visual {
+  width: 100%;
+  padding-top: 8px;
+  border-top: 1px solid var(--ass-glow);
+}
+
+.ass-option-btn:hover:not(:disabled) {
+  transform: translateY(-4px);
+  background: var(--ass-primary);
+  color: #fff;
+  border-color: var(--ass-primary);
+  box-shadow: 0 12px 24px var(--ass-glow);
+}
+
+.ass-option-btn:hover:not(:disabled) .ass-option-label {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.ass-option-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--ass-glow);
+  color: var(--ass-primary);
   font-weight: 800;
-  margin: 40px 0;
-  letter-spacing: 2px;
-  text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.ass-option-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .ass-input-group {
@@ -567,9 +678,9 @@
     width: 100%;
     justify-content: center;
   }
-  .ass-equation {
-    font-size: 3rem;
-    margin: 24px 0;
+  .ass-question-text {
+    font-size: 1.5rem;
+    margin: 16px 0;
   }
   .ass-input-row {
     flex-direction: column;
