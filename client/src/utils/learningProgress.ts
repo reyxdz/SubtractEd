@@ -97,6 +97,48 @@ export function markEnrichmentComplete() {
   });
 }
 
+export function getEnrichmentHighestUnlockedLevel(): number {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return 1;
+  try {
+    const raw = window.localStorage.getItem('subtracted-enrichment-highest-unlocked');
+    if (!raw) return 1;
+    const val = parseInt(raw, 10);
+    return isNaN(val) ? 1 : val;
+  } catch {
+    return 1;
+  }
+}
+
+export function setEnrichmentHighestUnlockedLevel(level: number) {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+  try {
+    window.localStorage.setItem('subtracted-enrichment-highest-unlocked', level.toString());
+  } catch {}
+}
+
+export function getEnrichmentJustUnlockedLevel(): number | null {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem('subtracted-enrichment-just-unlocked');
+    if (!raw) return null;
+    const val = parseInt(raw, 10);
+    return isNaN(val) ? null : val;
+  } catch {
+    return null;
+  }
+}
+
+export function setEnrichmentJustUnlockedLevel(level: number | null) {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+  try {
+    if (level === null) {
+      window.localStorage.removeItem('subtracted-enrichment-just-unlocked');
+    } else {
+      window.localStorage.setItem('subtracted-enrichment-just-unlocked', level.toString());
+    }
+  } catch {}
+}
+
 export function resetLearningProgress() {
   if (!isBrowser()) return;
 
