@@ -46,24 +46,20 @@
 }
 
 .a3-back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border-radius: 9999px;
+  background: white;
   border: none;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  color: #1a73e8;
-  font-weight: 700;
-  font-size: 0.9rem;
+  border-radius: 20px;
+  padding: 1vh 2vw;
+  color: #ff8a65;
+  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.05);
+  font-size: clamp(0.8rem, 1.5vh, 1rem);
   transition: transform 0.2s;
 }
 
 .a3-back-btn:hover {
-  transform: translateY(-2px);
+  transform: scale(1.05);
 }
 
 .a3-title-section {
@@ -73,29 +69,31 @@
 }
 
 .a3-title-pill {
-  padding: 10px 32px;
-  border-radius: 9999px;
-  background: linear-gradient(145deg, #1a73e8, #1557b0);
-  color: white;
+  background: white;
+  border: 0.3vh solid #e0cdb5;
+  border-radius: 30px;
+  padding: 1vh 3vw;
+  font-size: clamp(1rem, 2vh, 1.5rem);
   font-weight: 800;
-  font-size: 1.2rem;
-  box-shadow: 0 6px 20px rgba(26, 115, 232, 0.35);
+  color: #c9823a;
+  box-shadow: 0 0.5vh 0 #e0cdb5;
+  text-transform: uppercase;
+  letter-spacing: 0.1vw;
+  z-index: 5;
   text-align: center;
-  z-index: 10;
 }
 
 .a3-header-spacer {
-  width: 80px;
+  width: 100px;
 }
 
-.current-difficulty-text {
+.a3-page-container .current-difficulty-text {
   font-size: clamp(1.1rem, 2.2vh, 1.6rem);
   font-weight: 800;
-  color: #fff;
+  color: #a86c2e;
   text-align: center;
   margin-top: 2px;
   letter-spacing: 0.05vw;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 /* ── Difficulty Pills ───────────────────────────────────────── */
@@ -220,7 +218,7 @@
 }
 
 .progress-circle.correctFirst {
-  background: #fdd835;
+  background: #2196f3;
 }
 
 .progress-circle.correctSecond {
@@ -272,42 +270,42 @@
 
 /* ── Steps Panel (Left Side) ────────────────────────────────── */
 .a3-steps-panel {
-  flex: 0 0 260px;
+  flex: 0 0 240px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .a3-step-card {
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: visible;
-  box-shadow: 0 0 20px 4px rgba(255, 255, 255, 0.8), 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 15px 4px rgba(255, 255, 255, 0.8), 0 4px 10px rgba(0, 0, 0, 0.08);
   position: relative;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .a3-step-card.highlighted {
   transform: scale(1.03);
-  box-shadow: 0 0 30px 8px rgba(26, 115, 232, 0.25), 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 25px 6px rgba(26, 115, 232, 0.25), 0 8px 18px rgba(0, 0, 0, 0.15);
 }
 
 .a3-step-num {
   position: absolute;
-  top: -6px;
-  left: -6px;
-  width: 32px;
-  height: 32px;
+  top: -5px;
+  left: -5px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: white;
   z-index: 2;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .a3-step-num.n1 { background: linear-gradient(145deg, #4caf50, #388e3c); }
@@ -315,13 +313,13 @@
 .a3-step-num.n3 { background: linear-gradient(145deg, #ff9800, #ef6c00); }
 
 .a3-step-head {
-  padding: 6px 12px;
+  padding: 5px 10px;
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  border-radius: 16px 16px 0 0;
+  border-radius: 14px 14px 0 0;
 }
 
 .a3-step-head.keep {
@@ -340,22 +338,22 @@
 }
 
 .a3-step-body {
-  padding: 6px 12px 8px;
+  padding: 5px 10px 6px;
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: #2e3a59;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .a3-step-body .label {
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .a3-step-body .example {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 800;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .a3-step-body .kept  { color: #2e7d32; }
@@ -651,13 +649,8 @@
   }
 
   .a3-title-pill {
-    font-size: 0.95rem;
-    padding: 7px 20px;
-  }
-
-  .a3-back-btn {
-    padding: 6px 14px;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
+    padding: 0.8vh 2vw;
   }
 
   .a3-diff-pill {
@@ -767,11 +760,6 @@
   .a3-title-pill {
     font-size: 0.85rem;
     padding: 6px 16px;
-  }
-
-  .a3-back-btn {
-    padding: 5px 10px;
-    font-size: 0.75rem;
   }
 
   .a3-diff-pill {
