@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, X, Music, Palette, CheckCircle2, XCircle, ArrowLeft, RefreshCw, Home } from 'lucide-react';
+import { Settings, X, Music, Palette, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react';
 import { playSound } from '../../../utils/sound';
 import { musicManager } from '../../../utils/music';
 import { assessmentData } from './assessmentData';
 import { markAssessmentComplete } from '../../../utils/learningProgress';
+import { AssessmentResultsSummary } from './AssessmentResultsSummary';
+import { AssessmentChipVisual, AssessmentNumberLineVisual } from './components/AssessmentVisuals';
 import './AssessmentContent.css';
+import './components/AssessmentVisuals.css';
 
-type Theme = 'violet' | 'green' | 'red' | 'blue';
+type Theme = 'green' | 'red' | 'blue';
+type Result = 'correct' | 'incorrect' | 'pending';
 type ModalState = 'none' | 'settings' | 'correct' | 'incorrect';
 
 export const AssessmentQuizContent: React.FC = () => {
@@ -17,10 +21,15 @@ export const AssessmentQuizContent: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
-  const [activeTheme, setActiveTheme] = useState<Theme>('violet');
+  const [activeTheme, setActiveTheme] = useState<Theme>('blue');
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [modalState, setModalState] = useState<ModalState>('none');
   const [isFinished, setIsFinished] = useState(false);
+  const [startTime, setStartTime] = useState<Date>(new Date());
+  const [endTime, setEndTime] = useState<Date>(new Date());
+  const [history, setHistory] = useState<Result[]>(
+    new Array(assessmentData.length).fill('pending')
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,6 +59,7 @@ export const AssessmentQuizContent: React.FC = () => {
       timer = setTimeout(() => {
         setModalState('none');
         if (isLastQuestion) {
+          setEndTime(new Date());
           setIsFinished(true);
         } else {
           setCurrentIndex(prev => prev + 1);
@@ -66,13 +76,23 @@ export const AssessmentQuizContent: React.FC = () => {
     markAssessmentComplete();
   }, [isFinished]);
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!userAnswer.trim()) return;
+  const handleSubmit = (answer?: string | number) => {
+    const finalAnswer = answer !== undefined ? answer : userAnswer.trim();
+    if (finalAnswer === '' && currentQuestion.type === 'short-answer') return;
 
-    const numAnswer = Number(userAnswer.trim());
+    let isCorrect = false;
+    if (currentQuestion.type === 'multiple-choice') {
+      isCorrect = Number(finalAnswer) === currentQuestion.answer;
+    } else {
+      // For short-answer, case-insensitive comparison and trim whitespace
+      isCorrect = finalAnswer.toString().toLowerCase().trim() === currentQuestion.answer.toString().toLowerCase().trim();
+    }
     
-    if (numAnswer === currentQuestion.answer) {
+    const newHistory = [...history];
+    newHistory[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+    setHistory(newHistory);
+
+    if (isCorrect) {
       playSound.success();
       setScore(prev => prev + 1);
       setModalState('correct');
@@ -89,9 +109,9 @@ export const AssessmentQuizContent: React.FC = () => {
     setUserAnswer('');
     setIsFinished(false);
     setModalState('none');
+    setStartTime(new Date());
+    setHistory(new Array(assessmentData.length).fill('pending'));
   };
-
-  const progressPercentage = ((currentIndex) / assessmentData.length) * 100;
 
   return (
     <div className={`assessment-container theme-${activeTheme}`}>
@@ -108,12 +128,17 @@ export const AssessmentQuizContent: React.FC = () => {
 
         {!isFinished && (
           <div className="ass-header-center">
-            <span className="ass-counter">{currentIndex + 1}/{assessmentData.length}</span>
-            <div className="ass-progress-track">
-              <div 
-                className="ass-progress-fill" 
-                style={{ width: `${progressPercentage}%` }}
-              />
+            <div className="ass-progress-history">
+              {history.map((result, index) => (
+                <div 
+                  key={index} 
+                  className={`ass-history-item ${result} ${index === currentIndex ? 'active' : ''}`}
+                >
+                  {result === 'correct' && <CheckCircle2 size={16} />}
+                  {result === 'incorrect' && <XCircle size={16} />}
+                  {result === 'pending' && <div className="ass-pending-dot" />}
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -129,47 +154,84 @@ export const AssessmentQuizContent: React.FC = () => {
       {/* Main Content */}
       <main className="ass-main">
         {isFinished ? (
-          <div className="ass-card" style={{ padding: '60px 40px' }}>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>Quiz Complete!</h2>
-            <p style={{ fontSize: '1.2rem', opacity: 0.8, marginBottom: '30px' }}>Here is your final score:</p>
-            <div style={{ fontSize: '5rem', fontWeight: 900, color: 'var(--ass-primary)', marginBottom: '40px', textShadow: '0 4px 15px var(--ass-glow)' }}>
-              {score} / {assessmentData.length}
-            </div>
-            <div style={{ display: 'flex', gap: '16px', width: '100%', maxWidth: '400px' }}>
-              <button className="ass-submit-btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }} onClick={handleRestart}>
-                <RefreshCw size={20} /> Play Again
-              </button>
-              <button className="ass-submit-btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--ass-secondary)', color: 'var(--ass-text)' }} onClick={() => navigate('/')}>
-                <Home size={20} /> Exit
-              </button>
-            </div>
-          </div>
+          <AssessmentResultsSummary 
+            score={score}
+            totalItems={assessmentData.length}
+            history={history}
+            startTime={startTime}
+            endTime={endTime}
+            onRestart={handleRestart}
+            onExit={() => navigate('/')}
+          />
         ) : (
           <div className="ass-card">
             <div className="ass-points-badge">1 point</div>
-            <div className="ass-equation">{currentQuestion.question}</div>
+            <div className="ass-question-text">{currentQuestion.question}</div>
             
-            <form className="ass-input-group" onSubmit={handleSubmit}>
-              <label className="ass-input-label">Type your answer below:</label>
-              <div className="ass-input-row">
-                <input
-                  ref={inputRef}
-                  type="number"
-                  className="ass-input"
-                  placeholder="Enter your answer here..."
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  disabled={modalState !== 'none'}
-                />
-                <button 
-                  type="submit" 
-                  className="ass-submit-btn"
-                  disabled={!userAnswer.trim() || modalState !== 'none'}
-                >
-                  Submit Answer
-                </button>
+            {currentQuestion.imageUrl && (
+              <div className="ass-question-image-container">
+                <img src={currentQuestion.imageUrl} alt="Question Visual" className="ass-question-image" />
               </div>
-            </form>
+            )}
+
+            {currentQuestion.questionVisual && (
+              <div className="ass-question-visual-container">
+                {currentQuestion.questionVisual.type === 'chips' ? (
+                  <AssessmentChipVisual {...currentQuestion.questionVisual.data} />
+                ) : (
+                  <AssessmentNumberLineVisual {...currentQuestion.questionVisual.data} />
+                )}
+              </div>
+            )}
+
+            {currentQuestion.type === 'multiple-choice' ? (
+              <div className={`ass-options-grid ${currentQuestion.optionVisuals ? 'has-visuals' : ''}`}>
+                {currentQuestion.options?.map((option, idx) => (
+                  <button 
+                    key={idx} 
+                    className={`ass-option-btn ${currentQuestion.optionVisuals ? 'with-visual' : ''}`}
+                    onClick={() => { playSound.tick(); handleSubmit(idx); }}
+                    disabled={modalState !== 'none'}
+                  >
+                    <div className="ass-option-main">
+                      <span className="ass-option-label">{String.fromCharCode(65 + idx)}</span>
+                      {!currentQuestion.optionVisuals && <span className="ass-option-text">{option}</span>}
+                    </div>
+                    {currentQuestion.optionVisuals && (
+                      <div className="ass-option-visual">
+                        {currentQuestion.optionVisuals.type === 'chips' ? (
+                          <AssessmentChipVisual {...currentQuestion.optionVisuals.data[idx]} />
+                        ) : (
+                          <AssessmentNumberLineVisual {...currentQuestion.optionVisuals.data[idx]} />
+                        )}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <form className="ass-input-group" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+                <label className="ass-input-label">Type your answer below:</label>
+                <div className="ass-input-row">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    className="ass-input"
+                    placeholder="Enter your answer here..."
+                    value={userAnswer}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                    disabled={modalState !== 'none'}
+                  />
+                  <button 
+                    type="submit" 
+                    className="ass-submit-btn"
+                    disabled={!userAnswer.trim() || modalState !== 'none'}
+                  >
+                    Submit Answer
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
       </main>
@@ -231,14 +293,6 @@ export const AssessmentQuizContent: React.FC = () => {
                   <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#fff' }} />
                   Blue
                 </button>
-                <button 
-                  className={`ass-theme-btn violet ${activeTheme === 'violet' ? 'active' : ''}`}
-                  style={{ background: '#7B2CBF' }}
-                  onClick={() => { playSound.tick(); setActiveTheme('violet'); }}
-                >
-                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#fff' }} />
-                  Violet
-                </button>
               </div>
             </div>
 
@@ -264,7 +318,11 @@ export const AssessmentQuizContent: React.FC = () => {
             <p>
               {modalState === 'correct' 
                 ? 'Great job! Moving to the next question...'
-                : `The correct answer was ${currentQuestion.answer}. Moving on...`}
+                : `The correct answer was: ${
+                    currentQuestion.type === 'multiple-choice'
+                      ? `${String.fromCharCode(65 + (currentQuestion.answer as number))}. ${currentQuestion.options?.[currentQuestion.answer as number]}`
+                      : currentQuestion.answer
+                  }. Moving on...`}
             </p>
           </div>
         </div>
