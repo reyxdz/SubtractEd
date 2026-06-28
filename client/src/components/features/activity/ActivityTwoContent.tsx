@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
-import dogMarkerImg from '../../../assets/images/dog_marker.png';
 import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
+import { ResultsSummary } from './ResultsSummary';
+import { ProgressLegend } from '../../common/ProgressLegend';
 import { activity2Bank, pickFivePairs, parseExpr, type QPair } from '../../../utils/questionBank';
 import './ActivityTwoContent.css';
 import '../guide/GuideContent.css';
@@ -34,10 +35,6 @@ function clamp(value: number) {
 
 function getPercent(value: number) {
   return ((clamp(value) - MIN) / (MAX - MIN)) * 100;
-}
-
-function formatNum(n: number) {
-  return n < 0 ? `(${n})` : String(n);
 }
 
 // ── Component ──────────────────────────────────
@@ -77,12 +74,15 @@ export const ActivityTwoContent: React.FC = () => {
     isOpen: boolean;
     type: 'success' | 'error' | 'info';
     title: string;
-    message: string;
+    message: React.ReactNode;
     showNext: boolean;
   }>({ isOpen: false, type: 'info', title: '', message: '', showNext: false });
   const [hintModalOpen, setHintModalOpen] = useState(false);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [videoRedirectModal, setVideoRedirectModal] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [startTime] = useState(new Date());
+  const [endTime, setEndTime] = useState<Date | null>(null);
 
   const [hintText, setHintText] = useState('');
   const [resultText, setResultText] = useState('');
@@ -124,8 +124,8 @@ export const ActivityTwoContent: React.FC = () => {
       setMoveValue(0);
       setActiveTickValue(currentQ.start);
       setAnswer('');
-      setHintText(`Target: ${currentQ.start} − (${currentQ.subtract}). Drag the dog to begin.`);
-      setResultText('Place the dog on the minuend, then move to show the subtraction.');
+      setHintText(`Target: ${currentQ.start} − (${currentQ.subtract}). Relocate the circle to begin.`);
+      setResultText('Place the circle on the minuend, then move to show the subtraction.');
     }
   }, [currentQ, clearTimers]);
 
@@ -216,7 +216,7 @@ export const ActivityTwoContent: React.FC = () => {
     setMoveValue(0);
     setActiveTickValue(0);
     setResultText('Reset to 0.');
-    setHintText('Drag the dog to set a new minuend.');
+    setHintText('Relocate the circle to set a new minuend.');
   }, [clearTimers]);
 
   // ── Go to next item ──
@@ -234,8 +234,8 @@ export const ActivityTwoContent: React.FC = () => {
       setDifficulty('difficult');
       setQIndex(0);
     } else {
-      markActivityComplete(2);
-      navigate('/activity');
+      setEndTime(new Date());
+      setShowSummary(true);
     }
   }, [qIndex, totalQuestions, difficulty, navigate, clearTimers]);
 
@@ -293,7 +293,11 @@ export const ActivityTwoContent: React.FC = () => {
           isOpen: true,
           type: 'error',
           title: 'Incorrect',
-          message: `The correct answer is ${correctAnswer}. Let us move to the next question.`,
+          message: (
+            <>
+              The correct answer is <strong>{correctAnswer}</strong>. Let us move to the next question.
+            </>
+          ),
           showNext: true,
         });
       }
@@ -333,6 +337,21 @@ export const ActivityTwoContent: React.FC = () => {
   }, [clearTimers]);
 
   // ── Render ──
+  if (showSummary && endTime) {
+    return (
+      <ResultsSummary
+        activityNum={2}
+        itemResults={itemResults}
+        startTime={startTime}
+        endTime={endTime}
+        onProceed={() => {
+          markActivityComplete(2);
+          navigate('/activity');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="activity-two-wrapper" onClick={(e) => {
       const target = e.target as HTMLElement;
@@ -357,7 +376,7 @@ export const ActivityTwoContent: React.FC = () => {
           </header>
 
           {/* Progress Circles */}
-          <div className="progress-circles-container">
+          <div className="progress-circles-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="progress-circles">
               {Array.from({ length: 15 }, (_, i) => {
                 const status = itemResults[i];
@@ -376,12 +395,13 @@ export const ActivityTwoContent: React.FC = () => {
                 );
               })}
             </div>
+            <ProgressLegend />
           </div>
 
           <div className="a2-main-body">
             {/* Directions */}
             <div className="a2-directions-box">
-              <p><strong>Directions:</strong> Drag the dog to choose the <strong>minuend</strong>. Then move left or right to model the <strong>subtrahend</strong>. Answer each item.</p>
+              <p><strong>Directions:</strong> Click any point on the number line to position the minuend, represented by the circle. Then, move left or right to model the subtrahend. Answer each item.</p>
             </div>
 
             {/* Question */}
@@ -391,11 +411,6 @@ export const ActivityTwoContent: React.FC = () => {
 
             {/* Number Line Card */}
             <div className="a2-numberline-card">
-              {/* Chips */}
-              <div className="a2-chips-row">
-                <div className="a2-expression-chip">{formatNum(startValue)} − {formatNum(moveValue)} = {currentValue}</div>
-              </div>
-
               {/* Number Line */}
               <div
                 className="a2-numberline-container"
@@ -419,6 +434,13 @@ export const ActivityTwoContent: React.FC = () => {
 
                 {/* Ticks */}
                 <div className="a2-ticks-container" ref={ticksRef}>
+                  {/* Circle Marker */}
+                  <div
+                    className={`a2-marker ${isDragging ? 'dragging' : ''}`}
+                    style={{ left: `${getPercent(currentValue)}%` }}
+                    onPointerDown={handlePointerDown}
+                  ></div>
+
                   {Array.from({ length: MAX - MIN + 1 }, (_, i) => {
                     const val = MIN + i;
                     const isActive = activeTickValue === val;
@@ -438,19 +460,10 @@ export const ActivityTwoContent: React.FC = () => {
                     );
                   })}
                 </div>
-
-                {/* Dog Marker */}
-                <div
-                  className={`a2-marker ${isDragging ? 'dragging' : ''}`}
-                  style={{ left: `${getPercent(currentValue)}%` }}
-                  onPointerDown={handlePointerDown}
-                >
-                  <img src={dogMarkerImg} alt="dog marker" draggable="false" />
-                </div>
               </div>
 
               {difficulty === 'easy' && (
-                <div className="a2-dynamic-prompts" style={{ marginTop: '20px', padding: '0 10px' }}>
+                <div className="a2-dynamic-prompts" style={{ marginTop: '10px', padding: '0 10px' }}>
                   <p className="a2-hint-text">{hintText}</p>
                   {resultText && <p className="a2-result-text">{resultText}</p>}
                 </div>
