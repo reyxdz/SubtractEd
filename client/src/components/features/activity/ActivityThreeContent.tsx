@@ -123,7 +123,7 @@ export const ActivityThreeContent: React.FC = () => {
   const changeRef = useRef<HTMLInputElement>(null);
   const answerRef = useRef<HTMLInputElement>(null);
 
-  const isReviewMode = itemResults[qIndex] && itemResults[qIndex] !== 'unanswered';
+  const isReviewMode = !!(itemResults[qIndex] && itemResults[qIndex] !== 'unanswered');
   const difficulty: Difficulty = qIndex < 5 ? 'easy' : qIndex < 10 ? 'moderate' : 'difficult';
   const displayTryNum = isReviewMode ? storedAnswers[qIndex]?.tryNum || 'first' : tryNum;
   
