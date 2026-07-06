@@ -5,26 +5,31 @@ import { playSound } from '../../../utils/sound';
 import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
 import { ResultsSummary } from './ResultsSummary';
 import { ProgressLegend } from '../../common/ProgressLegend';
-import { activity2Bank, pickFivePairs, parseExpr, type QPair } from '../../../utils/questionBank';
+import { activity2Bank, activity2Hints, pickFiveWithHints, pickFiveDiffPairs, activity2DiffBank, parseExpr, type QPair, type HintPair, type DiffPair } from '../../../utils/questionBank';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import './ActivityTwoContent.css';
 import '../guide/GuideContent.css';
 
 // ── Question Data ──────────────────────────────
 type Difficulty = 'easy' | 'moderate' | 'difficult';
 
-interface Question {
-  start: number;
-  subtract: number;
-  prompt: string;
+type A2StoredAnswer = {
+  answer: string;
+  startValue: number;
+  currentValue: number;
+  moveValue: number;
+  tryNum: 'first' | 'second';
+};
+interface SavedActivity2 {
+  levelItems: { easy: (QPair & HintPair)[]; moderate: (QPair & HintPair)[]; difficult: DiffPair[] };
+  tryNums: ('first' | 'second')[];
+  qIndex: number;
+  consecutiveStFails: number;
+  itemResults: string[];
+  storedAnswers: Record<number, A2StoredAnswer>;
+  startTime: number;
 }
 
-const DIFFICULT_QUESTIONS: Question[] = [
-  { start: -10, subtract: -5, prompt: 'Start at -10, then subtract -5.' },
-  { start: -7, subtract: 6, prompt: 'Start at -7, then subtract 6.' },
-  { start: 4, subtract: -9, prompt: 'Start at 4, then subtract -9.' },
-  { start: -12, subtract: -3, prompt: 'Start at -12, then subtract -3.' },
-  { start: 3, subtract: -7, prompt: 'Start at 3, then subtract -7.' }
-];
 
 const MIN = -15;
 const MAX = 15;
@@ -41,19 +46,38 @@ function getPercent(value: number) {
 export const ActivityTwoContent: React.FC = () => {
   const navigate = useNavigate();
 
+  // Restore any in-progress session (once).
+  const savedRef = useRef<SavedActivity2 | null>(loadSession<SavedActivity2>(SESSION_KEYS.activity(2)));
+  const saved = savedRef.current;
+
   // Level progression
-  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
-  const [items, setItems] = useState<QPair[]>([]);
-  const [qIndex, setQIndex] = useState(0);
-  const [tryNum, setTryNum] = useState<'first' | 'second'>('first');
-  const [consecutiveStFails, setConsecutiveStFails] = useState(0);
-  const [itemResults, setItemResults] = useState<string[]>(Array(15).fill('unanswered'));
+  const [qIndex, setQIndex] = useState(saved?.qIndex ?? 0);
+  const [levelItems, setLevelItems] = useState<{ easy: (QPair & HintPair)[], moderate: (QPair & HintPair)[], difficult: DiffPair[] }>(saved?.levelItems ?? { easy: [], moderate: [], difficult: [] });
+  const [tryNums, setTryNums] = useState<('first' | 'second')[]>(saved?.tryNums ?? Array(15).fill('first'));
+  const [consecutiveStFails, setConsecutiveStFails] = useState(saved?.consecutiveStFails ?? 0);
+  const [itemResults, setItemResults] = useState<string[]>(saved?.itemResults ?? Array(15).fill('unanswered'));
+  const [storedAnswers, setStoredAnswers] = useState<Record<number, A2StoredAnswer>>(saved?.storedAnswers ?? {});
+
+  const difficulty: Difficulty = qIndex < 5 ? 'easy' : qIndex < 10 ? 'moderate' : 'difficult';
+  const levelOffset = qIndex < 5 ? 0 : qIndex < 10 ? 5 : 10;
+  const localIndex = qIndex - levelOffset;
+  const isDifficult = difficulty === 'difficult';
 
   // Current question resolved from items + try
-  const currentQ = useMemo(
-    () => getCurrentQuestion(difficulty, items, qIndex, tryNum),
-    [difficulty, items, qIndex, tryNum]
-  );
+  const currentQ = useMemo(() => {
+    if (difficulty === 'difficult') return null;
+    const pair = difficulty === 'easy' ? levelItems.easy[localIndex] : levelItems.moderate[localIndex];
+    if (!pair) return null;
+    const tryNum = tryNums[qIndex] ?? 'first';
+    const exprStr = tryNum === 'first' ? pair.ftExpr : pair.stExpr;
+    const parsed = parseExpr(exprStr);
+    return { start: parsed.a, subtract: parsed.b, prompt: `Model ${exprStr} on the number line.` };
+  }, [difficulty, levelItems, localIndex, tryNums, qIndex]);
+
+  const currentDifficultPair = isDifficult ? (levelItems.difficult[localIndex] ?? null) : null;
+  const currentDiffAns = currentDifficultPair
+    ? (tryNums[qIndex] === 'first' ? currentDifficultPair.ftAns : currentDifficultPair.stAns)
+    : 0;
 
   // Number line state
   const [startValue, setStartValue] = useState(currentQ?.start ?? 0);
@@ -81,18 +105,21 @@ export const ActivityTwoContent: React.FC = () => {
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [videoRedirectModal, setVideoRedirectModal] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
-  const [startTime] = useState(new Date());
+  const [startTime] = useState(saved ? new Date(saved.startTime) : new Date());
   const [endTime, setEndTime] = useState<Date | null>(null);
 
-  const [hintText, setHintText] = useState('');
-  const [resultText, setResultText] = useState('');
-
-  const totalQuestions = 5;
-  const isDifficult = difficulty === 'difficult';
   const showHint = !isDifficult;
-  const levelOffset = difficulty === 'easy' ? 0 : difficulty === 'moderate' ? 5 : 10;
-  const globalIdx = levelOffset + qIndex;
+  const currentHint = (() => {
+    if (isDifficult) return '';
+    const pair = difficulty === 'easy' ? levelItems.easy[localIndex] : levelItems.moderate[localIndex];
+    if (!pair) return '';
+    const tryNum = tryNums[qIndex] ?? 'first';
+    return tryNum === 'first' ? pair.ftHint : pair.stHint;
+  })();
+  const globalIdx = qIndex;
   const difficultyLabel = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+
+  const isReviewMode = !!(itemResults[globalIdx] && itemResults[globalIdx] !== 'unanswered');
 
   // ── Clear timers ──
   const clearTimers = useCallback(() => {
@@ -100,23 +127,47 @@ export const ActivityTwoContent: React.FC = () => {
     timeoutsRef.current = [];
   }, []);
 
-  // ── Load question data ──
+  // ── Load question data (skip if resuming a saved session) ──
   useEffect(() => {
-    if (difficulty === 'difficult') {
-      setItems([]);
-    } else {
-      const bank = difficulty === 'easy' ? activity2Bank.easy : activity2Bank.moderate;
-      setItems(pickFivePairs(bank));
+    if (saved) return;
+    setLevelItems({
+      easy: pickFiveWithHints(activity2Bank.easy, activity2Hints.easy),
+      moderate: pickFiveWithHints(activity2Bank.moderate, activity2Hints.moderate),
+      difficult: pickFiveDiffPairs(activity2DiffBank)
+    });
+  }, [saved]);
+
+  // ── Persist in-progress session so students resume where they left off ──
+  useEffect(() => {
+    if (showSummary || levelItems.easy.length === 0) return;
+    saveSession<SavedActivity2>(SESSION_KEYS.activity(2), {
+      levelItems,
+      tryNums,
+      qIndex,
+      consecutiveStFails,
+      itemResults,
+      storedAnswers,
+      startTime: startTime.getTime(),
+    });
+  }, [levelItems, tryNums, qIndex, consecutiveStFails, itemResults, storedAnswers, startTime, showSummary]);
+
+  const restoreState = useCallback(() => {
+    if (storedAnswers[globalIdx]) {
+      const stored = storedAnswers[globalIdx];
+      setAnswer(stored.answer);
+      setStartValue(stored.startValue);
+      setCurrentValue(stored.currentValue);
+      setMoveValue(stored.moveValue);
+      setActiveTickValue(stored.currentValue);
     }
-    setQIndex(0);
-    setTryNum('first');
-    setConsecutiveStFails(0);
-    setShowingAnswer(false);
-    setAnswer('');
-  }, [difficulty]);
+  }, [globalIdx, storedAnswers]);
 
   // ── Apply current question to number line ──
   useEffect(() => {
+    if (isReviewMode) {
+      restoreState();
+      return;
+    }
     if (currentQ) {
       clearTimers();
       setStartValue(currentQ.start);
@@ -124,10 +175,8 @@ export const ActivityTwoContent: React.FC = () => {
       setMoveValue(0);
       setActiveTickValue(currentQ.start);
       setAnswer('');
-      setHintText(`Target: ${currentQ.start} − (${currentQ.subtract}). Relocate the circle to begin.`);
-      setResultText('Place the circle on the minuend, then move to show the subtraction.');
     }
-  }, [currentQ, clearTimers]);
+  }, [currentQ, clearTimers, isReviewMode, restoreState]);
 
   // ── Guard ──
   useEffect(() => {
@@ -153,7 +202,6 @@ export const ActivityTwoContent: React.FC = () => {
     (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
     setStartValue(currentValue);
     setMoveValue(0);
-    setHintText(`Minuend set to ${currentValue}. Drag slowly left or right.`);
   }, [currentValue, clearTimers]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
@@ -162,14 +210,11 @@ export const ActivityTwoContent: React.FC = () => {
     setCurrentValue(newVal);
     setMoveValue(startValue - newVal);
     setActiveTickValue(newVal);
-    setResultText(`Subtrahend modeled: ${startValue - newVal}`);
   }, [isDragging, getValueFromPointer, startValue]);
 
   const handlePointerUp = useCallback(() => {
     if (!isDragging) return;
     setIsDragging(false);
-    const directionText = moveValue > 0 ? 'left to subtract a positive' : moveValue < 0 ? 'right to subtract a negative' : 'without moving';
-    setHintText(`You moved ${directionText}. Equation: ${startValue} − (${moveValue}) = ${currentValue}.`);
   }, [isDragging, moveValue, startValue, currentValue]);
 
   // ── Tick click ──
@@ -180,8 +225,6 @@ export const ActivityTwoContent: React.FC = () => {
     setCurrentValue(val);
     setMoveValue(0);
     setActiveTickValue(val);
-    setResultText(`Minuend set to ${val}.`);
-    setHintText('Now move left or right to model the subtrahend.');
   }, [clearTimers]);
 
   // ── Step buttons ──
@@ -192,8 +235,6 @@ export const ActivityTwoContent: React.FC = () => {
     setCurrentValue(newVal);
     setMoveValue(startValue - newVal);
     setActiveTickValue(newVal);
-    setResultText(`Moved left by 1. Subtrahend is now ${startValue - newVal}.`);
-    setHintText('Moving left makes the subtrahend more positive.');
   }, [currentValue, startValue, clearTimers]);
 
   const handleStepRight = useCallback(() => {
@@ -203,8 +244,6 @@ export const ActivityTwoContent: React.FC = () => {
     setCurrentValue(newVal);
     setMoveValue(startValue - newVal);
     setActiveTickValue(newVal);
-    setResultText(`Moved right by 1. Subtrahend is now ${startValue - newVal}.`);
-    setHintText('Moving right makes the subtrahend more negative.');
   }, [currentValue, startValue, clearTimers]);
 
   // ── Reset ──
@@ -215,38 +254,38 @@ export const ActivityTwoContent: React.FC = () => {
     setCurrentValue(0);
     setMoveValue(0);
     setActiveTickValue(0);
-    setResultText('Reset to 0.');
-    setHintText('Relocate the circle to set a new minuend.');
   }, [clearTimers]);
 
   // ── Go to next item ──
   const goToNext = useCallback(() => {
     clearTimers();
-    setAnswer('');
     setShowingAnswer(false);
-    setTryNum('first');
-    if (qIndex < totalQuestions - 1) {
-      setQIndex(prev => prev + 1);
-    } else if (difficulty === 'easy') {
-      setDifficulty('moderate');
-      setQIndex(0);
-    } else if (difficulty === 'moderate') {
-      setDifficulty('difficult');
-      setQIndex(0);
+    const nextIdx = itemResults.findIndex(r => r === 'unanswered');
+    if (nextIdx !== -1) {
+      setQIndex(nextIdx);
     } else {
       setEndTime(new Date());
       setShowSummary(true);
     }
-  }, [qIndex, totalQuestions, difficulty, navigate, clearTimers]);
+  }, [itemResults, clearTimers]);
 
   // ── Check answer ──
   const handleCheckAnswer = useCallback(() => {
-    if (!answer.trim() || !currentQ) return;
-    const correctAnswer = clamp(currentQ.start - currentQ.subtract);
+    if (isReviewMode || !answer.trim() || !currentQ) return;
+    const correctAnswer = isDifficult ? currentDiffAns : clamp(currentQ!.start - currentQ!.subtract);
     const userAnswer = Number(answer.trim());
+    const tryNum = tryNums[qIndex] ?? 'first';
+
+    const storeUserAns = () => {
+      setStoredAnswers(prev => ({
+        ...prev,
+        [globalIdx]: { answer: answer.trim(), startValue, currentValue, moveValue, tryNum }
+      }));
+    };
 
     if (userAnswer === correctAnswer) {
       playSound.success();
+      storeUserAns();
       const result = tryNum === 'first' ? 'correctFirst' : 'correctSecond';
       setItemResults(prev => {
         const next = [...prev];
@@ -257,13 +296,17 @@ export const ActivityTwoContent: React.FC = () => {
         isOpen: true,
         type: 'success',
         title: 'Correct!',
-        message: `${currentQ.start} − (${currentQ.subtract}) = ${correctAnswer}`,
+        message: isDifficult ? `Correct! The answer is ${correctAnswer}.` : `${currentQ!.start} - (${currentQ!.subtract}) = ${correctAnswer}`,
         showNext: true,
       });
     } else {
       if (tryNum === 'first') {
         playSound.pop();
-        setTryNum('second');
+        setTryNums(prev => {
+          const next = [...prev];
+          next[qIndex] = 'second';
+          return next;
+        });
         setModalState({
           isOpen: true,
           type: 'info',
@@ -274,6 +317,7 @@ export const ActivityTwoContent: React.FC = () => {
         setAnswer('');
       } else {
         playSound.error();
+        storeUserAns();
         setItemResults(prev => {
           const next = [...prev];
           next[globalIdx] = 'wrong';
@@ -302,7 +346,7 @@ export const ActivityTwoContent: React.FC = () => {
         });
       }
     }
-  }, [answer, currentQ, tryNum, consecutiveStFails]);
+  }, [answer, currentQ, tryNums, qIndex, consecutiveStFails, isReviewMode, startValue, currentValue, moveValue, globalIdx, playSound]);
 
   const handleModalNext = useCallback(() => {
     playSound.click();
@@ -346,6 +390,7 @@ export const ActivityTwoContent: React.FC = () => {
         endTime={endTime}
         onProceed={() => {
           markActivityComplete(2);
+          clearSession(SESSION_KEYS.activity(2));
           navigate('/activity');
         }}
       />
@@ -382,8 +427,19 @@ export const ActivityTwoContent: React.FC = () => {
                 const status = itemResults[i];
                 const itemNum = i + 1;
                 const isCurrent = i === globalIdx;
+                const isClickable = status !== 'unanswered' || i === itemResults.findIndex(r => r === 'unanswered');
                 return (
-                  <div key={i} className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}>
+                  <div 
+                    key={i} 
+                    className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}
+                    onClick={() => {
+                      if (isClickable) {
+                        playSound.tick();
+                        setQIndex(i);
+                      }
+                    }}
+                    style={{ cursor: isClickable ? 'pointer' : 'default' }}
+                  >
                     {status === 'correctFirst' || status === 'correctSecond' ? (
                       <span className="circle-icon">&#10003;</span>
                     ) : status === 'wrong' ? (
@@ -399,14 +455,18 @@ export const ActivityTwoContent: React.FC = () => {
           </div>
 
           <div className="a2-main-body">
-            {/* Directions */}
+            {/* Directions / Question Boxes */}
             <div className="a2-directions-box">
-              <p><strong>Directions:</strong> Click any point on the number line to position the minuend, represented by the circle. Then, move left or right to model the subtrahend. Answer each item.</p>
+              <p><strong>Directions:</strong> {isDifficult ? 'Read the problem carefully and solve using the number line.' : 'Click any point on the number line to position the minuend, represented by the circle. Then, move left or right to model the subtrahend. Answer each item.'}</p>
             </div>
 
             {/* Question */}
             <div className="a2-question-box">
-              <p>{currentQ ? `${currentQ.start} − (${currentQ.subtract}) =` : ''}</p>
+              {isDifficult ? (
+                <p>{currentDifficultPair ? (tryNums[qIndex] === 'first' ? currentDifficultPair.ftProb : currentDifficultPair.stProb) : ''}</p>
+              ) : (
+                <p>{currentQ ? `${currentQ.start} - (${currentQ.subtract}) =` : ''}</p>
+              )}
             </div>
 
             {/* Number Line Card */}
@@ -438,7 +498,7 @@ export const ActivityTwoContent: React.FC = () => {
                   <div
                     className={`a2-marker ${isDragging ? 'dragging' : ''}`}
                     style={{ left: `${getPercent(currentValue)}%` }}
-                    onPointerDown={handlePointerDown}
+                    onPointerDown={isReviewMode ? undefined : handlePointerDown}
                   ></div>
 
                   {Array.from({ length: MAX - MIN + 1 }, (_, i) => {
@@ -450,7 +510,7 @@ export const ActivityTwoContent: React.FC = () => {
                         key={val}
                         className="a2-tick"
                         style={{ left: `${getPercent(val)}%` }}
-                        onClick={() => handleTickClick(val)}
+                        onClick={() => { if (!isReviewMode) handleTickClick(val); }}
                         type="button"
                       >
                         <div className={`a2-tick-label ${colorClass} ${isActive ? 'active' : ''}`}>{val}</div>
@@ -462,13 +522,20 @@ export const ActivityTwoContent: React.FC = () => {
                 </div>
               </div>
 
-              {difficulty === 'easy' && (
-                <div className="a2-dynamic-prompts" style={{ marginTop: '10px', padding: '0 10px' }}>
-                  <p className="a2-hint-text">{hintText}</p>
-                  {resultText && <p className="a2-result-text">{resultText}</p>}
-                </div>
-              )}
+
             </div>
+
+            {/* Controls Row */}
+            {!isReviewMode && (
+              <div className="a2-controls-row">
+                <button className="action-btn a2-step-left-btn" onClick={handleStepLeft}>← Move Left</button>
+                <button className="action-btn a2-step-right-btn" onClick={handleStepRight}>Move Right →</button>
+                <button className="action-btn a2-reset-btn" onClick={handleReset}>Reset</button>
+                {showHint && (
+                  <button className="action-btn hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}>Hint</button>
+                )}
+              </div>
+            )}
 
             {/* Answer Card */}
             <div className="a2-answer-card">
@@ -478,22 +545,27 @@ export const ActivityTwoContent: React.FC = () => {
                   className="a2-answer-input"
                   type="text"
                   value={answer}
-                  onChange={(e) => { playSound.tick(); setAnswer(e.target.value); }}
+                  onChange={(e) => { 
+                    if (!isReviewMode) {
+                      playSound.tick(); 
+                      setAnswer(e.target.value); 
+                    }
+                  }}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleCheckAnswer(); }}
                   placeholder="Enter your answer"
+                  readOnly={isReviewMode}
                 />
-                <button className="action-btn check-btn" onClick={handleCheckAnswer}>Check Answer</button>
+                {isReviewMode ? (
+                  <button className="action-btn check-btn" onClick={() => {
+                    playSound.click();
+                    goToNext();
+                  }}>
+                    Back to Current Question
+                  </button>
+                ) : (
+                  <button className="action-btn check-btn" onClick={handleCheckAnswer}>Check Answer</button>
+                )}
               </div>
-            </div>
-
-            {/* Controls Row */}
-            <div className="a2-controls-row">
-              <button className="action-btn a2-step-left-btn" onClick={handleStepLeft}>← Move Left</button>
-              <button className="action-btn a2-step-right-btn" onClick={handleStepRight}>Move Right →</button>
-              <button className="action-btn a2-reset-btn" onClick={handleReset}>Reset</button>
-              {showHint && (
-                <button className="action-btn hint-btn" onClick={() => { playSound.pop(); setHintModalOpen(true); }}>Hint</button>
-              )}
             </div>
           </div>
 
@@ -563,7 +635,7 @@ export const ActivityTwoContent: React.FC = () => {
             }
           >
             <p style={{ fontSize: '1.2rem', fontWeight: '500', color: '#1e293b' }}>
-              {currentQ?.prompt || 'Use the number line to model the expression.'}
+              {currentHint || currentQ?.prompt || 'Use the number line to model the expression.'}
             </p>
           </Modal>
 
@@ -592,27 +664,3 @@ export const ActivityTwoContent: React.FC = () => {
     </div>
   );
 };
-
-// ── Helper: resolve question from bank + try ──
-function getCurrentQuestion(
-  difficulty: Difficulty,
-  items: QPair[],
-  qIndex: number,
-  tryNum: 'first' | 'second'
-): Question | null {
-  if (difficulty === 'difficult') {
-    return DIFFICULT_QUESTIONS[qIndex] ?? null;
-  }
-
-  const pair = items[qIndex];
-  if (!pair) return null;
-
-  const exprStr = tryNum === 'first' ? pair.ftExpr : pair.stExpr;
-  const parsed = parseExpr(exprStr);
-
-  return {
-    start: parsed.a,
-    subtract: parsed.b,
-    prompt: `Model ${exprStr} on the number line.`,
-  };
-}
