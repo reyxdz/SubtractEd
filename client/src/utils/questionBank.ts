@@ -10,17 +10,29 @@ export interface QPair {
   stAns: number;
 }
 
+export interface HintPair {
+  ftHint: string;
+  stHint: string;
+}
+
 type ConditionPairs = readonly QPair[];
+type ConditionHintPairs = readonly HintPair[];
 type ActivityRound = readonly ConditionPairs[];
+type ActivityHintRound = readonly ConditionHintPairs[];
 
 export interface ActivityBank {
   easy: ActivityRound;
   moderate: ActivityRound;
 }
 
-// ──────────────────────────────────────────────
+export interface ActivityHintBank {
+  easy: ActivityHintRound;
+  moderate: ActivityHintRound;
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Activity 1 Bank
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const a1EasyC1: ConditionPairs = [
   { ftExpr: '4 - 2', ftAns: 2, stExpr: '3 - 1', stAns: 2 },
   { ftExpr: '8 - 5', ftAns: 3, stExpr: '4 - 3', stAns: 1 },
@@ -148,9 +160,9 @@ export const activity1Bank: ActivityBank = {
   moderate: [a1ModC1, a1ModC2, a1ModC3, a1ModC4, a1ModC5],
 };
 
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Activity 2 Bank
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const a2EasyC1: ConditionPairs = [
   { ftExpr: '9 - 4', ftAns: 5, stExpr: '5 - 2', stAns: 3 },
   { ftExpr: '8 - 2', ftAns: 6, stExpr: '4 - 1', stAns: 3 },
@@ -278,9 +290,9 @@ export const activity2Bank: ActivityBank = {
   moderate: [a2ModC1, a2ModC2, a2ModC3, a2ModC4, a2ModC5],
 };
 
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Activity 3 Bank
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const a3EasyC1: ConditionPairs = [
   { ftExpr: '9 - 3', ftAns: 6, stExpr: '5 - 2', stAns: 3 },
   { ftExpr: '7 - 2', ftAns: 5, stExpr: '4 - 1', stAns: 3 },
@@ -408,7 +420,7 @@ export const activity3Bank: ActivityBank = {
   moderate: [a3ModC1, a3ModC2, a3ModC3, a3ModC4, a3ModC5],
 };
 
-// ── Randomization Helpers ─────────────────────
+// â”€â”€ Randomization Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Pick 5 pairs, one random from each condition.
 export function pickFivePairs(round: ActivityRound): QPair[] {
   const result: QPair[] = [];
@@ -438,3 +450,575 @@ export function parseExpr(expr: string): { a: number; b: number } {
   const parts = expr.split(' - ').map(s => parseInt(s.trim(), 10));
   return { a: parts[0], b: parts[1] };
 }
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// DiffPair - For difficult round word problems
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+export interface DiffPair {
+  ftProb: string;
+  ftAns: number;
+  stProb: string;
+  stAns: number;
+}
+
+export type DiffCondition = readonly DiffPair[];
+export type DiffRound = readonly DiffCondition[];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Activity 1 Hint Banks
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+const a1EasyHintsC1: ConditionHintPairs = [
+  { ftHint: "Place 4 (+) chips. Take away 2 (+) chips.", stHint: "Place 3 (+) chips. Take away 1 (+) chip." },
+  { ftHint: "Place 8 (+) chips. Take away 5 (+) chips.", stHint: "Place 4 (+) chips. Take away 3 (+) chips." },
+  { ftHint: "Place 7 (+) chips. Take away 4 (+) chips.", stHint: "Place 5 (+) chips. Take away 2 (+) chips." },
+  { ftHint: "Place 7 (+) chips. Take away 2 (+) chips.", stHint: "Place 4 (+) chips. Take away 1 (+) chip." },
+  { ftHint: "Place 5 (+) chips. Take away 3 (+) chips.", stHint: "Place 2 (+) chips. Take away 1 (+) chip." },
+  { ftHint: "Place 3 (+) chips. Add zero pairs until you have 9 (+). Take away 9 (+) chips.", stHint: "Place 1 (+) chip. Add zero pairs until you have 2 (+). Take away 2 (+) chips." },
+  { ftHint: "Place 4 (+) chips. Add zero pairs until you have 9 (+). Take away 9 (+) chips.", stHint: "Place 2 (+) chips. Add zero pairs until you have 3 (+). Take away 3 (+) chips." },
+  { ftHint: "Place 5 (+) chips. Add zero pairs until you have 9 (+). Take away 9 (+) chips.", stHint: "Place 1 (+) chip. Add zero pairs until you have 4 (+). Take away 4 (+) chips." },
+  { ftHint: "Place 1 (+) chip. Add zero pairs until you have 2 (+). Take away 2 (+) chips.", stHint: "Place 2 (+) chips. Add zero pairs until you have 4 (+). Take away 4 (+) chips." },
+  { ftHint: "Place 1 (+) chip. Add zero pairs until you have 6 (+). Take away 6 (+) chips.", stHint: "Place 1 (+) chip. Add zero pairs until you have 3 (+). Take away 3 (+) chips." },
+];
+
+const a1EasyHintsC2: ConditionHintPairs = [
+  { ftHint: "Place 1 (-) chip. Add 5 zero pairs. Take away 5 (+) chips.", stHint: "Place 1 (-) chip. Add 2 zero pairs. Take away 2 (+) chips." },
+  { ftHint: "Place 9 (-) chips. Add 5 zero pairs. Take away 5 (+) chips.", stHint: "Place 2 (-) chips. Add 1 zero pair. Take away 1 (+) chip." },
+  { ftHint: "Place 9 (-) chips. Add 2 zero pairs. Take away 2 (+) chips.", stHint: "Place 1 (-) chip. Add 3 zero pairs. Take away 3 (+) chips." },
+  { ftHint: "Place 9 (-) chips. Add 3 zero pairs. Take away 3 (+) chips.", stHint: "Place 2 (-) chips. Add 2 zero pairs. Take away 2 (+) chips." },
+  { ftHint: "Place 5 (-) chips. Add 7 zero pairs. Take away 7 (+) chips.", stHint: "Place 3 (-) chips. Add 1 zero pair. Take away 1 (+) chip." },
+  { ftHint: "Place 6 (-) chips. Add 2 zero pairs. Take away 2 (+) chips.", stHint: "Place 1 (-) chip. Add 4 zero pairs. Take away 4 (+) chips." },
+  { ftHint: "Place 1 (-) chip. Add 2 zero pairs. Take away 2 (+) chips.", stHint: "Place 2 (-) chips. Add 3 zero pairs. Take away 3 (+) chips." },
+  { ftHint: "Place 5 (-) chips. Add 9 zero pairs. Take away 9 (+) chips.", stHint: "Place 3 (-) chips. Add 2 zero pairs. Take away 2 (+) chips." },
+  { ftHint: "Place 3 (-) chips. Add 8 zero pairs. Take away 8 (+) chips.", stHint: "Place 4 (-) chips. Add 1 zero pair. Take away 1 (+) chip." },
+  { ftHint: "Place 4 (-) chips. Add 3 zero pairs. Take away 3 (+) chips.", stHint: "Place 1 (-) chip. Add 5 zero pairs. Take away 5 (+) chips." },
+];
+
+const a1EasyHintsC3: ConditionHintPairs = [
+  { ftHint: "Place 6 (+) chips. Add 3 zero pairs. Take away 3 (-) chips.", stHint: "Place 1 (+) chip. Add 1 zero pair. Take away 1 (-) chip." },
+  { ftHint: "Place 9 (+) chips. Add 9 zero pairs. Take away 9 (-) chips.", stHint: "Place 2 (+) chips. Add 1 zero pair. Take away 1 (-) chip." },
+  { ftHint: "Place 5 (+) chips. Add 4 zero pairs. Take away 4 (-) chips.", stHint: "Place 1 (+) chip. Add 2 zero pairs. Take away 2 (-) chips." },
+  { ftHint: "Place 8 (+) chips. Add 2 zero pairs. Take away 2 (-) chips.", stHint: "Place 3 (+) chips. Add 1 zero pair. Take away 1 (-) chip." },
+  { ftHint: "Place 2 (+) chips. Add 6 zero pairs. Take away 6 (-) chips.", stHint: "Place 2 (+) chips. Add 2 zero pairs. Take away 2 (-) chips." },
+  { ftHint: "Place 1 (+) chip. Add 6 zero pairs. Take away 6 (-) chips.", stHint: "Place 1 (+) chip. Add 3 zero pairs. Take away 3 (-) chips." },
+  { ftHint: "Place 1 (+) chip. Add 4 zero pairs. Take away 4 (-) chips.", stHint: "Place 4 (+) chips. Add 1 zero pair. Take away 1 (-) chip." },
+  { ftHint: "Place 2 (+) chips. Add 2 zero pairs. Take away 2 (-) chips.", stHint: "Place 3 (+) chips. Add 2 zero pairs. Take away 2 (-) chips." },
+  { ftHint: "Place 9 (+) chips. Add 3 zero pairs. Take away 3 (-) chips.", stHint: "Place 2 (+) chips. Add 3 zero pairs. Take away 3 (-) chips." },
+  { ftHint: "Place 8 (+) chips. Add 1 zero pair. Take away 1 (-) chip.", stHint: "Place 1 (+) chip. Add 4 zero pairs. Take away 4 (-) chips." },
+];
+
+const a1EasyHintsC4: ConditionHintPairs = [
+  { ftHint: "Place 4 (-) chips. Add zero pairs until you have 5 (-). Take away 5 (-) chips.", stHint: "Place 1 (-) chip. Add zero pairs until you have 2 (-). Take away 2 (-) chips." },
+  { ftHint: "Place 2 (-) chips. Add zero pairs until you have 9 (-). Take away 9 (-) chips.", stHint: "Place 2 (-) chips. Add zero pairs until you have 3 (-). Take away 3 (-) chips." },
+  { ftHint: "Place 6 (-) chips. Add zero pairs until you have 7 (-). Take away 7 (-) chips.", stHint: "Place 1 (-) chip. Add zero pairs until you have 3 (-). Take away 3 (-) chips." },
+  { ftHint: "Place 2 (-) chips. Add zero pairs until you have 4 (-). Take away 4 (-) chips.", stHint: "Place 3 (-) chips. Add zero pairs until you have 4 (-). Take away 4 (-) chips." },
+  { ftHint: "Place 1 (-) chip. Add zero pairs until you have 6 (-). Take away 6 (-) chips.", stHint: "Place 2 (-) chips. Add zero pairs until you have 4 (-). Take away 4 (-) chips." },
+  { ftHint: "Place 5 (-) chips. Add zero pairs until you have 7 (-). Take away 7 (-) chips.", stHint: "Place 1 (-) chip. Add zero pairs until you have 4 (-). Take away 4 (-) chips." },
+  { ftHint: "Place 6 (-) chips. Add zero pairs until you have 8 (-). Take away 8 (-) chips.", stHint: "Place 4 (-) chips. Add zero pairs until you have 5 (-). Take away 5 (-) chips." },
+  { ftHint: "Place 5 (-) chips. Add zero pairs until you have 9 (-). Take away 9 (-) chips.", stHint: "Place 3 (-) chips. Add zero pairs until you have 5 (-). Take away 5 (-) chips." },
+  { ftHint: "Place 3 (-) chips. Add zero pairs until you have 8 (-). Take away 8 (-) chips.", stHint: "Place 2 (-) chips. Add zero pairs until you have 5 (-). Take away 5 (-) chips." },
+  { ftHint: "Place 2 (-) chips. Add zero pairs until you have 7 (-). Take away 7 (-) chips.", stHint: "Place 1 (-) chip. Add zero pairs until you have 5 (-). Take away 5 (-) chips." },
+];
+
+const a1EasyHintsC5: ConditionHintPairs = [
+  { ftHint: "Place 6 (-) chips. Take away 2 (-) chips.", stHint: "Place 2 (-) chips. Take away 1 (-) chip." },
+  { ftHint: "Place 8 (-) chips. Take away 3 (-) chips.", stHint: "Place 3 (-) chips. Take away 2 (-) chips." },
+  { ftHint: "Place 4 (-) chips. Take away 2 (-) chips.", stHint: "Place 3 (-) chips. Take away 1 (-) chip." },
+  { ftHint: "Place 7 (-) chips. Take away 3 (-) chips.", stHint: "Place 4 (-) chips. Take away 3 (-) chips." },
+  { ftHint: "Place 7 (-) chips. Take away 1 (-) chip.", stHint: "Place 4 (-) chips. Take away 2 (-) chips." },
+  { ftHint: "Place 9 (-) chips. Take away 1 (-) chip.", stHint: "Place 4 (-) chips. Take away 1 (-) chip." },
+  { ftHint: "Place 8 (-) chips. Take away 5 (-) chips.", stHint: "Place 5 (-) chips. Take away 4 (-) chips." },
+  { ftHint: "Place 7 (-) chips. Take away 5 (-) chips.", stHint: "Place 5 (-) chips. Take away 3 (-) chips." },
+  { ftHint: "Place 2 (-) chips. Take away 1 (-) chip.", stHint: "Place 5 (-) chips. Take away 2 (-) chips." },
+  { ftHint: "Place 4 (-) chips. Take away 1 (-) chip.", stHint: "Place 5 (-) chips. Take away 1 (-) chip." },
+];
+
+const a1ModHintsC1: ConditionHintPairs = [
+  { ftHint: "Subtracting a smaller positive from a larger positive directly reduces the group.", stHint: "Subtracting a smaller positive from a larger positive directly reduces the group." },
+  { ftHint: "Subtracting a smaller positive from a larger positive directly reduces the group.", stHint: "Subtracting a smaller positive from a larger positive directly reduces the group." },
+  { ftHint: "Subtracting a smaller positive from a larger positive directly reduces the group.", stHint: "Subtracting a smaller positive from a larger positive directly reduces the group." },
+  { ftHint: "Subtracting a smaller positive from a larger positive directly reduces the group.", stHint: "Subtracting a smaller positive from a larger positive directly reduces the group." },
+  { ftHint: "Subtracting a smaller positive from a larger positive directly reduces the group.", stHint: "Subtracting a smaller positive from a larger positive directly reduces the group." },
+  { ftHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group.", stHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group." },
+  { ftHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group.", stHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group." },
+  { ftHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group.", stHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group." },
+  { ftHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group.", stHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group." },
+  { ftHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group.", stHint: "Subtracting a larger positive from a smaller positive requires adding zero pairs to expand the group." },
+];
+
+const a1ModHintsC2: ConditionHintPairs = [
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+  { ftHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs.", stHint: "Removing positive chips from a negative group requires introducing positive values through zero pairs." },
+];
+
+const a1ModHintsC3: ConditionHintPairs = [
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+  { ftHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs.", stHint: "Removing negative chips from a positive group requires introducing negative values through zero pairs." },
+];
+
+const a1ModHintsC4: ConditionHintPairs = [
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+  { ftHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives.", stHint: "Removing a larger negative amount from a smaller negative group requires adding zero pairs to supply extra negatives." },
+];
+
+const a1ModHintsC5: ConditionHintPairs = [
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+  { ftHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group.", stHint: "Subtracting a smaller negative value from a larger negative group directly reduces the group." },
+];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Activity 2 Hint Banks
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+const a2EasyHintsC1: ConditionHintPairs = [
+  { ftHint: "Start at 4 on the number line and move left 2 spaces to subtract the positive value.", stHint: "Start at 3 on the number line and move left 1 space to subtract the positive value." },
+  { ftHint: "Start at 8 on the number line and move left 5 spaces to subtract the positive value.", stHint: "Start at 4 on the number line and move left 3 spaces to subtract the positive value." },
+  { ftHint: "Start at 7 on the number line and move left 4 spaces to subtract the positive value.", stHint: "Start at 5 on the number line and move left 2 spaces to subtract the positive value." },
+  { ftHint: "Start at 7 on the number line and move left 2 spaces to subtract the positive value.", stHint: "Start at 4 on the number line and move left 1 space to subtract the positive value." },
+  { ftHint: "Start at 5 on the number line and move left 3 spaces to subtract the positive value.", stHint: "Start at 2 on the number line and move left 1 space to subtract the positive value." },
+  { ftHint: "Start at 3 on the number line and move left 9 spaces past zero into the negative numbers.", stHint: "Start at 1 on the number line and move left 2 spaces past zero into the negative numbers." },
+  { ftHint: "Start at 4 on the number line and move left 9 spaces past zero into the negative numbers.", stHint: "Start at 2 on the number line and move left 3 spaces past zero into the negative numbers." },
+  { ftHint: "Start at 5 on the number line and move left 9 spaces past zero into the negative numbers.", stHint: "Start at 1 on the number line and move left 4 spaces past zero into the negative numbers." },
+  { ftHint: "Start at 1 on the number line and move left 2 spaces past zero into the negative numbers.", stHint: "Start at 2 on the number line and move left 4 spaces past zero into the negative numbers." },
+  { ftHint: "Start at 1 on the number line and move left 6 spaces past zero into the negative numbers.", stHint: "Start at 1 on the number line and move left 3 spaces past zero into the negative numbers." },
+];
+
+const a2EasyHintsC2: ConditionHintPairs = [
+  { ftHint: "Start at -1 on the negative side and move further left 5 spaces to subtract the positive value.", stHint: "Start at -1 on the negative side and move further left 2 spaces to subtract the positive value." },
+  { ftHint: "Start at -9 on the negative side and move further left 5 spaces to subtract the positive value.", stHint: "Start at -2 on the negative side and move further left 1 space to subtract the positive value." },
+  { ftHint: "Start at -9 on the negative side and move further left 2 spaces to subtract the positive value.", stHint: "Start at -1 on the negative side and move further left 3 spaces to subtract the positive value." },
+  { ftHint: "Start at -9 on the negative side and move further left 3 spaces to subtract the positive value.", stHint: "Start at -2 on the negative side and move further left 2 spaces to subtract the positive value." },
+  { ftHint: "Start at -5 on the negative side and move further left 7 spaces to subtract the positive value.", stHint: "Start at -3 on the negative side and move further left 1 space to subtract the positive value." },
+  { ftHint: "Start at -6 on the negative side and move further left 2 spaces to subtract the positive value.", stHint: "Start at -1 on the negative side and move further left 4 spaces to subtract the positive value." },
+  { ftHint: "Start at -1 on the negative side and move further left 2 spaces to subtract the positive value.", stHint: "Start at -2 on the negative side and move further left 3 spaces to subtract the positive value." },
+  { ftHint: "Start at -5 on the negative side and move further left 9 spaces to subtract the positive value.", stHint: "Start at -3 on the negative side and move further left 2 spaces to subtract the positive value." },
+  { ftHint: "Start at -3 on the negative side and move further left 8 spaces to subtract the positive value.", stHint: "Start at -4 on the negative side and move further left 1 space to subtract the positive value." },
+  { ftHint: "Start at -4 on the negative side and move further left 3 spaces to subtract the positive value.", stHint: "Start at -1 on the negative side and move further left 5 spaces to subtract the positive value." },
+];
+
+const a2EasyHintsC3: ConditionHintPairs = [
+  { ftHint: "Start at 6 on the positive side. Subtracting a negative turns the direction right, so move right 3 spaces.", stHint: "Start at 1 on the positive side. Subtracting a negative turns the direction right, so move right 1 space." },
+  { ftHint: "Start at 9 on the positive side. Subtracting a negative turns the direction right, so move right 9 spaces.", stHint: "Start at 2 on the positive side. Subtracting a negative turns the direction right, so move right 1 space." },
+  { ftHint: "Start at 5 on the positive side. Subtracting a negative turns the direction right, so move right 4 spaces.", stHint: "Start at 1 on the positive side. Subtracting a negative turns the direction right, so move right 2 spaces." },
+  { ftHint: "Start at 8 on the positive side. Subtracting a negative turns the direction right, so move right 2 spaces.", stHint: "Start at 3 on the positive side. Subtracting a negative turns the direction right, so move right 1 space." },
+  { ftHint: "Start at 2 on the positive side. Subtracting a negative turns the direction right, so move right 6 spaces.", stHint: "Start at 2 on the positive side. Subtracting a negative turns the direction right, so move right 2 spaces." },
+  { ftHint: "Start at 1 on the positive side. Subtracting a negative turns the direction right, so move right 6 spaces.", stHint: "Start at 1 on the positive side. Subtracting a negative turns the direction right, so move right 3 spaces." },
+  { ftHint: "Start at 1 on the positive side. Subtracting a negative turns the direction right, so move right 4 spaces.", stHint: "Start at 4 on the positive side. Subtracting a negative turns the direction right, so move right 1 space." },
+  { ftHint: "Start at 2 on the positive side. Subtracting a negative turns the direction right, so move right 2 spaces.", stHint: "Start at 3 on the positive side. Subtracting a negative turns the direction right, so move right 2 spaces." },
+  { ftHint: "Start at 9 on the positive side. Subtracting a negative turns the direction right, so move right 3 spaces.", stHint: "Start at 2 on the positive side. Subtracting a negative turns the direction right, so move right 3 spaces." },
+  { ftHint: "Start at 8 on the positive side. Subtracting a negative turns the direction right, so move right 1 space.", stHint: "Start at 1 on the positive side. Subtracting a negative turns the direction right, so move right 4 spaces." },
+];
+
+const a2EasyHintsC4: ConditionHintPairs = [
+  { ftHint: "Start at -4 on the negative side. Subtracting a negative flips the direction right, so move right 5 spaces across zero.", stHint: "Start at -1 on the negative side. Subtracting a negative flips the direction right, so move right 2 spaces across zero." },
+  { ftHint: "Start at -2 on the negative side. Subtracting a negative flips the direction right, so move right 9 spaces across zero.", stHint: "Start at -2 on the negative side. Subtracting a negative flips the direction right, so move right 3 spaces across zero." },
+  { ftHint: "Start at -6 on the negative side. Subtracting a negative flips the direction right, so move right 7 spaces across zero.", stHint: "Start at -1 on the negative side. Subtracting a negative flips the direction right, so move right 3 spaces across zero." },
+  { ftHint: "Start at -2 on the negative side. Subtracting a negative flips the direction right, so move right 4 spaces across zero.", stHint: "Start at -3 on the negative side. Subtracting a negative flips the direction right, so move right 4 spaces across zero." },
+  { ftHint: "Start at -1 on the negative side. Subtracting a negative flips the direction right, so move right 6 spaces across zero.", stHint: "Start at -2 on the negative side. Subtracting a negative flips the direction right, so move right 4 spaces across zero." },
+  { ftHint: "Start at -5 on the negative side. Subtracting a negative flips the direction right, so move right 7 spaces across zero.", stHint: "Start at -1 on the negative side. Subtracting a negative flips the direction right, so move right 4 spaces across zero." },
+  { ftHint: "Start at -6 on the negative side. Subtracting a negative flips the direction right, so move right 8 spaces across zero.", stHint: "Start at -4 on the negative side. Subtracting a negative flips the direction right, so move right 5 spaces across zero." },
+  { ftHint: "Start at -5 on the negative side. Subtracting a negative flips the direction right, so move right 9 spaces across zero.", stHint: "Start at -3 on the negative side. Subtracting a negative flips the direction right, so move right 5 spaces across zero." },
+  { ftHint: "Start at -3 on the negative side. Subtracting a negative flips the direction right, so move right 8 spaces across zero.", stHint: "Start at -2 on the negative side. Subtracting a negative flips the direction right, so move right 5 spaces across zero." },
+  { ftHint: "Start at -2 on the negative side. Subtracting a negative flips the direction right, so move right 7 spaces across zero.", stHint: "Start at -1 on the negative side. Subtracting a negative flips the direction right, so move right 5 spaces across zero." },
+];
+
+const a2EasyHintsC5: ConditionHintPairs = [
+  { ftHint: "Start at -6 on the negative side. Subtracting a negative changes direction right, so move right 2 spaces.", stHint: "Start at -2 on the negative side. Subtracting a negative changes direction right, so move right 1 space." },
+  { ftHint: "Start at -8 on the negative side. Subtracting a negative changes direction right, so move right 3 spaces.", stHint: "Start at -3 on the negative side. Subtracting a negative changes direction right, so move right 2 spaces." },
+  { ftHint: "Start at -4 on the negative side. Subtracting a negative changes direction right, so move right 2 spaces.", stHint: "Start at -3 on the negative side. Subtracting a negative changes direction right, so move right 1 space." },
+  { ftHint: "Start at -7 on the negative side. Subtracting a negative changes direction right, so move right 3 spaces.", stHint: "Start at -4 on the negative side. Subtracting a negative changes direction right, so move right 3 spaces." },
+  { ftHint: "Start at -7 on the negative side. Subtracting a negative changes direction right, so move right 1 space.", stHint: "Start at -4 on the negative side. Subtracting a negative changes direction right, so move right 2 spaces." },
+  { ftHint: "Start at -9 on the negative side. Subtracting a negative changes direction right, so move right 1 space.", stHint: "Start at -4 on the negative side. Subtracting a negative changes direction right, so move right 1 space." },
+  { ftHint: "Start at -8 on the negative side. Subtracting a negative changes direction right, so move right 5 spaces.", stHint: "Start at -5 on the negative side. Subtracting a negative changes direction right, so move right 4 spaces." },
+  { ftHint: "Start at -7 on the negative side. Subtracting a negative changes direction right, so move right 5 spaces.", stHint: "Start at -5 on the negative side. Subtracting a negative changes direction right, so move right 3 spaces." },
+  { ftHint: "Start at -2 on the negative side. Subtracting a negative changes direction right, so move right 1 space.", stHint: "Start at -5 on the negative side. Subtracting a negative changes direction right, so move right 2 spaces." },
+  { ftHint: "Start at -4 on the negative side. Subtracting a negative changes direction right, so move right 1 space.", stHint: "Start at -5 on the negative side. Subtracting a negative changes direction right, so move right 1 space." },
+];
+
+const a2ModHintsC1: ConditionHintPairs = [
+  { ftHint: "Start at the positive first value. Move left to subtract the positive value.", stHint: "Start at the positive first value. Move left to subtract the positive value." },
+  { ftHint: "Start at the positive first value. Move left to subtract the positive value.", stHint: "Start at the positive first value. Move left to subtract the positive value." },
+  { ftHint: "Start at the positive first value. Move left to subtract the positive value.", stHint: "Start at the positive first value. Move left to subtract the positive value." },
+  { ftHint: "Start at the positive first value. Move left to subtract the positive value.", stHint: "Start at the positive first value. Move left to subtract the positive value." },
+  { ftHint: "Start at the positive first value. Move left to subtract the positive value.", stHint: "Start at the positive first value. Move left to subtract the positive value." },
+  { ftHint: "Start at the positive first value and move left, traveling past zero into the negative numbers.", stHint: "Start at the positive first value and move left, traveling past zero into the negative numbers." },
+  { ftHint: "Start at the positive first value and move left, traveling past zero into the negative numbers.", stHint: "Start at the positive first value and move left, traveling past zero into the negative numbers." },
+  { ftHint: "Start at the positive first value and move left, traveling past zero into the negative numbers.", stHint: "Start at the positive first value and move left, traveling past zero into the negative numbers." },
+  { ftHint: "Start at the positive first value and move left, traveling past zero into the negative numbers.", stHint: "Start at the positive first value and move left, traveling past zero into the negative numbers." },
+  { ftHint: "Start at the positive first value and move left, traveling past zero into the negative numbers.", stHint: "Start at the positive first value and move left, traveling past zero into the negative numbers." },
+];
+
+const a2ModHintsC2: ConditionHintPairs = [
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+  { ftHint: "Start at the negative first value and travel further left to subtract the positive value.", stHint: "Start at the negative first value and travel further left to subtract the positive value." },
+];
+
+const a2ModHintsC3: ConditionHintPairs = [
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+  { ftHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right.", stHint: "Start on the positive side. Subtracting a negative turns your direction around, so move right." },
+];
+
+const a2ModHintsC4: ConditionHintPairs = [
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+  { ftHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero.", stHint: "Start on the negative side. Subtracting a larger negative flips your movement to the right, past zero." },
+];
+
+const a2ModHintsC5: ConditionHintPairs = [
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the negative total." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values." },
+  { ftHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values.", stHint: "Start on the negative side. Subtracting a smaller negative changes direction right, reducing the more negative values." },
+];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Activity 3 Hint Banks
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+const a3EasyHintsC1: ConditionHintPairs = [
+  { ftHint: "Keep 4, change subtraction to addition, and change 2 to -2. Now add.", stHint: "Keep 3, change subtraction to addition, and change 1 to -1. Now add." },
+  { ftHint: "Keep 8, change subtraction to addition, and change 5 to -5. Now add.", stHint: "Keep 4, change subtraction to addition, and change 3 to -3. Now add." },
+  { ftHint: "Keep 7, change subtraction to addition, and change 4 to -4. Now add.", stHint: "Keep 5, change subtraction to addition, and change 2 to -2. Now add." },
+  { ftHint: "Keep 7, change subtraction to addition, and change 2 to -2. Now add.", stHint: "Keep 4, change subtraction to addition, and change 1 to -1. Now add." },
+  { ftHint: "Keep 5, change subtraction to addition, and change 3 to -3. Now add.", stHint: "Keep 2, change subtraction to addition, and change 1 to -1. Now add." },
+  { ftHint: "Keep 3, change subtraction to addition, and change 9 to -9. Now add.", stHint: "Keep 1, change subtraction to addition, and change 2 to -2. Now add." },
+  { ftHint: "Keep 4, change subtraction to addition, and change 9 to -9. Now add.", stHint: "Keep 2, change subtraction to addition, and change 3 to -3. Now add." },
+  { ftHint: "Keep 5, change subtraction to addition, and change 9 to -9. Now add.", stHint: "Keep 1, change subtraction to addition, and change 4 to -4. Now add." },
+  { ftHint: "Keep 1, change subtraction to addition, and change 2 to -2. Now add.", stHint: "Keep 2, change subtraction to addition, and change 4 to -4. Now add." },
+  { ftHint: "Keep 1, change subtraction to addition, and change 6 to -6. Now add.", stHint: "Keep 1, change subtraction to addition, and change 3 to -3. Now add." },
+];
+
+const a3EasyHintsC2: ConditionHintPairs = [
+  { ftHint: "Keep -1, change subtraction to addition, and change 5 to -5. Now add.", stHint: "Keep -1, change subtraction to addition, and change 2 to -2. Now add." },
+  { ftHint: "Keep -9, change subtraction to addition, and change 5 to -5. Now add.", stHint: "Keep -2, change subtraction to addition, and change 1 to -1. Now add." },
+  { ftHint: "Keep -9, change subtraction to addition, and change 2 to -2. Now add.", stHint: "Keep -1, change subtraction to addition, and change 3 to -3. Now add." },
+  { ftHint: "Keep -9, change subtraction to addition, and change 3 to -3. Now add.", stHint: "Keep -2, change subtraction to addition, and change 2 to -2. Now add." },
+  { ftHint: "Keep -5, change subtraction to addition, and change 7 to -7. Now add.", stHint: "Keep -3, change subtraction to addition, and change 1 to -1. Now add." },
+  { ftHint: "Keep -6, change subtraction to addition, and change 2 to -2. Now add.", stHint: "Keep -1, change subtraction to addition, and change 4 to -4. Now add." },
+  { ftHint: "Keep -1, change subtraction to addition, and change 2 to -2. Now add.", stHint: "Keep -2, change subtraction to addition, and change 3 to -3. Now add." },
+  { ftHint: "Keep -5, change subtraction to addition, and change 9 to -9. Now add.", stHint: "Keep -3, change subtraction to addition, and change 2 to -2. Now add." },
+  { ftHint: "Keep -3, change subtraction to addition, and change 8 to -8. Now add.", stHint: "Keep -4, change subtraction to addition, and change 1 to -1. Now add." },
+  { ftHint: "Keep -4, change subtraction to addition, and change 3 to -3. Now add.", stHint: "Keep -1, change subtraction to addition, and change 5 to -5. Now add." },
+];
+
+const a3EasyHintsC3: ConditionHintPairs = [
+  { ftHint: "Keep 6, change subtraction to addition, and change -3 to 3. Now add.", stHint: "Keep 1, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep 9, change subtraction to addition, and change -9 to 9. Now add.", stHint: "Keep 2, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep 5, change subtraction to addition, and change -4 to 4. Now add.", stHint: "Keep 1, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep 8, change subtraction to addition, and change -2 to 2. Now add.", stHint: "Keep 3, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep 2, change subtraction to addition, and change -6 to 6. Now add.", stHint: "Keep 2, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep 1, change subtraction to addition, and change -6 to 6. Now add.", stHint: "Keep 1, change subtraction to addition, and change -3 to 3. Now add." },
+  { ftHint: "Keep 1, change subtraction to addition, and change -4 to 4. Now add.", stHint: "Keep 4, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep 2, change subtraction to addition, and change -2 to 2. Now add.", stHint: "Keep 3, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep 9, change subtraction to addition, and change -3 to 3. Now add.", stHint: "Keep 2, change subtraction to addition, and change -3 to 3. Now add." },
+  { ftHint: "Keep 8, change subtraction to addition, and change -1 to 1. Now add.", stHint: "Keep 1, change subtraction to addition, and change -4 to 4. Now add." },
+];
+
+const a3EasyHintsC4: ConditionHintPairs = [
+  { ftHint: "Keep -4, change subtraction to addition, and change -5 to 5. Now add.", stHint: "Keep -1, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep -2, change subtraction to addition, and change -9 to 9. Now add.", stHint: "Keep -2, change subtraction to addition, and change -3 to 3. Now add." },
+  { ftHint: "Keep -6, change subtraction to addition, and change -7 to 7. Now add.", stHint: "Keep -1, change subtraction to addition, and change -3 to 3. Now add." },
+  { ftHint: "Keep -2, change subtraction to addition, and change -4 to 4. Now add.", stHint: "Keep -3, change subtraction to addition, and change -4 to 4. Now add." },
+  { ftHint: "Keep -1, change subtraction to addition, and change -6 to 6. Now add.", stHint: "Keep -2, change subtraction to addition, and change -4 to 4. Now add." },
+  { ftHint: "Keep -5, change subtraction to addition, and change -7 to 7. Now add.", stHint: "Keep -1, change subtraction to addition, and change -4 to 4. Now add." },
+  { ftHint: "Keep -6, change subtraction to addition, and change -8 to 8. Now add.", stHint: "Keep -4, change subtraction to addition, and change -5 to 5. Now add." },
+  { ftHint: "Keep -5, change subtraction to addition, and change -9 to 9. Now add.", stHint: "Keep -3, change subtraction to addition, and change -5 to 5. Now add." },
+  { ftHint: "Keep -3, change subtraction to addition, and change -8 to 8. Now add.", stHint: "Keep -2, change subtraction to addition, and change -5 to 5. Now add." },
+  { ftHint: "Keep -2, change subtraction to addition, and change -7 to 7. Now add.", stHint: "Keep -1, change subtraction to addition, and change -5 to 5. Now add." },
+];
+
+const a3EasyHintsC5: ConditionHintPairs = [
+  { ftHint: "Keep -6, change subtraction to addition, and change -2 to 2. Now add.", stHint: "Keep -2, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep -8, change subtraction to addition, and change -3 to 3. Now add.", stHint: "Keep -3, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep -4, change subtraction to addition, and change -2 to 2. Now add.", stHint: "Keep -3, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep -7, change subtraction to addition, and change -3 to 3. Now add.", stHint: "Keep -4, change subtraction to addition, and change -3 to 3. Now add." },
+  { ftHint: "Keep -7, change subtraction to addition, and change -1 to 1. Now add.", stHint: "Keep -4, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep -9, change subtraction to addition, and change -1 to 1. Now add.", stHint: "Keep -4, change subtraction to addition, and change -1 to 1. Now add." },
+  { ftHint: "Keep -8, change subtraction to addition, and change -5 to 5. Now add.", stHint: "Keep -5, change subtraction to addition, and change -4 to 4. Now add." },
+  { ftHint: "Keep -7, change subtraction to addition, and change -5 to 5. Now add.", stHint: "Keep -5, change subtraction to addition, and change -3 to 3. Now add." },
+  { ftHint: "Keep -2, change subtraction to addition, and change -1 to 1. Now add.", stHint: "Keep -5, change subtraction to addition, and change -2 to 2. Now add." },
+  { ftHint: "Keep -4, change subtraction to addition, and change -1 to 1. Now add.", stHint: "Keep -5, change subtraction to addition, and change -1 to 1. Now add." },
+];
+
+const a3ModHintsC1: ConditionHintPairs = [
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+  { ftHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add.", stHint: "Keep the first value, change subtraction to addition, and change the second value to a negative. Now add." },
+];
+
+const a3ModHintsC2: ConditionHintPairs = [
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the positive second value to a negative. Now add." },
+];
+
+const a3ModHintsC3: ConditionHintPairs = [
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the positive first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+];
+
+const a3ModHintsC4: ConditionHintPairs = [
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+];
+
+const a3ModHintsC5: ConditionHintPairs = [
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+  { ftHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add.", stHint: "Keep the negative first value, change subtraction to addition, and change the negative second value to a positive. Now add." },
+];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Activity 1 - Difficult Round Word Problems
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+const a1DiffC1: DiffCondition = [
+  { ftProb: "Ate Susan harvested 38 baskets of santol from her farm in Naval. She delivered 22 baskets to the local public market stall. How many baskets of santol does Ate Susan have left in her storage?\nEquation: 38 - 22 = 16", ftAns: 16, stProb: "Ate Susan harvested 25 baskets of santol from her farm in Naval. She delivered 15 baskets to the local public market stall. How many baskets of santol does Ate Susan have left in her storage?\nEquation: 25 - 15 = 10", stAns: 10 },
+  { ftProb: "For the upcoming barangay festival in Almeria, a farming family gathered 35 kilograms of red rambutan. They donated 20 kilograms to the youth games prize booth. How many kilograms of rambutan remain with the family?\nEquation: 35 - 20 = 15", ftAns: 15, stProb: "For the upcoming barangay festival in Almeria, a farming family gathered 28 kilograms of red rambutan. They donated 18 kilograms to the youth games prize booth. How many kilograms of rambutan remain with the family?\nEquation: 28 - 18 = 10", stAns: 10 },
+  { ftProb: "Tatay Marlon brought 40 bunches of Saba bananas to the pier in Maripipi Island. He managed to load 25 bunches onto the first pump boat heading to the mainland. How many bunches of bananas are left on the dock?\nEquation: 40 - 25 = 15", ftAns: 15, stProb: "Tatay Marlon brought 20 bunches of Saba bananas to the pier in Maripipi Island. He managed to load 12 bunches onto the first pump boat heading to the mainland. How many bunches of bananas are left on the dock?\nEquation: 20 - 12 = 8", stAns: 8 },
+  { ftProb: "The Kawayan Farmers Cooperative has 30 boxes of ripe bananas in stock. A local school needs 38 boxes for a community feeding program. If the cooperative gives all 30 boxes, how much more do they need to give to the local school?\nEquation: 30 - 38 = -8", ftAns: -8, stProb: "The Kawayan Farmers Cooperative has 15 boxes of ripe bananas in stock. A local school needs 22 boxes for a community feeding program. If the cooperative gives all 15 boxes, how much more do they need to give to the local school?\nEquation: 15 - 22 = -7", stAns: -7 },
+  { ftProb: "A fruit vendor in Culaba needs to supply 35 baskets of santol to the public market. However, only 22 baskets are high quality enough to send out. If she sends these 22 baskets, how many baskets does she need to send to?\nEquation: 22 - 35 = -13", ftAns: -13, stProb: "A fruit vendor in Culaba needs to supply 26 baskets of santol to the public market. However, only 16 baskets are high quality enough to send out. If she sends these 16 baskets, how many baskets does she still need to find?\nEquation: 16 - 26 = -10", stAns: -10 },
+];
+
+const a1DiffC2: DiffCondition = [
+  { ftProb: "Due to a slow fruit season, a mango farmer in Biliran town already borrowed the local cooperative â‚±35 for organic fertilizer. Today, he needs to borrow another â‚±25 for organic fertilizer. How much does he need to pay to the cooperative?\nEquation: -35 - 20 = -55", ftAns: -55, stProb: "Due to a slow fruit season, a mango farmer in Biliran town already owes the local cooperative â‚±12 for organic fertilizer. Today, he needs to borrow another â‚±10. How much total debt does he need to pay back to the cooperative?\nEquation: -12 - 10 = -â‚±22", stAns: -22 },
+  { ftProb: "A rambutan farmer in Almeria town already borrowed â‚±30 from his neighbor for eco bags. Today, he needs to borrow another â‚±15. How much does he need to pay back to his neighbor?\nEquation: -30 - 15 = -45", ftAns: -45, stProb: "A rambutan farmer in Almeria town already owes â‚±15 to his neighbor for eco bags. Today, he needs to borrow another â‚±8. How much does he need to pay back to his neighbor?\nEquation: -15 - 8 = -â‚±23", stAns: -23 },
+  { ftProb: "A food vendor in Kawayan already borrowed â‚±25 from a market group to buy banana leaves. Today, she needs to borrow another â‚±20 to buy small packet of sugar for her sweet suman. How much does she need to pay back in total?\nEquation: -25 - 20 = -45", ftAns: -45, stProb: "A food vendor in Kawayan already owes â‚±10 to a market group for banana leaves. Today, she needs to borrow another â‚±15 to buy sugar for her sweet suman. How much does she need to pay back in total?\nEquation: -10 - 15 = -â‚±25", stAns: -25 },
+  { ftProb: "A tricycle driver in Caibiran already borrowed â‚±40 from his friend to patch his tire. Today, he needs to borrow another â‚±40 for gasoline to reach his passengers. How much does he need to pay back?\nEquation: -40 - 40 = -80", ftAns: -80, stProb: "A tricycle driver in Caibiran already owes â‚±14 to his friend to patch his tire. Today, he needs to borrow another â‚±14 fo inflate his tires. How much total debt does he need to pay back?\nEquation: -14 - 14 = -â‚±28", stAns: -28 },
+  { ftProb: "A fish vendor at the Naval public market already borrowed â‚±35 to rent a display table. Today, she needs to borrow another â‚±25 to buy a block of crushed ice for her fresh catch. How much does she still need to pay?\nEquation: -35 - 25 = -40", ftAns: -40, stProb: "A fish vendor at the Naval public market already borrowed â‚±15 to rent a display table. Today, she needs to borrow another â‚±12 to buy a block of crushed ice for her fresh catch. How much does she need to pay?\nEquation: -15 - 12 = -â‚±27", stAns: -27 },
+];
+
+const a1DiffC3: DiffCondition = [
+  { ftProb: "Mang Juan took a batch of homemade ice candy out of the freezer, where it was frozen at -6â„ƒ. He left it out on the table until it completely melted and reached a room temperature of 24C.What is the temperature difference between the melted 24C ice candy and its original frozen temperature?\nEquation: 24-(-6) =30â„ƒ", ftAns: 30, stProb: "Mang Juan took a batch of homemade ice candy out of the freezer, where it was frozen at -4Â°C. He left it out on the table until it reached a room temperature of 18Â°C. What is the temperature difference between the 18Â°C ice candy and its original frozen temperature?\nEquation: 18 - (-4) = 22Â°C", stAns: 22 },
+  { ftProb: "Aling Marie is tracking her daily store earnings. On Tuesday, her daily ledger showed a net loss, recorded as -â‚±15. On Wednesday, she bring her daily record up to a positive profit of â‚±20. What is the total financial difference between Wednesday's profit and Tuesday's loss?\nEquation: 20 - (-15) = â‚±35", ftAns: 35, stProb: "Aling Marie is tracking her daily store earnings. On Tuesday, her daily ledger showed a net loss, recorded as -â‚±5. On Wednesday, she brought her daily record up to a positive profit of â‚±15. What is the total financial difference between Wednesday's profit and Tuesday's loss?\nEquation: 15 - (-5) = â‚±20", stAns: 20 },
+  { ftProb: "A fisherman stands on a rocky coastal cliff in Caibiran that is 15 meters above sea level. He casts his line deep into the water, and his bait sinks down to a rock bed located 12 meters below sea level. What is the total vertical distance between the fisherman on the 15-meter cliff and his bait down at the -12 meter rock bed?\nEquation: 15 - (-12) = 27 meters", ftAns: 27, stProb: "A fisherman stands on a rocky coastal cliff in Caibiran that is 12 meters above sea level. He casts his line into the water, and his bait sinks down to a rock bed located 6 meters below sea level. What is the total vertical distance between the fisherman on the 12-meter cliff and his bait down at the -6 meter rock bed?\nEquation: 12 - (-6) = 18 meters", stAns: 18 },
+  { ftProb: "Kiko scored 28 points on his Science quiz at Caibiran National High School. Later, his teacher noticed that mistakenly, there was a -4 point penalty on his paper. To fix it, the teacher subtracted the -4 penalty from his score. What is Kiko's corrected, final quiz score?\nEquation: 28 - (-4) = 32", ftAns: 32, stProb: "Kiko scored 20 points on his Science quiz at Caibiran National High School. Later, his teacher noticed that mistakenly, there was a -3 point penalty on his paper. To fix it, the teacher subtracted the -3 penalty from his score. What is Kiko's corrected, final quiz score?\nEquation: 20 - (-3) = 23", stAns: 23 },
+  { ftProb: "A vendor in Naval prepares a fresh batch of suman that sits at a warm temperature of 25Â°C. She places it into a specialized cooling storage unit that keeps a temperature of -15Â°C. What is the total temperature difference between the warm 25Â°C suman and the -15Â°C cooling storage unit?\nEquation: 25 - (-15) = 40Â°C", ftAns: 40, stProb: "A vendor in Naval prepares a fresh batch of suman that sits at a temperature of 22Â°C. She places it into a small cooling unit that keeps a temperature of -5Â°C. What is the total temperature difference between the 22Â°C suman and the -5Â°C cooling unit?\nEquation: 22 - (-5) = 27Â°C", stAns: 27 },
+];
+
+const a1DiffC4: DiffCondition = [
+  { ftProb: "A vendor in Naval has a freezer for storing ice candy that is currently sitting at -14Â°C. A second, heavy-duty deep freezer nearby is kept much colder at -38Â°C. What is the temperature difference when you subtract the colder -38Â°C temperature from the -14Â°C freezer temperature?\nEquation: -14 - (-38) = 24Â°C", ftAns: 24, stProb: "A vendor in Naval has an ice candy box that is at -5Â°C. A deep freezer next to it is colder at -15Â°C. What is the temperature difference if you subtract the colder -15Â°C from the -5Â°C ice candy box?\nEquation: -5 - (-15) = 10Â°C", stAns: 10 },
+  { ftProb: "A delivery truck is carrying frozen food across Biliran. Inside the truck, the small cooling box is cold at -15Â°C. The large freezer next to it is much colder at -35Â°C. What is the temperature difference if you subtract the colder -35Â°C from the -15Â°C cooling box?\nEquation: -15 - (-35) = 20Â°C", ftAns: 20, stProb: "A delivery truck is carrying frozen food across Biliran. Inside the truck, the small cooling box is at -8Â°C. The large freezer next to it is colder at -20Â°C. What is the temperature difference if you subtract the colder -20Â°C from the -8Â°C cooling box?\nEquation: -8 - (-20) = 12Â°C", stAns: 12 },
+  { ftProb: "While exploring the waters around Sambawan Island, a snorkeler swims at a depth of 4 meters below sea level. Straight beneath her, a colorful coral formation rests on the seabed at 25 meters below sea level. What is the total vertical distance between the snorkeler at -4 meters and the coral reef at -25 meters?\nEquation: -4 - (-25) = 21 meters", ftAns: 21, stProb: "A snorkeler in Sambawan Island swims at 3 meters below sea. Straight beneath her, a colorful coral reef is at 18 meters below sea level. What is the distance between the -3 meter snorkeler and the -18 meter coral reef?\nEquation: -3 - (-18) = 15 meters", stAns: 15 },
+  { ftProb: "During a science experiment at the local high school, a chemical mixture is chilled down to -18Â°C. A second mixture in the laboratory is frozen even further down to -30Â°C. What is the temperature difference when you subtract the colder -30Â°C from the -18Â°C mixture?\nEquation: -18 - (-30) = 12Â°C", ftAns: 12, stProb: "During a science experiment at school, a liquid mixture is cooled down to -6Â°C. A second mixture is frozen even further down to -16Â°C. What is the temperature difference when you subtract the colder -16Â°C from the -6Â°C mixture?\nEquation: -6 - (-16) = 10Â°C", stAns: 10 },
+  { ftProb: "An underwater camera near a pier in Biliran is placed at 8 meters below sea level. A crab trap is dropped much deeper, landing on the ocean floor at 36 meters below sea level. What is the distance between the -8 meter camera and the -36 meter crab trap?\nEquation: -8 - (-36) = 28 meters", ftAns: 28, stProb: "An underwater camera near a pier in Biliran is placed at 5 meters below sea level. A crab trap is dropped deeper, landing on the ocean floor at 22 meters below sea level. What is the distance between the -5 meter camera and the -22 meter crab trap?\nEquation: -5 - (-22) = 17 meters", stAns: 17 },
+];
+
+const a1DiffC5: DiffCondition = [
+  { ftProb: "Manang Sita makes homemade avocado ice cream in Almeria. Her storage box starts at a cold temperature of -8Â°C. To keep the ice cream firm, she adds more ice and salt, dropping the temperature down to -28Â°C. What is the change in temperature when you subtract the starting temperature from the final colder temperature?\nEquation: -28 - (-8) = -20Â°C", ftAns: -20, stProb: "Manang Sita makes homemade avocado ice cream in Almeria. Her storage box starts at a cold temperature of -4Â°C. To keep the ice cream firm, she adds more ice and salt, dropping the temperature down to -18Â°C. What is the change in temperature when you subtract the starting temperature from the final colder temperature?\nEquation: -18 - (-4) = -14Â°C", stAns: -14 },
+  { ftProb: "Tatay Jun loaded fresh tuna into a cooler chest on his boat in Kawayan. The cooler started at -4Â°C. He added dry ice, making the temperature drop down to -34Â°C. What is the change in temperature when you subtract the morning temperature from the final colder temperature?\nEquation: -34 - (-4) = -30Â°C", ftAns: -30, stProb: "Tatay Jun loaded fresh tuna into a cooler chest on his boat in Kawayan. The cooler started at -5Â°C. He added dry ice, making the temperature drop down to -25Â°C. What is the change in temperature when you subtract the morning temperature from the final colder temperature?\nEquation: -25 - (-5) = -20Â°C", stAns: -20 },
+  { ftProb: "A free diver exploring the clear waters of Higatangan Island pauses at a depth of 6 meters below sea level. He then dives much deeper to check a submerged rock cave at 38 meters below sea level. What is his change in position when you subtract his starting depth from his final deeper depth?\nEquation: -38 - (-6) = -32 meters", ftAns: -32, stProb: "A free diver exploring the clear waters of Higatangan Island pauses at a depth of 3 meters below sea level. He then dives deeper to check a submerged rock cave at 22 meters below sea level. What is his change in position when you subtract his starting depth from his final deeper depth?\nEquation: -22 - (-3) = -19 meters", stAns: -19 },
+  { ftProb: "During a class activity at Culaba National High School, students cooled a saltwater solution down to -12Â°C. They added a special chemical that caused the solution to freeze much further down to -37Â°C. What is the change in temperature when you subtract the initial temperature from the final colder temperature?\nEquation: -37 - (-12) = -25Â°C", ftAns: -25, stProb: "During a class activity at Culaba National High School, students cooled a saltwater solution down to -8Â°C. They added a special chemical that caused the solution to freeze further down to -20Â°C. What is the change in temperature when you subtract the initial temperature from the final colder temperature?\nEquation: -20 - (-8) = -12Â°C", stAns: -12 },
+  { ftProb: "A boat operator near a pier in Cabucgayan lowers a small depth marker to 15 meters below sea level. He then lets out more rope, dropping the marker all the way down to the muddy bottom at 35 meters below sea level. What is the change in the marker's position when you subtract -15 meters from its -35 meters final deeper position?\nEquation: -35 - (-15) = -20 meters", ftAns: -20, stProb: "A boat operator near a pier in Cabucgayan lowers a small depth marker to 10 meters below sea level. He then lets out more rope, dropping the marker down to the muddy bottom at 28 meters below sea level. What is the change in the marker's position when you subtract -10 meters from its -28 meters final deeper position?\nEquation: -28 - (-10) = -18 meters", stAns: -18 },
+];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Activity 2 - Difficult Round Word Problems
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+const a2DiffC1: DiffCondition = [
+  { ftProb: "Ate Susan harvested 15 baskets of santol from her farm in Naval. She delivered 9 baskets to the local public market stall. How many baskets of santol does Ate Susan have left in her storage?\nâ€¢	Equation: 15 - 9 = 6", ftAns: 6, stProb: "Ate Susan harvested 10 baskets of santol from her farm in Naval. She delivered 6 baskets to the local public market stall. How many baskets of santol does Ate Susan have left in her storage?\nâ€¢	Equation: 10 - 6 = 4", stAns: 4 },
+  { ftProb: "For the upcoming barangay festival in Almeria, a farming family gathered 14 kilograms of red rambutan. They donated 8 kilograms to the youth games prize booth. How many kilograms of rambutan remain with the family?\nâ€¢	Equation: 14 - 8 = 6", ftAns: 6, stProb: "For the upcoming barangay festival in Almeria, a farming family gathered 9 kilograms of red rambutan. They donated 4 kilograms to the youth games prize booth. How many kilograms of rambutan remain with the family?\nâ€¢	Equation: 9 - 4 = 5", stAns: 5 },
+  { ftProb: "Tatay Marlon brought 13 bunches of Saba bananas to the pier in Maripipi Island. He managed to load 7 bunches onto the first pump boat heading to the mainland. How many bunches of bananas are left on the dock?\nâ€¢	Equation: 13 - 7 = 6", ftAns: 6, stProb: "Tatay Marlon brought 8 bunches of Saba bananas to the pier in Maripipi Island. He managed to load 3 bunches onto the first pump boat heading to the mainland. How many bunches of bananas are left on the dock?\nâ€¢	Equation: 8 - 3 = 5", stAns: 5 },
+  { ftProb: "The Kawayan Farmers Cooperative has 9 boxes of ripe bananas in stock. A local school needs 14 boxes for a community feeding program. If the cooperative gives all 9 boxes, how much more do they need to give to the local school?\nâ€¢	Equation: 9 - 14 = -5", ftAns: -5, stProb: "The Kawayan Farmers Cooperative has 5 boxes of ripe bananas in stock. A local school needs 11 boxes for a community feeding program. If the cooperative gives all 5 boxes, how much more do they need to give to the local school?\nâ€¢	Equation: 5 - 11 = -6", stAns: -6 },
+  { ftProb: "A fruit vendor in Culaba needs to supply 15 baskets of santol to the public market. However, only 10 baskets are high quality enough to send out. If she sends these 10 baskets, how many baskets does she still need to find?\nâ€¢	Equation: 10 - 15 = -5", ftAns: -5, stProb: "A fruit vendor in Culaba needs to supply 12 baskets of santol to the public market. However, only 6 baskets are high quality enough to send out. If she sends these 6 baskets, how many baskets does she still need to find?\nâ€¢	Equation: 6 - 12 = -6", stAns: -6 },
+];
+
+const a2DiffC2: DiffCondition = [
+  { ftProb: "A banana farmer in Culaba borrowed the farmers' COOP â‚±14 for healthy soil. Today, he needs to borrow another â‚±10 for extra seeds. How much does he need to pay back to the COOP?\nâ€¢	Equation: -14 - 10 = -â‚±24", ftAns: -24, stProb: "A banana farmer in Culaba borrowed the farmers' COOP â‚±9 for healthy soil. Today, he needs to borrow another â‚±5 for extra seeds. How much does he need to pay back to the COOP?\nâ€¢	Equation: -9 - 5 = -â‚±14", stAns: -14 },
+  { ftProb: "A suman maker in Cabucgayan borrowed â‚±15 to her cousin for specialized wrapping paper. Today, she needs to borrow another â‚±8. How much does she need to pay back to her cousin?\nâ€¢	Equation: -15 - 8 = -â‚±23", ftAns: -23, stProb: "A suman maker in Cabucgayan borrowed â‚±8 to her cousin for specialized wrapping paper. Today, she needs to borrow another â‚±4. How much does she need to pay back to her cousin?\nâ€¢	Equation: -8 - 4 = -â‚±12", stAns: -12 },
+  { ftProb: "A street food vendor in Maripipi borrowed â‚±12 to a local store for frying oil. Today, she needs to borrow another â‚±9 to buy sticks for her barbecue. How much does she need to pay back in total?\nâ€¢	Equation: -12 - 9 = -â‚±21", ftAns: -21, stProb: "A street food vendor in Maripipi borrowed â‚±7 to a local store for frying oil. Today, she needs to borrow another â‚±6 to buy sticks for her barbecue. How much does she need to pay back in total?\n\nâ€¢	Equation: -7 - 6 = -â‚±13", stAns: -13 },
+  { ftProb: "A tricycle driver in Almeria borrowed â‚±13 from his friend for a carwash. Today, he needs to borrow another â‚±11 to inflate his flat tire. How much does he need to pay back?\nâ€¢	Equation: -13 - 11 = -â‚±24", ftAns: -24, stProb: "A tricycle driver in Almeria borrowed â‚±10 from his friend for a carwash. Today, he needs to borrow another â‚±5 to inflate his flat tire. How much does he need to pay back?\nâ€¢	Equation: -10 - 5 = -â‚±15", stAns: -15 },
+  { ftProb: "A vegetable vendor at the Kawayan market already owes â‚±15 for her daily stall space rental. Today, she needs to borrow another â‚±12 to buy wholesale tomatoes from a grower. How much total debt does she have now?\nâ€¢	Equation: -15 - 12 = -â‚±27", ftAns: -27, stProb: "A vegetable vendor at the Kawayan market already owes â‚±9 for her daily stall space rental. Today, she needs to borrow another â‚±7 to buy wholesale tomatoes from a grower. How much total debt does she have now?\nâ€¢	Equation: -9 - 7 = -â‚±16", stAns: -16 },
+];
+
+const a2DiffC3: DiffCondition = [
+  { ftProb: "Nang Rosa made a bottle of fresh buko juice on her farm in Kawayan. It was kept chilling in ice at -5Â°C. She left it on the kitchen counter until it warmed up to a pleasant room temperature of 14Â°C. What is the temperature difference between the warm 14Â°C juice and its cold -5Â°C starting temperature?\nâ€¢	Equation: 14 - (-5) = 19Â°C", ftAns: 19, stProb: "Nang Rosa made a bottle of fresh buko juice on her farm in Kawayan. It was kept chilling in ice at -3Â°C. She left it on the kitchen counter until it warmed up to a room temperature of 9Â°C. What is the temperature difference between the warm 9Â°C juice and its cold -3Â°C starting temperature?\nâ€¢	Equation: 9 - (-3) = 12Â°C", stAns: 12 },
+  { ftProb: "Mang Pedro is checking his backyard store records in Cabucgayan. On Monday, his ledger showed a net loss recorded as -â‚±12 because he had to buy plastic bags. On Tuesday, his record jumped up to a positive profit of â‚±15. What is the total financial difference between Tuesday's profit and Monday's loss?\nâ€¢	Equation: 15 - (-12) = â‚±27", ftAns: 27, stProb: "Mang Pedro is checking his backyard store records in Cabucgayan. On Monday, his ledger showed a net loss recorded as -â‚±5 because he had to buy plastic bags. On Tuesday, his record jumped up to a positive profit of â‚±8. What is the total financial difference between Tuesday's profit and Monday's loss?\nâ€¢	Equation: 8 - (-5) = â‚±13", stAns: 13 },
+  { ftProb: "An adventure guide stands on a high eco-park platform in Biliran town that is 13 meters above sea level. Straight below him, a valley hiking trail sits at 8 meters below sea level. What is the total vertical distance between the guide on the 13-meter platform and the trail at -8 meters?\nâ€¢	Equation: 13 - (-8) = 21 meters", ftAns: 21, stProb: "An adventure guide stands on a high eco-park platform in Biliran town that is 7 meters above sea level. Straight below him, a valley hiking trail sits at 4 meters below sea level. What is the total vertical distance between the guide on the 7-meter platform and the trail at -4 meters?\nâ€¢	Equation: 7 - (-4) = 11 meters", stAns: 11 },
+  { ftProb: "Lito earned 15 points on his Math board activity at Culaba National High School. Afterward, his teacher realized there was a mistaken -4 point penalty written on his tally sheet. To fix the mistake, the teacher subtracted the -4 penalty from his score. What is Lito's corrected final score?\nâ€¢	Equation: 15 - (-4) = 19", ftAns: 19, stProb: "Lito earned 10 points on his Math board activity at Culaba National High School. Afterward, his teacher realized there was a mistaken -2 point penalty written on his tally sheet. To fix the mistake, the teacher subtracted the -2 penalty from his score. What is Lito's corrected final score?\nâ€¢	Equation: 10 - (-2) = 12", stAns: 12 },
+  { ftProb: "A cook in Almeria wraps a batch of biko that sits at a temperature of 12Â°C. She sets it inside a heavy-duty cooling chest running at -10Â°C. What is the total temperature difference between the warm 12Â°C delicacy and the -10Â°C cooling chest?\nâ€¢	Equation: 12 - (-10) = 22Â°C", ftAns: 22, stProb: "A cook in Almeria wraps a batch of biko that sits at a temperature of 8Â°C. She sets it inside a heavy-duty cooling chest running at -5Â°C. What is the total temperature difference between the warm 8Â°C delicacy and the -5Â°C cooling chest?\nâ€¢	Equation: 8 - (-5) = 13Â°C", stAns: 13 },
+];
+
+const a2DiffC4: DiffCondition = [
+  { ftProb: "A vendor in Caibiran has a small icebox for storing fish that is sitting at -5Â°C. A larger deep-freeze storage unit nearby is kept colder at -15Â°C. What is the temperature difference if you subtract the colder -15Â°C from the -5Â°C fish icebox?\nâ€¢	Equation: -5 - (-15) = 10Â°C", ftAns: 10, stProb: "A vendor in Caibiran has a small icebox for storing fish that is sitting at -2Â°C. A larger deep-freeze storage unit nearby is kept colder at -8Â°C. What is the temperature difference if you subtract the colder -8Â°C from the -2Â°C fish icebox?\nâ€¢	Equation: -2 - (-8) = 6Â°C", stAns: 6 },
+  { ftProb: "A delivery jeepney is carrying native sausages across Cabucgayan. Inside the jeepney, a small cooler bag is at -4Â°C. The main freezer box next to it is colder at -14Â°C. What is the temperature difference if you subtract the colder -14Â°C from the -4Â°C cooler bag?\nâ€¢	Equation: -4 - (-14) = 10Â°C", ftAns: 10, stProb: "A delivery jeepney is carrying native sausages across Cabucgayan. Inside the jeepney, a small cooler bag is at -3Â°C. The main freezer box next to it is colder at -10Â°C. What is the temperature difference if you subtract the colder -10Â°C from the -3Â°C cooler bag?\nâ€¢	Equation: -3 - (-10) = 7Â°C", stAns: 7 },
+  { ftProb: "While exploring the sea around Higatangan Island, a local diver swims at a depth of 3 meters below sea level. Straight beneath him, a giant sea clam rests on a rock bed at 12 meters below sea level. What is the distance between the -3 meter diver and the -12 meter sea clam?\nâ€¢	Equation: -3 - (-12) = 9 meters", ftAns: 9, stProb: "While exploring the sea around Higatangan Island, a local diver swims at a depth of 2 meters below sea level. Straight beneath him, a giant sea clam rests on a rock bed at 9 meters below sea level. What is the distance between the -2 meter diver and the -9 meter sea clam?\nâ€¢	Equation: -2 - (-9) = 7 meters", stAns: 7 },
+  { ftProb: "During a science activity at Biliran Science High School, a saltwater cup is cooled down to -6Â°C. A second cup in the lab is chilled even further down to -15Â°C. What is the temperature difference when you subtract the colder -15Â°C from the -6Â°C cup?\nâ€¢	Equation: -6 - (-15) = 9Â°C", ftAns: 9, stProb: "During a science activity at Biliran Science High School, a saltwater cup is cooled down to -4Â°C. A second cup in the lab is chilled even further down to -10Â°C. What is the temperature difference when you subtract the colder -10Â°C from the -4Â°C cup?\nâ€¢	Equation: -4 - (-10) = 6Â°C", stAns: 6 },
+  { ftProb: "An underwater sensor near a pier in Maripipi Island is placed at 5 meters below sea level. A dropped fishing net lands deeper on the seabed at 14 meters below sea level. What is the distance between the -5 meter sensor and the -14 meter fishing net?\nâ€¢	Equation: -5 - (-14) = 9 meters", ftAns: 9, stProb: "An underwater sensor near a pier in Maripipi Island is placed at 3 meters below sea level. A dropped fishing net lands deeper on the seabed at 8 meters below sea level. What is the distance between the -3 meter sensor and the -8 meter fishing net?\nâ€¢	Equation: -3 - (-8) = 5 meters", stAns: 5 },
+];
+
+const a2DiffC5: DiffCondition = [
+  { ftProb: "Nang Tina sells homemade mango ice candy in Caibiran. Her cooler chest starts at a cold temperature of -4Â°C. She adds more crushed ice, dropping the temperature down to -14Â°C. What is the change in temperature when you subtract the starting temperature from the final colder temperature?\nâ€¢	Equation: -14 - (-4) = -10Â°C", ftAns: -10, stProb: "Nang Tina sells homemade mango ice candy in Caibiran. Her cooler chest starts at a cold temperature of -2Â°C. She adds more crushed ice, dropping the temperature down to -9Â°C. What is the change in temperature when you subtract the starting temperature from the final colder temperature?\nâ€¢	Equation: -9 - (-2) = -7Â°C", stAns: -7 },
+  { ftProb: "Tatay Ben loaded fresh shrimp into a freezer box on his boat in Maripipi Island. The box started at -3Â°C. He adjusted the cooling dial, making the temperature drop down to -15Â°C. What is the change in temperature when you subtract the initial temperature from the final colder temperature?\nâ€¢	Equation: -15 - (-3) = -12Â°C", ftAns: -12, stProb: "Tatay Ben loaded fresh shrimp into a freezer box on his boat in Maripipi Island. The box started at -3Â°C. He adjusted the cooling dial, making the temperature drop down to -10Â°C. What is the change in temperature when you subtract the initial temperature from the final colder temperature?\nâ€¢	Equation: -10 - (-3) = -7Â°C", stAns: -7 },
+  { ftProb: "A student exploring the waters of Biliran town swims at a depth of 5 meters below sea level. She then dives deeper down to look at a sea star at 13 meters below sea level. What is her change in position when you subtract her starting depth of -5 meters from her final deeper depth of -13 meters?\nâ€¢	Equation: -13 - (-5) = -8 meters", ftAns: -8, stProb: "A student exploring the waters of Biliran town swims at a depth of 2 meters below sea level. She then dives deeper down to look at a sea star at 8 meters below sea level. What is her change in position when you subtract her starting depth of -2 meters from her final deeper depth of -8 meters?\n\nEquation: -8 - (-2) = -6 meters", stAns: -6 },
+  { ftProb: "During a laboratory experiment at Naval National High School, students cooled a vinegar solution down to -6Â°C. They packed it in dry ice until it froze further down to -15Â°C. What is the change in temperature when you subtract the initial temperature from the final colder temperature?\nâ€¢	Equation: -15 - (-6) = -9Â°C", ftAns: -9, stProb: "During a laboratory experiment at Naval National High School, students cooled a vinegar solution down to -4Â°C. They packed it in dry ice until it froze further down to -10Â°C. What is the change in temperature when you subtract the initial temperature from the final colder temperature?\nâ€¢	Equation: -10 - (-4) = -6Â°C", stAns: -6 },
+  { ftProb: "A boatman near a small pier in Kawayan lowers a metal weight to 8 meters below sea level. He then lets out more line, dropping the weight down to a reef at 14 meters below sea level. What is the change in the weight's position when you subtract its -8 meters starting position from its final deeper position of -14 meters?\nâ€¢	Equation: -14 - (-8) = -6 meters", ftAns: -6, stProb: "A boatman near a small pier in Kawayan lowers a metal weight to 3 meters below sea level. He then lets out more line, dropping the weight down to a reef at 9 meters below sea level. What is the change in the weight's position when you subtract its -3 meters starting position from its final deeper position of -9 meters?\nâ€¢	Equation: -9 - (-3) = -6 meters", stAns: -6 },
+];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Hint Bank Exports
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+export const activity1Hints: ActivityHintBank = {
+  easy: [a1EasyHintsC1, a1EasyHintsC2, a1EasyHintsC3, a1EasyHintsC4, a1EasyHintsC5],
+  moderate: [a1ModHintsC1, a1ModHintsC2, a1ModHintsC3, a1ModHintsC4, a1ModHintsC5],
+};
+
+export const activity2Hints: ActivityHintBank = {
+  easy: [a2EasyHintsC1, a2EasyHintsC2, a2EasyHintsC3, a2EasyHintsC4, a2EasyHintsC5],
+  moderate: [a2ModHintsC1, a2ModHintsC2, a2ModHintsC3, a2ModHintsC4, a2ModHintsC5],
+};
+
+export const activity3Hints: ActivityHintBank = {
+  easy: [a3EasyHintsC1, a3EasyHintsC2, a3EasyHintsC3, a3EasyHintsC4, a3EasyHintsC5],
+  moderate: [a3ModHintsC1, a3ModHintsC2, a3ModHintsC3, a3ModHintsC4, a3ModHintsC5],
+};
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Difficult Bank Exports
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+export const activity1DiffBank: DiffRound = [
+  a1DiffC1, a1DiffC2, a1DiffC3, a1DiffC4, a1DiffC5
+];
+
+export const activity2DiffBank: DiffRound = [
+  a2DiffC1, a2DiffC2, a2DiffC3, a2DiffC4, a2DiffC5
+];
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Selection Functions
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+export function pickFiveWithHints(
+  round: ActivityRound,
+  hintRound: ActivityHintRound
+): (QPair & HintPair)[] {
+  const result: (QPair & HintPair)[] = [];
+  for (let c = 0; c < 5; c++) {
+    const condition = round[c];
+    const hintCondition = hintRound[c];
+    const idx = Math.floor(Math.random() * condition.length);
+    result.push({ ...condition[idx], ...hintCondition[idx] });
+  }
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+export function pickFiveDiffPairs(round: DiffRound): DiffPair[] {
+  const result: DiffPair[] = [];
+  for (let c = 0; c < 5; c++) {
+    const condition = round[c];
+    const idx = Math.floor(Math.random() * condition.length);
+    result.push(condition[idx]);
+  }
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
