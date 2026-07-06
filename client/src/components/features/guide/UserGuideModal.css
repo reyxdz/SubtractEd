@@ -1,0 +1,249 @@
+.guide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(46, 58, 89, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+
+.guide-overlay.open {
+  animation: guideFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.guide-overlay.closed {
+  animation: guideFadeOut 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.guide-modal {
+  width: min(100%, 760px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 48px rgba(46, 58, 89, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  padding: clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transform: scale(0.96);
+  opacity: 0;
+}
+
+.guide-overlay.open .guide-modal {
+  animation: guideSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
+}
+
+.guide-overlay.closed .guide-modal {
+  animation: guideSlideDown 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.guide-modal-header {
+  text-align: center;
+}
+
+.guide-modal-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--primary-dark, var(--color-text-dark));
+  display: inline-block;
+  padding-bottom: 8px;
+  border-bottom: 4px solid var(--theme-primary);
+  border-radius: 2px;
+}
+
+.guide-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.guide-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.guide-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--color-white);
+  border: 2px solid var(--step-accent, var(--theme-primary));
+  box-shadow: 0 4px 12px rgba(46, 58, 89, 0.06);
+}
+
+.guide-step-number {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-white);
+  background: var(--step-accent, var(--theme-primary));
+}
+
+.guide-step-icon {
+  flex-shrink: 0;
+  color: var(--step-accent, var(--theme-primary));
+  display: flex;
+  align-items: center;
+}
+
+.guide-step-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-text-dark);
+}
+
+/* Step accent colors mirror the printed guide */
+.guide-step-blue { --step-accent: #2f6bd4; }
+.guide-step-teal { --step-accent: #0d9488; }
+.guide-step-green { --step-accent: #43a047; }
+.guide-step-purple { --step-accent: #7c4dff; }
+.guide-step-orange { --step-accent: #f59e0b; }
+.guide-step-sky { --step-accent: #2196f3; }
+.guide-step-red { --step-accent: #e53935; }
+
+.guide-reminder {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fff8e6;
+  border: 2px solid #f7d477;
+}
+
+.guide-reminder-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  background: #f59e0b;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35);
+}
+
+.guide-reminder-text {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: var(--color-text-dark);
+}
+
+.guide-reminder-text strong {
+  color: #b45309;
+  font-weight: 800;
+}
+
+.guide-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.guide-remind-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.guide-remind-toggle input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--theme-primary);
+}
+
+.guide-continue-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 12px 28px;
+  border: none;
+  border-radius: var(--border-radius-pill);
+  background: var(--theme-primary);
+  color: var(--color-white);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(var(--theme-primary-rgb), 0.35);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.guide-continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(var(--theme-primary-rgb), 0.45);
+}
+
+.guide-continue-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes guideFadeIn {
+  from { background: rgba(46, 58, 89, 0); backdrop-filter: blur(0); }
+  to { background: rgba(46, 58, 89, 0.4); backdrop-filter: blur(8px); }
+}
+
+@keyframes guideFadeOut {
+  from { background: rgba(46, 58, 89, 0.4); backdrop-filter: blur(8px); }
+  to { background: rgba(46, 58, 89, 0); backdrop-filter: blur(0); }
+}
+
+@keyframes guideSlideUp {
+  from { transform: translateY(28px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes guideSlideDown {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(20px) scale(0.96); opacity: 0; }
+}
+
+@media (max-width: 620px) {
+  .guide-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-modal-footer {
+    justify-content: center;
+  }
+
+  .guide-continue-btn {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
