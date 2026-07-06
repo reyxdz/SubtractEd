@@ -13,6 +13,7 @@ import { Button } from '../../common/Button';
 import { Modal } from '../../common/Modal';
 import { useLearningProgressMetrics } from '../../../hooks/useLearningProgressMetrics';
 import { useNavigationUnlockState } from '../../../hooks/useNavigationUnlockState';
+import { useUserGuide } from '../../../hooks/useUserGuide';
 import { resetLearningProgress } from '../../../utils/learningProgress';
 import './HomeContent.css';
 
@@ -27,6 +28,7 @@ export const HomeContent: React.FC = () => {
   const navigate = useNavigate();
 
   const [isResetModalOpen, setIsResetModalOpen] = React.useState(false);
+  const { openGuide } = useUserGuide();
   const unlockState = useNavigationUnlockState();
   const progress = useLearningProgressMetrics();
   const progressLabel = Number.isInteger(progress.exactPercentage)
@@ -55,6 +57,8 @@ export const HomeContent: React.FC = () => {
   const handleResetProgress = () => {
     resetLearningProgress();
     setIsResetModalOpen(false);
+    // Re-show the "How to Use" guide after a reset, as for a first-time user.
+    openGuide();
   };
 
   return (
