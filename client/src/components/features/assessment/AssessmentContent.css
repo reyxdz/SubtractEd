@@ -352,6 +352,14 @@
   border-top: 1px solid var(--ass-glow);
 }
 
+.ass-option-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #fff;
+}
+
 .ass-option-btn:hover:not(:disabled) {
   transform: translateY(-4px);
   background: var(--ass-primary);

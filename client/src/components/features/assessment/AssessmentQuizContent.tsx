@@ -38,6 +38,9 @@ function shuffleQuestionChoices(q: AssessmentQuestion): AssessmentQuestion {
   if (q.optionVisuals) {
     result.optionVisuals = { ...q.optionVisuals, data: order.map((i) => q.optionVisuals!.data[i]) };
   }
+  if (q.optionImages) {
+    result.optionImages = order.map((i) => q.optionImages![i]);
+  }
   return result;
 }
 
@@ -261,10 +264,11 @@ export const AssessmentQuizContent: React.FC = () => {
             )}
 
             {currentQuestion.type === 'multiple-choice' ? (
-              <div className={`ass-options-grid ${currentQuestion.optionVisuals ? 'has-visuals' : ''}`}>
+              <div className={`ass-options-grid ${currentQuestion.optionVisuals || currentQuestion.optionImages ? 'has-visuals' : ''}`}>
                 {currentQuestion.options?.map((option, idx) => {
                   const isSelected = storedAnswers[currentIndex] === idx;
-                  const btnClass = `ass-option-btn ${currentQuestion.optionVisuals ? 'with-visual' : ''} ${isReviewMode && isSelected ? 'selected' : ''}`;
+                  const hasVisual = !!currentQuestion.optionVisuals || !!currentQuestion.optionImages;
+                  const btnClass = `ass-option-btn ${hasVisual ? 'with-visual' : ''} ${isReviewMode && isSelected ? 'selected' : ''}`;
                   return (
                   <button 
                     key={idx} 
@@ -280,8 +284,17 @@ export const AssessmentQuizContent: React.FC = () => {
                   >
                     <div className="ass-option-main">
                       <span className="ass-option-label">{String.fromCharCode(65 + idx)}</span>
-                      {!currentQuestion.optionVisuals && <span className="ass-option-text">{option}</span>}
+                      {!hasVisual && <span className="ass-option-text">{option}</span>}
                     </div>
+                    {currentQuestion.optionImages && (
+                      <div className="ass-option-visual">
+                        <img
+                          src={currentQuestion.optionImages[idx]}
+                          alt={`Option ${String.fromCharCode(65 + idx)}`}
+                          className="ass-option-image"
+                        />
+                      </div>
+                    )}
                     {currentQuestion.optionVisuals && (
                       <div className="ass-option-visual">
                         {currentQuestion.optionVisuals.type === 'chips' ? (

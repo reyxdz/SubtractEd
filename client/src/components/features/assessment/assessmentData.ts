@@ -1,3 +1,13 @@
+import item3a from '../../../assets/assessment_items_images/item_3_option_a.png';
+import item3b from '../../../assets/assessment_items_images/item_3_option_b.png';
+import item3c from '../../../assets/assessment_items_images/item_3_option_c.png';
+import item3d from '../../../assets/assessment_items_images/item_3_option_d.png';
+import item5a from '../../../assets/assessment_items_images/item_5_option_a.png';
+import item5b from '../../../assets/assessment_items_images/item_5_option_b.png';
+import item5c from '../../../assets/assessment_items_images/item_5_option_c.png';
+import item5d from '../../../assets/assessment_items_images/item_5_option_d.png';
+import item6NumberLine from '../../../assets/assessment_items_images/item_6_number_line_reference.png';
+
 export interface AssessmentQuestion {
   id: number;
   type: 'multiple-choice' | 'short-answer';
@@ -5,6 +15,7 @@ export interface AssessmentQuestion {
   options?: string[];
   answer: string | number; // For multiple-choice, it's the index (0-3). For short-answer, it's the text.
   imageUrl?: string;
+  optionImages?: string[]; // Image URL per option (picture choices)
   questionVisual?: {
     type: 'chips' | 'numberline';
     data: any;
@@ -35,15 +46,7 @@ export const assessmentData: AssessmentQuestion[] = [
     type: 'multiple-choice',
     question: 'How will you visualize (-3) – 10 using integer chip?',
     options: ['A', 'B', 'C', 'D'],
-    optionVisuals: {
-      type: 'chips',
-      data: [
-        { initialNeg: 3, initialPos: 0, zeroPairs: 10, takeAwayType: 'positive', takeAwayCount: 10 },
-        { initialNeg: 3, initialPos: 0, zeroPairs: 10, takeAwayType: 'negative', takeAwayCount: 10 },
-        { initialNeg: 3, initialPos: 0, zeroPairs: 10, takeAwayType: 'none', takeAwayCount: 0 },
-        { initialNeg: 3, initialPos: 0, zeroPairs: 3, takeAwayType: 'positive', takeAwayCount: 3 }
-      ]
-    },
+    optionImages: [item3a, item3b, item3c, item3d],
     answer: 0
   },
   {
@@ -58,15 +61,7 @@ export const assessmentData: AssessmentQuestion[] = [
     type: 'multiple-choice',
     question: 'Which number line correctly models the subtraction problem: 3 - (-4) = 7?',
     options: ['A', 'B', 'C', 'D'],
-    optionVisuals: {
-      type: 'numberline',
-      data: [
-        { start: -4, move: -7, end: -11 },
-        { start: 4, move: 3, end: 7 },
-        { start: 3, move: 4, end: 7 },
-        { start: 7, move: -4, end: 3 }
-      ]
-    },
+    optionImages: [item5a, item5b, item5c, item5d],
     answer: 2
   },
   {
@@ -74,10 +69,7 @@ export const assessmentData: AssessmentQuestion[] = [
     type: 'multiple-choice',
     question: 'Look at the number line below. Which integer subtraction problem does this number line correctly model?',
     options: ['4 - 5 = - 1', '-1- 5 = - 6', '4 - (-5) = 9', '-1 - (-5) = 4'],
-    questionVisual: {
-      type: 'numberline',
-      data: { start: -1, move: -5, end: -6 }
-    },
+    imageUrl: item6NumberLine,
     answer: 1
   },
   {
