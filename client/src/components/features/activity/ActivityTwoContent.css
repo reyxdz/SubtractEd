@@ -237,8 +237,9 @@
 }
 
 .a2-directions-box p {
-  color: var(--color-text-muted);
-  font-size: clamp(0.7rem, 1.5vh, 0.9rem);
+  color: #333333;
+  font-size: clamp(1rem, 2vh, 1.25rem);
+  font-weight: bold;
   margin: 0;
   line-height: 1.5;
 }
@@ -272,15 +273,13 @@
 }
 
 .a2-expression-chip {
-  padding: 1vh 1.5vw;
-  border-radius: var(--border-radius-pill);
-  background: linear-gradient(145deg, rgba(255, 243, 209, 0.9), rgba(255, 230, 163, 0.9));
-  backdrop-filter: blur(8px);
+  padding: 1.5vh 3vw;
+  border-radius: 2vh;
+  background: white;
   font-weight: 700;
-  color: #8a5a16;
-  box-shadow: 0 10px 18px rgba(235, 179, 72, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  font-size: clamp(0.8rem, 1.8vh, 1.1rem);
+  color: #424242;
+  box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.03);
+  font-size: clamp(1.5rem, 4vh, 2.5rem);
 }
 
 /* Number Line Container */
