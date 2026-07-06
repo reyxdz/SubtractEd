@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check } from 'lucide-react';
+import { X, Check, HelpCircle } from 'lucide-react';
 import { Switch } from '../../common/Switch';
 import { musicManager } from '../../../utils/music';
+import { useUserGuide } from '../../../hooks/useUserGuide';
 import './SettingsPopover.css';
 
 interface SettingsPopoverProps {
@@ -13,6 +14,7 @@ type ThemeColor = 'blue' | 'green' | 'red';
 export const SettingsPopover: React.FC<SettingsPopoverProps> = ({ onClose }) => {
   const [musicEnabled, setMusicEnabled] = useState(!musicManager.getIsMuted());
   const [activeTheme, setActiveTheme] = useState<ThemeColor>('blue');
+  const { openGuide } = useUserGuide();
 
   // Initialize theme from document data attribute
   useEffect(() => {
@@ -77,6 +79,18 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({ onClose }) => 
           </button>
         </div>
       </div>
+
+      <button
+        type="button"
+        className="settings-help-btn"
+        onClick={() => {
+          openGuide();
+          onClose();
+        }}
+      >
+        <HelpCircle size={16} />
+        <span>How to Use?</span>
+      </button>
     </div>
   );
 };
