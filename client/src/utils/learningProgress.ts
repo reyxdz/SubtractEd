@@ -1,5 +1,6 @@
 import { getActivityProgress, resetActivityProgress, type ActivityId } from './activityProgress';
 import { emitProgressUpdated } from './progressEvents';
+import { clearAllSessions } from './sessionState';
 
 const STORAGE_KEY = 'subtracted-learning-progress';
 
@@ -144,6 +145,9 @@ export function resetLearningProgress() {
 
   window.localStorage.removeItem(STORAGE_KEY);
   resetActivityProgress();
+  clearAllSessions();
+  window.localStorage.removeItem('subtracted-enrichment-highest-unlocked');
+  window.localStorage.removeItem('subtracted-enrichment-just-unlocked');
   emitProgressUpdated();
 }
 
