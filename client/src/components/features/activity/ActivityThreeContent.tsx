@@ -3,12 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../common/Modal';
 import { playSound } from '../../../utils/sound';
 import { pickDifficultPairs, buildA3FromExpr, type A3Question, type A3QuestionPair, type Difficulty } from './activity3Data';
-import { activity3Bank, pickFivePairs, type QPair } from '../../../utils/questionBank';
+import { activity3Bank, activity3Hints, pickFiveWithHints, type QPair, type HintPair } from '../../../utils/questionBank';
 import storeBg from '../../../assets/images/activity3_bg.png';
 import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
 import { ResultsSummary } from './ResultsSummary';
 import { ProgressLegend } from '../../common/ProgressLegend';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import './ActivityThreeContent.css';
+
+type A3StoredAnswer = {
+  keep: string; op: string; change: string; answer: string;
+  subExp1: string; subExp2: string; subExp3: string; tryNum: 'first' | 'second';
+};
+type A3AllQuestions = (A3QuestionPair & { ftHint?: string; stHint?: string })[];
+interface SavedActivity3 {
+  allQuestions: A3AllQuestions;
+  qIndex: number;
+  tryNum: 'first' | 'second';
+  consecutiveStFails: number;
+  itemResults: string[];
+  storedAnswers: Record<number, A3StoredAnswer>;
+  startTime: number;
+}
 
 // ── Helpers ──
 function normalizeValue(s: string): string {
@@ -73,10 +89,12 @@ const StepCards: React.FC<{
 };
 
 // ── Build bank items into A3Question pairs ──
-function buildBankQuestions(pairs: QPair[]): { ft: A3Question; st: A3Question }[] {
+function buildBankQuestions(pairs: (QPair & HintPair)[]): (A3QuestionPair & { ftHint: string; stHint: string })[] {
   return pairs.map(p => ({
     ft: buildA3FromExpr(p.ftExpr, p.ftAns),
     st: buildA3FromExpr(p.stExpr, p.stAns),
+    ftHint: p.ftHint,
+    stHint: p.stHint,
   }));
 }
 
@@ -84,16 +102,18 @@ function buildBankQuestions(pairs: QPair[]): { ft: A3Question; st: A3Question }[
 export const ActivityThreeContent: React.FC = () => {
   const navigate = useNavigate();
 
-  const [allQuestions, setAllQuestions] = useState<A3QuestionPair[]>([]);
-  const [qIndex, setQIndex] = useState(0);
-  const [tryNum, setTryNum] = useState<'first' | 'second'>('first');
-  const [consecutiveStFails, setConsecutiveStFails] = useState(0);
-  const [showingAnswer, setShowingAnswer] = useState(false);
-  const [itemResults, setItemResults] = useState<string[]>(Array(15).fill('unanswered'));
+  // Restore any in-progress session (once).
+  const savedRef = useRef<SavedActivity3 | null>(loadSession<SavedActivity3>(SESSION_KEYS.activity(3)));
+  const saved = savedRef.current;
 
-  const [storedAnswers, setStoredAnswers] = useState<Record<number, {
-    keep: string, op: string, change: string, answer: string, subExp1: string, subExp2: string, subExp3: string, tryNum: 'first'|'second'
-  }>>({});
+  const [allQuestions, setAllQuestions] = useState<A3AllQuestions>(saved?.allQuestions ?? []);
+  const [qIndex, setQIndex] = useState(saved?.qIndex ?? 0);
+  const [tryNum, setTryNum] = useState<'first' | 'second'>(saved?.tryNum ?? 'first');
+  const [consecutiveStFails, setConsecutiveStFails] = useState(saved?.consecutiveStFails ?? 0);
+  const [showingAnswer, setShowingAnswer] = useState(false);
+  const [itemResults, setItemResults] = useState<string[]>(saved?.itemResults ?? Array(15).fill('unanswered'));
+
+  const [storedAnswers, setStoredAnswers] = useState<Record<number, A3StoredAnswer>>(saved?.storedAnswers ?? {});
 
   // Input boxes
   const [boxKeep, setBoxKeep] = useState('');
@@ -115,7 +135,7 @@ export const ActivityThreeContent: React.FC = () => {
   const [hintModalOpen, setHintModalOpen] = useState(false);
   const [videoRedirectModal, setVideoRedirectModal] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
-  const [startTime] = useState(new Date());
+  const [startTime] = useState(saved ? new Date(saved.startTime) : new Date());
   const [endTime, setEndTime] = useState<Date | null>(null);
 
   const keepRef = useRef<HTMLInputElement>(null);
@@ -134,14 +154,32 @@ export const ActivityThreeContent: React.FC = () => {
   const showHint = difficulty !== 'difficult' && !isReviewMode;
   const globalIdx = qIndex;
   const difficultyLabel = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+  const currentHint = currentPair && difficulty !== 'difficult'
+    ? (displayTryNum === 'first' ? currentPair.ftHint : currentPair.stHint) ?? ''
+    : '';
 
-  // ── Initialize items on mount ──
+  // ── Initialize items on mount (skip if resuming a saved session) ──
   useEffect(() => {
-    const easyBank = buildBankQuestions(pickFivePairs(activity3Bank.easy));
-    const modBank = buildBankQuestions(pickFivePairs(activity3Bank.moderate));
+    if (saved) return;
+    const easyBank = buildBankQuestions(pickFiveWithHints(activity3Bank.easy, activity3Hints.easy));
+    const modBank = buildBankQuestions(pickFiveWithHints(activity3Bank.moderate, activity3Hints.moderate));
     const diffBank = pickDifficultPairs();
     setAllQuestions([...easyBank, ...modBank, ...diffBank]);
-  }, []);
+  }, [saved]);
+
+  // ── Persist in-progress session so students resume where they left off ──
+  useEffect(() => {
+    if (showSummary || allQuestions.length === 0) return;
+    saveSession<SavedActivity3>(SESSION_KEYS.activity(3), {
+      allQuestions,
+      qIndex,
+      tryNum,
+      consecutiveStFails,
+      itemResults,
+      storedAnswers,
+      startTime: startTime.getTime(),
+    });
+  }, [allQuestions, qIndex, tryNum, consecutiveStFails, itemResults, storedAnswers, startTime, showSummary]);
 
   // ── Guard ──
   useEffect(() => {
@@ -236,41 +274,18 @@ export const ActivityThreeContent: React.FC = () => {
         showNext: true,
       });
     } else {
-      if (tryNum === 'first') {
-        if (difficulty === 'difficult') {
-          playSound.error();
-          storeUserAns();
-          setItemResults(prev => {
-            const next = [...prev];
-            next[globalIdx] = 'wrong';
-            return next;
-          });
-          setShowingAnswer(true);
-          setModalState({
-            isOpen: true,
-            type: 'error',
-            title: currentQ.errorTitle,
-            message: (
-              <>
-                <strong>Answers are incorrect.</strong><br/><br/>
-                <div>Correct Subtraction Expression: <strong>{currentQ.minuend} - {currentQ.subtrahend}</strong></div>
-                <div>Correct Number Sentence: <strong>{currentQ.newSentence} = {currentQ.answer}</strong></div>
-              </>
-            ),
-            showNext: true,
-          });
-        } else {
-          playSound.pop();
-          setTryNum('second');
-          setModalState({
-            isOpen: true,
-            type: 'info',
-            title: 'Try Again!',
-            message: 'That was your first attempt. Here is a similar question for your second try.',
-            showNext: false,
-          });
-          clearInputs();
-        }
+      // Activity 3 difficult round has NO second try — a wrong answer is final.
+      if (tryNum === 'first' && difficulty !== 'difficult') {
+        playSound.pop();
+        setTryNum('second');
+        setModalState({
+          isOpen: true,
+          type: 'info',
+          title: 'Try Again!',
+          message: 'That was your first attempt. Here is a similar question for your second try.',
+          showNext: false,
+        });
+        clearInputs();
       } else {
         playSound.error();
         storeUserAns();
@@ -344,6 +359,7 @@ export const ActivityThreeContent: React.FC = () => {
         endTime={endTime}
         onProceed={() => {
           markActivityComplete(3);
+          clearSession(SESSION_KEYS.activity(3));
           navigate('/activity');
         }}
       />
@@ -401,11 +417,13 @@ export const ActivityThreeContent: React.FC = () => {
 
         {/* Directions */}
         <div className="a3-directions">
-          {difficulty === 'difficult' ? (
-            <p>Convert the word problem into a subtraction expression. Then, using the KCC (Keep-Change-Change) rule, convert the subtraction expression into an addition expression and find the answer.</p>
-          ) : (
-            <p>Use the <strong>KEEP-CHANGE-CHANGE</strong> rule to turn the subtraction sentence into an addition sentence. Follow the three steps, then write your new number sentence and answer.</p>
-          )}
+          <p>
+            <strong>Directions:</strong>{' '}
+            {difficulty === 'difficult' 
+              ? 'Convert the word problem into a subtraction expression. Then, using the KCC (Keep-Change-Change) rule, convert the subtraction expression into an addition expression and find the answer.'
+              : 'Use the KEEP-CHANGE-CHANGE rule to turn the subtraction sentence into an addition sentence. Follow the three steps, then write your new number sentence and answer.'
+            }
+          </p>
         </div>
 
         {/* Main Content */}
@@ -437,7 +455,7 @@ export const ActivityThreeContent: React.FC = () => {
                   </div>
                 </>
               ) : (
-                <div className="a3-s-display" style={{ position: 'static', textAlign: 'center', fontSize: '6rem', color: '#000' }}>
+                <div className="a3-s-display" style={{ position: 'static', textAlign: 'center', fontSize: 'clamp(3rem, 8vw, 8rem)', fontWeight: 'bold', color: '#000' }}>
                   {currentQ.sentence}
                 </div>
               )}
@@ -565,7 +583,7 @@ export const ActivityThreeContent: React.FC = () => {
         onClose={() => { playSound.click(); setHintModalOpen(false); }}
         actions={<button className="action-btn" onClick={() => { playSound.click(); setHintModalOpen(false); }} style={{ width: '100%', background: '#00E5FF', color: 'white', border: 'none', fontWeight: 'bold', padding: '12px', borderRadius: '9999px', fontSize: '1rem' }}>Got it!</button>}>
         <p style={{ fontSize: '1.2rem', fontWeight: '500', color: '#1e293b' }}>
-          {currentQ?.hint || 'Use KEEP-CHANGE-CHANGE: keep the first number, change minus to plus, flip the sign of the second number.'}
+          {currentHint || currentQ?.hint || 'Use KEEP-CHANGE-CHANGE: keep the first number, change minus to plus, flip the sign of the second number.'}
         </p>
       </Modal>
 
