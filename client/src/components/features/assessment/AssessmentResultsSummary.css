@@ -340,3 +340,54 @@
   .ars-main-actions { width: 100%; }
   .ars-btn-outline, .ars-btn-secondary, .ars-btn-primary { width: 100%; justify-content: center; }
 }
+
+/* Name entry gate (shown before the results summary) */
+.ars-name-modal {
+  max-width: 450px;
+  text-align: center;
+  padding: 40px;
+}
+
+.ars-name-modal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 26px;
+  color: #1e293b;
+}
+
+.ars-name-modal p {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.ars-name-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ars-name-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  color: #0f172a;
+}
+
+.ars-name-input:focus {
+  border-color: #3b82f6;
+}
+
+.ars-name-input::placeholder {
+  color: #94a3b8;
+}
+
+.ars-name-form .ars-btn-primary {
+  justify-content: center;
+  font-size: 16px;
+  padding: 15px;
+}
