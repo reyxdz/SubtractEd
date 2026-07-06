@@ -20,6 +20,8 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [studentName, setStudentName] = useState('');
+  const [hasEnteredName, setHasEnteredName] = useState(false);
 
   const handleDownloadReport = async () => {
     if (!modalRef.current || isDownloading) return;
@@ -86,6 +88,40 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
     return '';
   };
 
+  if (!hasEnteredName) {
+    return (
+      <div className="rs-overlay">
+        <div className="rs-modal rs-name-modal">
+          <h2>Enter Your Name</h2>
+          <p>Please enter your name to proceed to your results summary.</p>
+          <form 
+            className="rs-name-form" 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (studentName.trim()) setHasEnteredName(true);
+            }}
+          >
+            <input 
+              type="text" 
+              className="rs-name-input" 
+              placeholder="Your Name" 
+              value={studentName} 
+              onChange={(e) => setStudentName(e.target.value)} 
+              autoFocus
+            />
+            <button 
+              type="submit" 
+              className="rs-btn-primary" 
+              disabled={!studentName.trim()}
+            >
+              Continue <span className="rs-btn-icon">→</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rs-overlay">
       <div className="rs-modal" ref={modalRef}>
@@ -100,7 +136,7 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
             <div className="rs-icon-star">★</div>
             <div className="rs-titles">
               <h2>Activity {activityNum} Results Summary</h2>
-              <p>Great job! You've completed all the items.</p>
+              <p>Student: <strong>{studentName}</strong> | Great job! You've completed all the items.</p>
             </div>
           </div>
           <div className="rs-time-section">
