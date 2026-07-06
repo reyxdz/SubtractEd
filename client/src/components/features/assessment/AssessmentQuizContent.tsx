@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Settings, X, Music, Palette, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react';
 import { playSound } from '../../../utils/sound';
 import { musicManager } from '../../../utils/music';
-import { assessmentData } from './assessmentData';
+import { assessmentData, type AssessmentQuestion } from './assessmentData';
 import { markAssessmentComplete } from '../../../utils/learningProgress';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import { AssessmentResultsSummary } from './AssessmentResultsSummary';
 import { AssessmentChipVisual, AssessmentNumberLineVisual } from './components/AssessmentVisuals';
 import './AssessmentContent.css';
@@ -14,34 +15,81 @@ type Theme = 'green' | 'red' | 'blue';
 type Result = 'correct' | 'incorrect' | 'pending';
 type ModalState = 'none' | 'settings' | 'correct' | 'incorrect';
 
+// Fisher-Yates shuffle (returns a new array).
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Shuffle a single question's answer choices, keeping the correct answer,
+// any parallel option visuals, and the A/B/C/D positions in sync.
+function shuffleQuestionChoices(q: AssessmentQuestion): AssessmentQuestion {
+  if (q.type !== 'multiple-choice' || !q.options) return q;
+
+  const order = shuffleArray(q.options.map((_, i) => i));
+  const newOptions = order.map((i) => q.options![i]);
+  const newAnswer = typeof q.answer === 'number' ? order.indexOf(q.answer) : q.answer;
+
+  const result: AssessmentQuestion = { ...q, options: newOptions, answer: newAnswer };
+  if (q.optionVisuals) {
+    result.optionVisuals = { ...q.optionVisuals, data: order.map((i) => q.optionVisuals!.data[i]) };
+  }
+  return result;
+}
+
+// SHUFFLE ALL — randomize both question order and each question's choices.
+function buildShuffledAssessment(): AssessmentQuestion[] {
+  return shuffleArray(assessmentData).map(shuffleQuestionChoices);
+}
+
+interface SavedAssessment {
+  questions: AssessmentQuestion[];
+  currentIndex: number;
+  score: number;
+  history: Result[];
+  storedAnswers: Record<number, string | number>;
+  startTime: number;
+}
+
 export const AssessmentQuizContent: React.FC = () => {
   const navigate = useNavigate();
   
+  // Restore any in-progress session (once).
+  const savedRef = useRef<SavedAssessment | null>(loadSession<SavedAssessment>(SESSION_KEYS.assessment));
+  const saved = savedRef.current;
+
   // State
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  const [questions, setQuestions] = useState<AssessmentQuestion[]>(() => saved?.questions ?? buildShuffledAssessment());
+  const [currentIndex, setCurrentIndex] = useState(saved?.currentIndex ?? 0);
+  const [score, setScore] = useState(saved?.score ?? 0);
   const [userAnswer, setUserAnswer] = useState('');
   const [activeTheme, setActiveTheme] = useState<Theme>('blue');
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [modalState, setModalState] = useState<ModalState>('none');
   const [isFinished, setIsFinished] = useState(false);
-  const [startTime, setStartTime] = useState<Date>(new Date());
+  const [startTime, setStartTime] = useState<Date>(saved ? new Date(saved.startTime) : new Date());
   const [endTime, setEndTime] = useState<Date>(new Date());
   const [history, setHistory] = useState<Result[]>(
-    new Array(assessmentData.length).fill('pending')
+    saved?.history ?? new Array(questions.length).fill('pending')
   );
+  const [storedAnswers, setStoredAnswers] = useState<Record<number, string | number>>(saved?.storedAnswers ?? {});
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const currentQuestion = assessmentData[currentIndex];
-  const isLastQuestion = currentIndex === assessmentData.length - 1;
+  const currentQuestion = questions[currentIndex];
+  const isLastQuestion = currentIndex === questions.length - 1;
+  const isReviewMode = history[currentIndex] !== 'pending';
 
   // Focus input on load and question change
   useEffect(() => {
-    if (modalState === 'none' && !isFinished) {
+    if (modalState === 'none' && !isFinished && !isReviewMode) {
       inputRef.current?.focus();
     }
-  }, [currentIndex, modalState, isFinished]);
+  }, [currentIndex, modalState, isFinished, isReviewMode]);
 
   // Sync music settings with global music manager
   useEffect(() => {
@@ -74,7 +122,21 @@ export const AssessmentQuizContent: React.FC = () => {
     if (!isFinished) return;
 
     markAssessmentComplete();
+    clearSession(SESSION_KEYS.assessment);
   }, [isFinished]);
+
+  // Persist in-progress session so students resume where they left off.
+  useEffect(() => {
+    if (isFinished) return;
+    saveSession<SavedAssessment>(SESSION_KEYS.assessment, {
+      questions,
+      currentIndex,
+      score,
+      history,
+      storedAnswers,
+      startTime: startTime.getTime(),
+    });
+  }, [questions, currentIndex, score, history, storedAnswers, startTime, isFinished]);
 
   const handleSubmit = (answer?: string | number) => {
     const finalAnswer = answer !== undefined ? answer : userAnswer.trim();
@@ -91,6 +153,7 @@ export const AssessmentQuizContent: React.FC = () => {
     const newHistory = [...history];
     newHistory[currentIndex] = isCorrect ? 'correct' : 'incorrect';
     setHistory(newHistory);
+    setStoredAnswers(prev => ({ ...prev, [currentIndex]: finalAnswer }));
 
     if (isCorrect) {
       playSound.success();
@@ -104,13 +167,16 @@ export const AssessmentQuizContent: React.FC = () => {
 
   const handleRestart = () => {
     playSound.click();
+    const reshuffled = buildShuffledAssessment();
+    setQuestions(reshuffled);
     setCurrentIndex(0);
     setScore(0);
     setUserAnswer('');
     setIsFinished(false);
     setModalState('none');
     setStartTime(new Date());
-    setHistory(new Array(assessmentData.length).fill('pending'));
+    setHistory(new Array(reshuffled.length).fill('pending'));
+    setStoredAnswers({});
   };
 
   return (
@@ -129,16 +195,26 @@ export const AssessmentQuizContent: React.FC = () => {
         {!isFinished && (
           <div className="ass-header-center">
             <div className="ass-progress-history">
-              {history.map((result, index) => (
-                <div 
-                  key={index} 
-                  className={`ass-history-item ${result} ${index === currentIndex ? 'active' : ''}`}
-                >
-                  {result === 'correct' && <CheckCircle2 size={16} />}
-                  {result === 'incorrect' && <XCircle size={16} />}
-                  {result === 'pending' && <div className="ass-pending-dot" />}
-                </div>
-              ))}
+              {history.map((result, index) => {
+                const isClickable = result !== 'pending' || index === history.findIndex(r => r === 'pending');
+                return (
+                  <div 
+                    key={index} 
+                    className={`ass-history-item ${result} ${index === currentIndex ? 'active' : ''}`}
+                    onClick={() => {
+                      if (isClickable) {
+                        playSound.tick();
+                        setCurrentIndex(index);
+                      }
+                    }}
+                    style={{ cursor: isClickable ? 'pointer' : 'default' }}
+                  >
+                    {result === 'correct' && <CheckCircle2 size={16} />}
+                    {result === 'incorrect' && <XCircle size={16} />}
+                    {result === 'pending' && <div className="ass-pending-dot" />}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -154,9 +230,9 @@ export const AssessmentQuizContent: React.FC = () => {
       {/* Main Content */}
       <main className="ass-main">
         {isFinished ? (
-          <AssessmentResultsSummary 
+          <AssessmentResultsSummary
             score={score}
-            totalItems={assessmentData.length}
+            totalItems={questions.length}
             history={history}
             startTime={startTime}
             endTime={endTime}
@@ -186,12 +262,21 @@ export const AssessmentQuizContent: React.FC = () => {
 
             {currentQuestion.type === 'multiple-choice' ? (
               <div className={`ass-options-grid ${currentQuestion.optionVisuals ? 'has-visuals' : ''}`}>
-                {currentQuestion.options?.map((option, idx) => (
+                {currentQuestion.options?.map((option, idx) => {
+                  const isSelected = storedAnswers[currentIndex] === idx;
+                  const btnClass = `ass-option-btn ${currentQuestion.optionVisuals ? 'with-visual' : ''} ${isReviewMode && isSelected ? 'selected' : ''}`;
+                  return (
                   <button 
                     key={idx} 
-                    className={`ass-option-btn ${currentQuestion.optionVisuals ? 'with-visual' : ''}`}
-                    onClick={() => { playSound.tick(); handleSubmit(idx); }}
-                    disabled={modalState !== 'none'}
+                    className={btnClass}
+                    onClick={() => { 
+                      if (!isReviewMode) {
+                        playSound.tick(); 
+                        handleSubmit(idx); 
+                      }
+                    }}
+                    disabled={modalState !== 'none' || isReviewMode}
+                    style={isReviewMode && isSelected ? { outline: '3px solid #000' } : {}}
                   >
                     <div className="ass-option-main">
                       <span className="ass-option-label">{String.fromCharCode(65 + idx)}</span>
@@ -207,10 +292,11 @@ export const AssessmentQuizContent: React.FC = () => {
                       </div>
                     )}
                   </button>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <form className="ass-input-group" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+              <form className="ass-input-group" onSubmit={(e) => { e.preventDefault(); if (!isReviewMode) handleSubmit(); }}>
                 <label className="ass-input-label">Type your answer below:</label>
                 <div className="ass-input-row">
                   <input
@@ -218,19 +304,44 @@ export const AssessmentQuizContent: React.FC = () => {
                     type="text"
                     className="ass-input"
                     placeholder="Enter your answer here..."
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
+                    value={isReviewMode ? String(storedAnswers[currentIndex] || '') : userAnswer}
+                    onChange={(e) => {
+                      if (!isReviewMode) setUserAnswer(e.target.value);
+                    }}
                     disabled={modalState !== 'none'}
+                    readOnly={isReviewMode}
                   />
-                  <button 
-                    type="submit" 
-                    className="ass-submit-btn"
-                    disabled={!userAnswer.trim() || modalState !== 'none'}
-                  >
-                    Submit Answer
-                  </button>
+                  {!isReviewMode && (
+                    <button 
+                      type="submit" 
+                      className="ass-submit-btn"
+                      disabled={!userAnswer.trim() || modalState !== 'none'}
+                    >
+                      Submit Answer
+                    </button>
+                  )}
                 </div>
               </form>
+            )}
+
+            {isReviewMode && (
+              <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                <button 
+                  className="ass-submit-btn"
+                  onClick={() => {
+                    playSound.click();
+                    const nextIdx = history.findIndex(r => r === 'pending');
+                    if (nextIdx !== -1) {
+                      setCurrentIndex(nextIdx);
+                    } else {
+                      setEndTime(new Date());
+                      setIsFinished(true);
+                    }
+                  }}
+                >
+                  Back to Current Question
+                </button>
+              </div>
             )}
           </div>
         )}
