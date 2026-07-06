@@ -107,3 +107,24 @@
 .theme-blue {
   background-color: var(--color-primary-blue);
 }
+
+.settings-help-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
+  border-radius: var(--border-radius-sm);
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  color: var(--theme-accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.settings-help-btn:hover {
+  background: rgba(var(--theme-primary-rgb), 0.16);
+}
