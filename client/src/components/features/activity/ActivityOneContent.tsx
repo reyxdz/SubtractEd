@@ -6,7 +6,7 @@ import { playSound } from '../../../utils/sound';
 import { markActivityComplete } from '../../../utils/activityProgress';
 import { ResultsSummary } from './ResultsSummary';
 import { ProgressLegend } from '../../common/ProgressLegend';
-import { activity1Bank, activity1Hints, pickFiveWithHints, pickFiveDiffPairs, activity1DiffBank, type QPair, type HintPair, type DiffPair } from '../../../utils/questionBank';
+import { activity1Bank, activity1Hints, pickFiveWithHints, pickFiveDiffPairs, activity1DiffBank, stripEquationRef, type QPair, type HintPair, type DiffPair } from '../../../utils/questionBank';
 import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import './ActivityOneContent.css';
 
@@ -77,7 +77,10 @@ export const ActivityOneContent: React.FC = () => {
   const localIndex = qIndex - levelOffset;
   const isDifficult = level === 'Difficult';
 
-  const currentPair: (QPair & HintPair) | null = level === 'Difficult' ? null : (levelItems.Easy[localIndex] ?? levelItems.Moderate[localIndex] ?? null);
+  const currentPair: (QPair & HintPair) | null =
+    level === 'Easy' ? (levelItems.Easy[localIndex] ?? null)
+      : level === 'Moderate' ? (levelItems.Moderate[localIndex] ?? null)
+        : null;
   const currentDifficult: DiffPair | undefined = level === 'Difficult' ? levelItems.Difficult[localIndex] : undefined;
   const currentItemState: ItemState = itemStates[qIndex] ?? { pair: null, tryNum: 'first' };
 
@@ -135,7 +138,7 @@ export const ActivityOneContent: React.FC = () => {
   const tryDiffAns = currentItemState.tryNum === 'first' ? currentDifficult?.ftAns : currentDifficult?.stAns;
 
   const currentProblem = isDifficult
-    ? (tryDiffProb ?? '')
+    ? stripEquationRef(tryDiffProb ?? '')
     : tryExpr != null ? `${tryExpr} = ?` : '';
 
   const currentSentence = isDifficult
