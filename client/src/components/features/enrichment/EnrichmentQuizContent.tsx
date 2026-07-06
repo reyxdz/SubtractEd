@@ -6,16 +6,33 @@ import { musicManager } from '../../../utils/music';
 import { crosswordLevels, GRID_ROWS, GRID_COLS } from './crosswordData';
 import type { CWCell } from './crosswordData';
 import enrichmentBg from '../../../assets/images/enrichment_bg.png';
+import lvl1Bg from '../../../assets/enrichment_images/enrichment_activity_level_1_background.png';
+import lvl2Bg from '../../../assets/enrichment_images/enrichment_activity_level_2_background.png';
+import lvl3Bg from '../../../assets/enrichment_images/enrichment_activity_level_3_background.png';
+import lvl4Bg from '../../../assets/enrichment_images/enrichment_activity_level_4_background.png';
+import lvl6Bg from '../../../assets/enrichment_images/enrichment_activity_level_6_background.png';
 import {
   markEnrichmentComplete,
   getEnrichmentHighestUnlockedLevel,
   setEnrichmentHighestUnlockedLevel,
   setEnrichmentJustUnlockedLevel,
 } from '../../../utils/learningProgress';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import './EnrichmentQuizContent.css';
 
 type Theme = 'violet' | 'green' | 'red' | 'blue';
 type ModalState = 'none' | 'settings' | 'correct' | 'incorrect' | 'level-complete';
+
+interface SavedEnrichment {
+  levelIndex: number;
+  answers: Record<string, string>;
+  correctCells: string[];
+  score: number;
+}
+
+// Per-level background images (indexed by levelIndex 0-5).
+// Level 5 (index 4) has no dedicated asset yet, so it falls back to the shared background.
+const LEVEL_BACKGROUNDS: string[] = [lvl1Bg, lvl2Bg, lvl3Bg, lvl4Bg, enrichmentBg, lvl6Bg];
 
 export const EnrichmentQuizContent: React.FC = () => {
   const navigate = useNavigate();
@@ -38,9 +55,15 @@ export const EnrichmentQuizContent: React.FC = () => {
   };
 
   const [levelIndex, setLevelIndex] = useState(getInitialLevelIndex);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [correctCells, setCorrectCells] = useState<Set<string>>(new Set());
-  const [score, setScore] = useState(0);
+
+  // Restore any in-progress session for the level being opened (once).
+  const savedRef = useRef<SavedEnrichment | null>(loadSession<SavedEnrichment>(SESSION_KEYS.enrichment));
+  const initialLevelIndexRef = useRef(levelIndex);
+  const applySaved = !!savedRef.current && savedRef.current.levelIndex === initialLevelIndexRef.current;
+
+  const [answers, setAnswers] = useState<Record<string, string>>(applySaved ? savedRef.current!.answers : {});
+  const [correctCells, setCorrectCells] = useState<Set<string>>(applySaved ? new Set(savedRef.current!.correctCells) : new Set());
+  const [score, setScore] = useState(applySaved ? savedRef.current!.score : 0);
   const [activeTheme, setActiveTheme] = useState<Theme>('violet');
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [modalState, setModalState] = useState<ModalState>('none');
@@ -91,12 +114,29 @@ export const EnrichmentQuizContent: React.FC = () => {
     return blanks;
   }, [currentLevel]);
 
-  // Reset answers when level changes
+  // Reset answers when level changes (but not on the first render, so a
+  // restored in-progress session survives the initial mount).
+  const didMountRef = useRef(false);
   useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
     setAnswers({});
     setCorrectCells(new Set());
     setFeedbackCell(null);
   }, [levelIndex]);
+
+  // Persist in-progress level so students resume where they left off.
+  useEffect(() => {
+    if (isFinished) return;
+    saveSession<SavedEnrichment>(SESSION_KEYS.enrichment, {
+      levelIndex,
+      answers,
+      correctCells: Array.from(correctCells),
+      score,
+    });
+  }, [levelIndex, answers, correctCells, score, isFinished]);
 
   // Sync music
   useEffect(() => {
@@ -108,6 +148,7 @@ export const EnrichmentQuizContent: React.FC = () => {
     if (!isFinished) return;
 
     markEnrichmentComplete();
+    clearSession(SESSION_KEYS.enrichment);
   }, [isFinished]);
 
   const totalBlanks = blankCells().length;
@@ -279,7 +320,7 @@ export const EnrichmentQuizContent: React.FC = () => {
     <div className={`enr-container theme-${activeTheme}`}>
       {/* Background */}
       <div className="enr-bg-layer">
-        <img src={enrichmentBg} alt="" draggable="false" />
+        <img src={LEVEL_BACKGROUNDS[levelIndex] ?? enrichmentBg} alt="" draggable="false" />
         <div className="enr-bg-overlay" />
       </div>
 
