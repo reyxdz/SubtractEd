@@ -238,7 +238,8 @@
 
 .directions-box p {
   color: #333333;
-  font-size: clamp(0.75rem, 1.5vh, 0.95rem);
+  font-size: clamp(1rem, 2vh, 1.25rem);
+  font-weight: bold;
   margin: 0;
 }
 
