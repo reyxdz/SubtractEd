@@ -5,7 +5,7 @@ import { playSound } from '../../../utils/sound';
 import { isActivityUnlocked, markActivityComplete } from '../../../utils/activityProgress';
 import { ResultsSummary } from './ResultsSummary';
 import { ProgressLegend } from '../../common/ProgressLegend';
-import { activity2Bank, activity2Hints, pickFiveWithHints, pickFiveDiffPairs, activity2DiffBank, parseExpr, type QPair, type HintPair, type DiffPair } from '../../../utils/questionBank';
+import { activity2Bank, activity2Hints, pickFiveWithHints, pickFiveDiffPairs, activity2DiffBank, parseExpr, stripEquationRef, type QPair, type HintPair, type DiffPair } from '../../../utils/questionBank';
 import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import './ActivityTwoContent.css';
 import '../guide/GuideContent.css';
@@ -271,7 +271,9 @@ export const ActivityTwoContent: React.FC = () => {
 
   // ── Check answer ──
   const handleCheckAnswer = useCallback(() => {
-    if (isReviewMode || !answer.trim() || !currentQ) return;
+    if (isReviewMode || !answer.trim()) return;
+    // Difficult items use currentDifficultPair (currentQ is null there); others use currentQ.
+    if (isDifficult ? !currentDifficultPair : !currentQ) return;
     const correctAnswer = isDifficult ? currentDiffAns : clamp(currentQ!.start - currentQ!.subtract);
     const userAnswer = Number(answer.trim());
     const tryNum = tryNums[qIndex] ?? 'first';
@@ -346,7 +348,7 @@ export const ActivityTwoContent: React.FC = () => {
         });
       }
     }
-  }, [answer, currentQ, tryNums, qIndex, consecutiveStFails, isReviewMode, startValue, currentValue, moveValue, globalIdx, playSound]);
+  }, [answer, currentQ, isDifficult, currentDifficultPair, currentDiffAns, tryNums, qIndex, consecutiveStFails, isReviewMode, startValue, currentValue, moveValue, globalIdx, playSound]);
 
   const handleModalNext = useCallback(() => {
     playSound.click();
@@ -463,7 +465,7 @@ export const ActivityTwoContent: React.FC = () => {
             {/* Question */}
             <div className="a2-question-box">
               {isDifficult ? (
-                <p>{currentDifficultPair ? (tryNums[qIndex] === 'first' ? currentDifficultPair.ftProb : currentDifficultPair.stProb) : ''}</p>
+                <p>{currentDifficultPair ? stripEquationRef(tryNums[qIndex] === 'first' ? currentDifficultPair.ftProb : currentDifficultPair.stProb) : ''}</p>
               ) : (
                 <p>{currentQ ? `${currentQ.start} - (${currentQ.subtract}) =` : ''}</p>
               )}
