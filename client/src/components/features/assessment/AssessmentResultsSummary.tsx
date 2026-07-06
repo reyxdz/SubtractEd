@@ -25,6 +25,8 @@ export const AssessmentResultsSummary: React.FC<AssessmentResultsSummaryProps> =
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [studentName, setStudentName] = useState('');
+  const [hasEnteredName, setHasEnteredName] = useState(false);
 
   const handleDownloadReport = async () => {
     if (!modalRef.current || isDownloading) return;
@@ -54,6 +56,36 @@ export const AssessmentResultsSummary: React.FC<AssessmentResultsSummaryProps> =
   const percentage = totalItems > 0 ? Math.round((score / totalItems) * 100) : 0;
   const incorrectCount = totalItems - score;
 
+  if (!hasEnteredName) {
+    return (
+      <div className="ars-overlay">
+        <div className="ars-modal ars-name-modal">
+          <h2>Enter Your Name</h2>
+          <p>Please enter your name to proceed to your results summary.</p>
+          <form
+            className="ars-name-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (studentName.trim()) setHasEnteredName(true);
+            }}
+          >
+            <input
+              type="text"
+              className="ars-name-input"
+              placeholder="Your Name"
+              value={studentName}
+              onChange={(e) => setStudentName(e.target.value)}
+              autoFocus
+            />
+            <button type="submit" className="ars-btn-primary" disabled={!studentName.trim()}>
+              Continue →
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="ars-overlay">
       <div className="ars-modal" ref={modalRef}>
@@ -67,7 +99,7 @@ export const AssessmentResultsSummary: React.FC<AssessmentResultsSummaryProps> =
             <div className="ars-icon-star"><Star fill="currentColor" /></div>
             <div className="ars-titles">
               <h2>Assessment Results Summary</h2>
-              <p>Great job! You've completed the assessment.</p>
+              <p>Student: <strong>{studentName}</strong> | Great job! You've completed the assessment.</p>
             </div>
           </div>
           <div className="ars-time-section">
