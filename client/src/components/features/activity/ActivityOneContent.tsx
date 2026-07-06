@@ -6,46 +6,51 @@ import { playSound } from '../../../utils/sound';
 import { markActivityComplete } from '../../../utils/activityProgress';
 import { ResultsSummary } from './ResultsSummary';
 import { ProgressLegend } from '../../common/ProgressLegend';
-import { activity1Bank, pickFivePairs, type QPair } from '../../../utils/questionBank';
+import { activity1Bank, activity1Hints, pickFiveWithHints, pickFiveDiffPairs, activity1DiffBank, type QPair, type HintPair, type DiffPair } from '../../../utils/questionBank';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../../../utils/sessionState';
 import './ActivityOneContent.css';
-
-// ── Difficult-level static questions (word problems) ──
-interface DifficultItem {
-  problem: string;
-  sentence: string;
-  answer: string;
-  hint: string;
-}
-
-const difficultItems: DifficultItem[] = [
-  { problem: 'You have 6 pesos, but you need to pay a debt of -14 pesos (subtracting a negative). What is your total value now?', sentence: '6 − (−14) = ?', answer: '20', hint: '' },
-  { problem: 'It is 10°C in Baguio. The temperature "drops" by 18 degrees. What is the new temperature?', sentence: '10 − 18 = ?', answer: '-8', hint: '' },
-  { problem: 'You owe the store 5 pesos (−5). You then buy a snack worth 12 pesos on credit. What is your total debt?', sentence: '−5 − 12 = ?', answer: '-17', hint: '' },
-  { problem: 'A fish is swimming at −3 meters. It dives down another 15 meters. What is its new depth?', sentence: '−3 − 15 = ?', answer: '-18', hint: '' },
-  { problem: 'A student has a score of −8 in a game. They get another 12 points deducted for a mistake. What is the final score?', sentence: '−8 − 12 = ?', answer: '-20', hint: '' },
-];
 
 type Level = 'Easy' | 'Moderate' | 'Difficult';
 
-const LEVEL_ORDER: Level[] = ['Easy', 'Moderate', 'Difficult'];
+
 
 interface ItemState {
-  pair: QPair | null;       // bank pair for E/M, null for D
+  pair: (QPair & HintPair) | null;       // bank pair for E/M, null for D
   tryNum: 'first' | 'second';
+}
+
+type A1StoredAnswer = {
+  answer: string;
+  positiveCount: string;
+  negativeCount: string;
+  chips: { id: string; type: 'positive' | 'negative'; isCancelled: boolean }[];
+};
+interface SavedActivity1 {
+  levelItems: { Easy: (QPair & HintPair)[]; Moderate: (QPair & HintPair)[]; Difficult: DiffPair[] };
+  itemStates: ItemState[];
+  qIndex: number;
+  consecutiveStFails: number;
+  itemResults: string[];
+  storedAnswers: Record<number, A1StoredAnswer>;
+  startTime: number;
 }
 
 // ── Component ─────────────────────────────────
 export const ActivityOneContent: React.FC = () => {
   const navigate = useNavigate();
 
+  // Restore any in-progress session (once).
+  const savedRef = React.useRef<SavedActivity1 | null>(loadSession<SavedActivity1>(SESSION_KEYS.activity(1)));
+  const saved = savedRef.current;
+
   // Level progression
-  const [level, setLevel] = useState<Level>('Easy');
-  const [items, setItems] = useState<QPair[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemStates, setItemStates] = useState<ItemState[]>([]);
-  const [consecutiveStFails, setConsecutiveStFails] = useState(0);
+  const [qIndex, setQIndex] = useState(saved?.qIndex ?? 0);
+  const [levelItems, setLevelItems] = useState<{ Easy: (QPair & HintPair)[], Moderate: (QPair & HintPair)[], Difficult: DiffPair[] }>(saved?.levelItems ?? { Easy: [], Moderate: [], Difficult: [] });
+  const [itemStates, setItemStates] = useState<ItemState[]>(saved?.itemStates ?? Array(15).fill({ pair: null, tryNum: 'first' }));
+  const [consecutiveStFails, setConsecutiveStFails] = useState(saved?.consecutiveStFails ?? 0);
   const [showingAnswer, setShowingAnswer] = useState(false);
-  const [itemResults, setItemResults] = useState<string[]>(Array(15).fill('unanswered'));
+  const [itemResults, setItemResults] = useState<string[]>(saved?.itemResults ?? Array(15).fill('unanswered'));
+  const [storedAnswers, setStoredAnswers] = useState<Record<number, A1StoredAnswer>>(saved?.storedAnswers ?? {});
 
   // User input
   const [answer, setAnswer] = useState('');
@@ -64,109 +69,120 @@ export const ActivityOneContent: React.FC = () => {
   const [hintModalOpen, setHintModalOpen] = useState(false);
   const [videoRedirectModal, setVideoRedirectModal] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
-  const [startTime] = useState(new Date());
+  const [startTime] = useState(saved ? new Date(saved.startTime) : new Date());
   const [endTime, setEndTime] = useState<Date | null>(null);
 
-  // Initialize items when level changes
-  useEffect(() => {
-    if (level === 'Difficult') {
-      setItems([]);
-      setItemStates(difficultItems.map(() => ({ pair: null, tryNum: 'first' })));
-    } else {
-      const bank = level === 'Easy' ? activity1Bank.easy : activity1Bank.moderate;
-      const picked = pickFivePairs(bank);
-      setItems(picked);
-      setItemStates(picked.map(() => ({ pair: null, tryNum: 'first' })));
-    }
-    setCurrentIndex(0);
-    setConsecutiveStFails(0);
-    setShowingAnswer(false);
-    resetInputs();
-  }, [level]);
-
-  const currentPair: QPair | null = items[currentIndex] ?? null;
-  const currentDifficult: DifficultItem | undefined = level === 'Difficult' ? difficultItems[currentIndex] : undefined;
-  const currentItemState: ItemState = itemStates[currentIndex] ?? { pair: null, tryNum: 'first' };
+  const level: Level = qIndex < 5 ? 'Easy' : qIndex < 10 ? 'Moderate' : 'Difficult';
+  const levelOffset = qIndex < 5 ? 0 : qIndex < 10 ? 5 : 10;
+  const localIndex = qIndex - levelOffset;
   const isDifficult = level === 'Difficult';
 
-  const totalItems = level === 'Difficult' ? difficultItems.length : items.length;
-  const levelOffset = LEVEL_ORDER.indexOf(level) * 5;
-  const globalIdx = levelOffset + currentIndex;
+  const currentPair: (QPair & HintPair) | null = level === 'Difficult' ? null : (levelItems.Easy[localIndex] ?? levelItems.Moderate[localIndex] ?? null);
+  const currentDifficult: DiffPair | undefined = level === 'Difficult' ? levelItems.Difficult[localIndex] : undefined;
+  const currentItemState: ItemState = itemStates[qIndex] ?? { pair: null, tryNum: 'first' };
 
-  // Build display values
-  const currentProblem = (() => {
-    if (isDifficult && currentDifficult) return currentDifficult.problem;
-    if (currentPair) {
-      const expr = currentItemState.tryNum === 'first' ? currentPair.ftExpr : currentPair.stExpr;
-      return `${expr} = ?`;
-    }
-    return '';
-  })();
+  // Initialize items on mount (skip if resuming a saved session)
+  useEffect(() => {
+    if (saved) return;
+    setLevelItems({
+      Easy: pickFiveWithHints(activity1Bank.easy, activity1Hints.easy),
+      Moderate: pickFiveWithHints(activity1Bank.moderate, activity1Hints.moderate),
+      Difficult: pickFiveDiffPairs(activity1DiffBank)
+    });
+  }, [saved]);
 
-  const currentSentence = (() => {
-    if (isDifficult && currentDifficult) return currentDifficult.sentence;
-    if (currentPair) {
-      const expr = currentItemState.tryNum === 'first' ? currentPair.ftExpr : currentPair.stExpr;
-      return `${expr} = ?`;
-    }
-    return '';
-  })();
+  // Persist in-progress session so students resume where they left off
+  useEffect(() => {
+    if (showSummary || levelItems.Easy.length === 0) return;
+    saveSession<SavedActivity1>(SESSION_KEYS.activity(1), {
+      levelItems,
+      itemStates,
+      qIndex,
+      consecutiveStFails,
+      itemResults,
+      storedAnswers,
+      startTime: startTime.getTime(),
+    });
+  }, [levelItems, itemStates, qIndex, consecutiveStFails, itemResults, storedAnswers, startTime, showSummary]);
 
-  const currentAnswer = (() => {
-    if (isDifficult && currentDifficult) return currentDifficult.answer;
-    if (currentPair) {
-      const ans = currentItemState.tryNum === 'first' ? currentPair.ftAns : currentPair.stAns;
-      return String(ans);
-    }
-    return '';
-  })();
-
-  const currentHint = (() => {
-    if (isDifficult && currentDifficult) return currentDifficult.hint;
-    return '';
-  })();
-
-  const showHint = !isDifficult || currentHint !== '';
-
-  function resetInputs() {
+  const clearInputs = useCallback(() => {
     setAnswer('');
     setChips([]);
     setPositiveCount('');
     setNegativeCount('');
     setShowingAnswer(false);
-  }
+  }, []);
+
+  const isReviewMode = !!(itemResults[qIndex] && itemResults[qIndex] !== 'unanswered');
+
+  useEffect(() => {
+    if (storedAnswers[qIndex]) {
+      const stored = storedAnswers[qIndex];
+      setAnswer(stored.answer);
+      setPositiveCount(stored.positiveCount);
+      setNegativeCount(stored.negativeCount);
+      setChips(stored.chips);
+    } else {
+      clearInputs();
+    }
+  }, [qIndex, storedAnswers, clearInputs]);
+
+  // Build display values
+  const tryExpr = currentItemState.tryNum === 'first' ? currentPair?.ftExpr : currentPair?.stExpr;
+  const tryAns = currentItemState.tryNum === 'first' ? currentPair?.ftAns : currentPair?.stAns;
+  const tryHint = currentItemState.tryNum === 'first' ? currentPair?.ftHint : currentPair?.stHint;
+  const tryDiffProb = currentItemState.tryNum === 'first' ? currentDifficult?.ftProb : currentDifficult?.stProb;
+  const tryDiffAns = currentItemState.tryNum === 'first' ? currentDifficult?.ftAns : currentDifficult?.stAns;
+
+  const currentProblem = isDifficult
+    ? (tryDiffProb ?? '')
+    : tryExpr != null ? `${tryExpr} = ?` : '';
+
+  const currentSentence = isDifficult
+    ? ''
+    : tryExpr != null ? `${tryExpr} = ?` : '';
+
+  const currentAnswer = isDifficult
+    ? String(tryDiffAns ?? '')
+    : String(tryAns ?? '');
+
+  const currentHint = isDifficult ? '' : (tryHint ?? '');
+
+  const showHint = !isDifficult && currentHint !== '';
 
   const goToNextItem = useCallback(() => {
-    if (currentIndex < totalItems - 1) {
-      setCurrentIndex(prev => prev + 1);
-      resetInputs();
+    setShowingAnswer(false);
+    const nextIdx = itemResults.findIndex(r => r === 'unanswered');
+    if (nextIdx !== -1) {
+      setQIndex(nextIdx);
     } else {
-      // Level complete
-      const levelIdx = LEVEL_ORDER.indexOf(level);
-      if (levelIdx < LEVEL_ORDER.length - 1) {
-        setLevel(LEVEL_ORDER[levelIdx + 1]);
-      } else {
-        setEndTime(new Date());
-        setShowSummary(true);
-      }
+      setEndTime(new Date());
+      setShowSummary(true);
     }
-  }, [currentIndex, totalItems, level, navigate]);
-
+  }, [itemResults]);
   const handleShowHint = () => {
     playSound.pop();
     setHintModalOpen(true);
   };
 
   const handleCheckAnswer = () => {
-    if (!answer.trim()) return;
+    if (isReviewMode || !answer.trim()) return;
     const cleanAnswer = answer.trim().replace(/\s+/g, '').replace(/[−–]/g, '-');
+
+    const storeUserAns = () => {
+      setStoredAnswers(prev => ({
+        ...prev,
+        [qIndex]: { answer: answer.trim(), positiveCount, negativeCount, chips }
+      }));
+    };
 
     if (cleanAnswer === currentAnswer) {
       playSound.success();
+      storeUserAns();
       const result = currentItemState.tryNum === 'first' ? 'correctFirst' : 'correctSecond';
       setItemResults(prev => {
         const next = [...prev];
-        next[globalIdx] = result;
+        next[qIndex] = result;
         return next;
       });
       setModalState({
@@ -182,8 +198,8 @@ export const ActivityOneContent: React.FC = () => {
         playSound.pop();
         setItemStates(prev => {
           const next = [...prev];
-          if (next[currentIndex]) {
-            next[currentIndex] = { ...next[currentIndex], tryNum: 'second' };
+          if (next[qIndex]) {
+            next[qIndex] = { ...next[qIndex], tryNum: 'second' };
           }
           return next;
         });
@@ -194,13 +210,14 @@ export const ActivityOneContent: React.FC = () => {
           message: 'That was your first attempt. Here is a similar question for your second try.',
           showNext: false,
         });
-        setAnswer('');
+        clearInputs();
       } else {
         // Second try incorrect
         playSound.error();
+        storeUserAns();
         setItemResults(prev => {
           const next = [...prev];
-          next[globalIdx] = 'wrong';
+          next[qIndex] = 'wrong';
           return next;
         });
         const newFails = consecutiveStFails + 1;
@@ -295,9 +312,10 @@ export const ActivityOneContent: React.FC = () => {
   }, []);
 
   const toggleChipCancellation = useCallback((id: string) => {
+    if (isReviewMode) return;
     playSound.tick();
     setChips(prev => prev.map(c => c.id === id ? { ...c, isCancelled: !c.isCancelled } : c));
-  }, []);
+  }, [isReviewMode]);
 
   const handlePositiveCountChange = useCallback((val: string) => {
     setPositiveCount(val);
@@ -341,6 +359,7 @@ export const ActivityOneContent: React.FC = () => {
         endTime={endTime}
         onProceed={() => {
           markActivityComplete(1);
+          clearSession(SESSION_KEYS.activity(1));
           navigate('/activity');
         }}
       />
@@ -376,9 +395,19 @@ export const ActivityOneContent: React.FC = () => {
               {Array.from({ length: 15 }, (_, i) => {
                 const status = itemResults[i];
                 const itemNum = i + 1;
-                const isCurrent = i === globalIdx;
+                const isCurrent = i === qIndex;
                 return (
-                  <div key={i} className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}>
+                  <div 
+                    key={i} 
+                    className={`progress-circle ${status !== 'unanswered' ? status : ''} ${isCurrent ? 'current' : ''}`}
+                    onClick={() => {
+                      const firstUnanswered = itemResults.findIndex(r => r === 'unanswered');
+                      if (status !== 'unanswered' || i === firstUnanswered) {
+                        setQIndex(i);
+                      }
+                    }}
+                    style={{ cursor: (status !== 'unanswered' || i === itemResults.findIndex(r => r === 'unanswered')) ? 'pointer' : 'default' }}
+                  >
                     {status === 'correctFirst' || status === 'correctSecond' ? (
                       <span className="circle-icon">&#10003;</span>
                     ) : status === 'wrong' ? (
@@ -396,13 +425,15 @@ export const ActivityOneContent: React.FC = () => {
           <div className="activity-main-body">
             {/* Directions */}
             <div className="directions-box">
-              <p>Directions: {isDifficult ? 'Convert the sentence into a number sentence.' : 'Solve the expression using the chips below.'} Use the buttons to form your expression, then enter the correct answer in the answer box.</p>
+              <p><strong>Directions:</strong> {isDifficult ? 'Convert the sentence into a number sentence.' : 'Solve the math problem using the integer chips.'} Click the buttons to add chips to the Working Area. Enter your final answer in the box below.</p>
             </div>
 
-            {/* Question Box */}
-            <div className="question-box">
-              <p>{currentProblem}</p>
-            </div>
+            {/* Question Box (for Word Problems in Difficult Mode) */}
+            {isDifficult && (
+              <div className="question-box">
+                <p>{currentProblem}</p>
+              </div>
+            )}
 
             {/* Equation Display */}
             {!isDifficult && (
@@ -434,11 +465,12 @@ export const ActivityOneContent: React.FC = () => {
                       type="number"
                       className="counter-input positive-counter"
                       value={positiveCount}
-                      onChange={(e) => handlePositiveCountChange(e.target.value)}
+                      onChange={(e) => { if (!isReviewMode) handlePositiveCountChange(e.target.value); }}
                       placeholder={String(posChips.length)}
                       min="0"
                       max="50"
                       aria-label="Positive chip count"
+                      readOnly={isReviewMode}
                     />
                   </div>
                   <div className="chips-container">
@@ -462,11 +494,12 @@ export const ActivityOneContent: React.FC = () => {
                       type="number"
                       className="counter-input negative-counter"
                       value={negativeCount}
-                      onChange={(e) => handleNegativeCountChange(e.target.value)}
+                      onChange={(e) => { if (!isReviewMode) handleNegativeCountChange(e.target.value); }}
                       placeholder={String(negChips.length)}
                       min="0"
                       max="50"
                       aria-label="Negative chip count"
+                      readOnly={isReviewMode}
                     />
                   </div>
                   <div className="chips-container">
@@ -493,11 +526,13 @@ export const ActivityOneContent: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="action-buttons-row">
-              <button className="nav-btn delete-pos-btn" onClick={handleDeletePositive}>Delete Positive</button>
-              <button className="nav-btn delete-neg-btn" onClick={handleDeleteNegative}>Delete Negative</button>
-              <button className="nav-btn clear-btn" onClick={handleClearAll}>Clear All</button>
-            </div>
+            {!isReviewMode && (
+              <div className="action-buttons-row">
+                <button className="nav-btn delete-pos-btn" onClick={handleDeletePositive}>Delete Positive</button>
+                <button className="nav-btn delete-neg-btn" onClick={handleDeleteNegative}>Delete Negative</button>
+                <button className="nav-btn clear-btn" onClick={handleClearAll}>Clear All</button>
+              </div>
+            )}
 
             {/* Input Controls */}
             <div className="input-controls-row">
@@ -509,16 +544,28 @@ export const ActivityOneContent: React.FC = () => {
                   className="answer-input"
                   value={answer}
                   onChange={(e) => {
-                    playSound.tick();
-                    setAnswer(e.target.value);
+                    if (!isReviewMode) {
+                      playSound.tick();
+                      setAnswer(e.target.value);
+                    }
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleCheckAnswer();
                   }}
                   placeholder="Enter your answer here"
+                  readOnly={isReviewMode}
                 />
               </div>
-              <button className="input-btn check-btn" onClick={handleCheckAnswer}>Check Answer</button>
+              {isReviewMode ? (
+                <button className="input-btn check-btn" onClick={() => {
+                  playSound.click();
+                  goToNextItem();
+                }}>
+                  Back to Current Question
+                </button>
+              ) : (
+                <button className="input-btn check-btn" onClick={handleCheckAnswer}>Check Answer</button>
+              )}
             </div>
           </div>
         </div>
