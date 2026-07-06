@@ -245,8 +245,9 @@
 
 .a3-directions p {
   margin: 0;
-  font-size: 0.88rem;
-  color: #2e3a59;
+  font-size: clamp(1rem, 2vh, 1.25rem);
+  font-weight: bold;
+  color: #000000;
   line-height: 1.5;
 }
 
