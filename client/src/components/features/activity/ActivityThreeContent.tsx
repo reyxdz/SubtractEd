@@ -274,8 +274,8 @@ export const ActivityThreeContent: React.FC = () => {
         showNext: true,
       });
     } else {
-      // Activity 3 difficult round has NO second try — a wrong answer is final.
-      if (tryNum === 'first' && difficulty !== 'difficult') {
+      // Every difficulty uses its paired question for a second attempt.
+      if (tryNum === 'first') {
         playSound.pop();
         setTryNum('second');
         setModalState({
