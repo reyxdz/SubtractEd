@@ -18,15 +18,14 @@ function formatPercent(value: number) {
 export const ProgressContent: React.FC = () => {
   const navigate = useNavigate();
   const progress = useLearningProgressMetrics();
-  const activityPercent = Number(((progress.completedActivities / 3) * 100).toFixed(2));
   const overallPercent = progress.exactPercentage;
   const overallLabel = formatPercent(overallPercent);
 
   const rows: ProgressRow[] = [
     { title: 'Guide Card', percentage: progress.guideCompleted ? 100 : 0, accent: 'blue', icon: BookOpen },
-    { title: 'Activity Card', percentage: activityPercent, accent: 'green', icon: Pencil },
-    { title: 'Assessment Card', percentage: progress.assessmentCompleted ? 100 : 0, accent: 'purple', icon: ClipboardCheck },
-    { title: 'Enrichment Card', percentage: progress.enrichmentCompleted ? 100 : 0, accent: 'yellow', icon: Star },
+    { title: 'Activity Card', percentage: progress.activityPercentage, accent: 'green', icon: Pencil },
+    { title: 'Assessment Card', percentage: progress.assessmentPercentage, accent: 'purple', icon: ClipboardCheck },
+    { title: 'Enrichment Card', percentage: progress.enrichmentPercentage, accent: 'yellow', icon: Star },
   ];
 
   const headline = overallPercent === 100
@@ -41,14 +40,17 @@ export const ProgressContent: React.FC = () => {
     ? "You've mastered everything. Keep shining!"
     : `You've completed ${overallLabel} of your learning journey.`;
 
-  const subMessage = progress.guideCompleted && progress.completedActivities < 3
-    ? `You still have ${3 - progress.completedActivities} activit${3 - progress.completedActivities === 1 ? 'y' : 'ies'} to finish.`
+  const remainingActivityItems = progress.totalActivityItems - progress.completedActivityItems;
+  const remainingAssessmentItems = progress.totalAssessmentItems - progress.completedAssessmentItems;
+  const remainingEnrichmentItems = progress.totalEnrichmentItems - progress.completedEnrichmentItems;
+  const subMessage = progress.guideCompleted && remainingActivityItems > 0
+    ? `You still have ${remainingActivityItems} activity item${remainingActivityItems === 1 ? '' : 's'} to finish.`
     : !progress.guideCompleted
       ? 'Complete the Guide Card first to unlock the next steps.'
-      : !progress.assessmentCompleted
-        ? 'Assessment comes after all activities are done.'
-        : !progress.enrichmentCompleted
-          ? 'Finish Enrichment to complete the full journey.'
+      : remainingAssessmentItems > 0
+        ? `You still have ${remainingAssessmentItems} assessment item${remainingAssessmentItems === 1 ? '' : 's'} to finish.`
+        : remainingEnrichmentItems > 0
+          ? `You still have ${remainingEnrichmentItems} enrichment item${remainingEnrichmentItems === 1 ? '' : 's'} to finish.`
           : 'Your full learning journey is complete.';
 
   return (
