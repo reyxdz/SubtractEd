@@ -6,6 +6,7 @@ import heroStudentImg from '../../../assets/student_clip_images/student_has_an_i
 import teacherImg from '../../../assets/teacher_clip_images/teacher_smiling_clapping.png';
 import guideVideo from '../../../assets/videos/guide_page_video.mp4';
 import { markGuideComplete } from '../../../utils/learningProgress';
+import { musicManager } from '../../../utils/music';
 import './GuideContent.css';
 
 const FadeInMount: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -42,6 +43,15 @@ export const GuideContent: React.FC = () => {
       }, 100);
     }
   }, [currentStep]);
+
+  useEffect(() => {
+    return () => {
+      musicManager.play();
+    };
+  }, []);
+
+  const pauseBgMusic = () => musicManager.pause();
+  const resumeBgMusic = () => musicManager.play();
 
   return (
     <div
@@ -135,7 +145,12 @@ export const GuideContent: React.FC = () => {
                     className="guide-video-element"
                     controls
                     preload="metadata"
-                    onEnded={() => setIsVideoFinished(true)}
+                    onPlay={pauseBgMusic}
+                    onPause={resumeBgMusic}
+                    onEnded={() => {
+                      setIsVideoFinished(true);
+                      resumeBgMusic();
+                    }}
                   >
                     <source src={guideVideo} type="video/mp4" />
                     Your browser does not support the video tag.

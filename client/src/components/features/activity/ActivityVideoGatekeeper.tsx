@@ -8,6 +8,7 @@ import teacherClap from '../../../assets/teacher_clip_images/teacher_smiling_cla
 import gatekeeperVideo from '../../../assets/videos/gatekeeper_full_video_for_activities.mp4';
 import { isActivityUnlocked } from '../../../utils/activityProgress';
 import { playSound } from '../../../utils/sound';
+import { musicManager } from '../../../utils/music';
 import '../guide/GuideContent.css';
 import './ActivityVideoGatekeeper.css';
 
@@ -51,8 +52,18 @@ export const ActivityVideoGatekeeper: React.FC = () => {
       }
     };
 
+    const handlePlay = () => musicManager.pause();
+    const handlePause = () => musicManager.play();
+
     video.addEventListener('timeupdate', handleTimeUpdate);
-    return () => video.removeEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      musicManager.play();
+    };
   }, [timestamps]);
 
   const handleProceed = () => {
