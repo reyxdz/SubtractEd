@@ -1,4 +1,4 @@
-// Question Bank from EASY-AND-MODERATE-QB-FOR-ACT-1-TO-3.docx
+// Question Bank from ACTIVITY-CARD-QUESTION-BANK-v2.docx
 // Each activity has Easy and Moderate rounds.
 // Each round has 5 conditions, each with 10 question pairs (First Try / Second Try).
 // The system picks 1 pair per condition (5 items total per round).
@@ -348,10 +348,10 @@ const a3EasyC5: ConditionPairs = [
   { ftExpr: '-6 - (-1)', ftAns: -5, stExpr: '-4 - (-2)', stAns: -2 },
   { ftExpr: '-5 - (-2)', ftAns: -3, stExpr: '-3 - (-1)', stAns: -2 },
   { ftExpr: '-9 - (-2)', ftAns: -7, stExpr: '-5 - (-4)', stAns: -1 },
-  { ftExpr: '-7 - (-6)', ftAns: -1, stExpr: '-4 - (-3)', stAns: -1 },
-  { ftExpr: '-5 - (-3)', ftAns: -2, stExpr: '-3 - (-2)', stAns: -1 },
-  { ftExpr: '-8 - (-1)', ftAns: -7, stExpr: '-5 - (-1)', stAns: -4 },
-  { ftExpr: '-6 - (-4)', ftAns: -2, stExpr: '-2 - (-1)', stAns: -1 },
+  { ftExpr: '-7 - (-6)', ftAns: -1, stExpr: '-3 - (-2)', stAns: -1 },
+  { ftExpr: '-5 - (-3)', ftAns: -2, stExpr: '-2 - (-1)', stAns: -1 },
+  { ftExpr: '-8 - (-1)', ftAns: -7, stExpr: '-4 - (-3)', stAns: -1 },
+  { ftExpr: '-6 - (-4)', ftAns: -2, stExpr: '-5 - (-1)', stAns: -4 },
 ];
 
 const a3ModC1: ConditionPairs = [
@@ -895,7 +895,6 @@ const a1DiffC2: DiffCondition = [
 
 const a1DiffC3: DiffCondition = [
   { ftProb: "Mang Juan took a batch of homemade ice candy out of the freezer, where it was frozen at -6℃. He left it out on the table until it completely melted and reached a room temperature of 24C.What is the temperature difference between the melted 24C ice candy and its original frozen temperature?\nEquation: 24-(-6) =30℃", ftAns: 30, stProb: "Mang Juan took a batch of homemade ice candy out of the freezer, where it was frozen at -4°C. He left it out on the table until it reached a room temperature of 18°C. What is the temperature difference between the 18°C ice candy and its original frozen temperature?\nEquation: 18 - (-4) = 22°C", stAns: 22 },
-  { ftProb: "Aling Marie is tracking her daily store earnings. On Tuesday, her daily ledger showed a net loss, recorded as -₱15. On Wednesday, she bring her daily record up to a positive profit of ₱20. What is the total financial difference between Wednesday's profit and Tuesday's loss?\nEquation: 20 - (-15) = ₱35", ftAns: 35, stProb: "Aling Marie is tracking her daily store earnings. On Tuesday, her daily ledger showed a net loss, recorded as -₱5. On Wednesday, she brought her daily record up to a positive profit of ₱15. What is the total financial difference between Wednesday's profit and Tuesday's loss?\nEquation: 15 - (-5) = ₱20", stAns: 20 },
   { ftProb: "A fisherman stands on a rocky coastal cliff in Caibiran that is 15 meters above sea level. He casts his line deep into the water, and his bait sinks down to a rock bed located 12 meters below sea level. What is the total vertical distance between the fisherman on the 15-meter cliff and his bait down at the -12 meter rock bed?\nEquation: 15 - (-12) = 27 meters", ftAns: 27, stProb: "A fisherman stands on a rocky coastal cliff in Caibiran that is 12 meters above sea level. He casts his line into the water, and his bait sinks down to a rock bed located 6 meters below sea level. What is the total vertical distance between the fisherman on the 12-meter cliff and his bait down at the -6 meter rock bed?\nEquation: 12 - (-6) = 18 meters", stAns: 18 },
   { ftProb: "Kiko scored 28 points on his Science quiz at Caibiran National High School. Later, his teacher noticed that mistakenly, there was a -4 point penalty on his paper. To fix it, the teacher subtracted the -4 penalty from his score. What is Kiko's corrected, final quiz score?\nEquation: 28 - (-4) = 32", ftAns: 32, stProb: "Kiko scored 20 points on his Science quiz at Caibiran National High School. Later, his teacher noticed that mistakenly, there was a -3 point penalty on his paper. To fix it, the teacher subtracted the -3 penalty from his score. What is Kiko's corrected, final quiz score?\nEquation: 20 - (-3) = 23", stAns: 23 },
   { ftProb: "A vendor in Naval prepares a fresh batch of suman that sits at a warm temperature of 25°C. She places it into a specialized cooling storage unit that keeps a temperature of -15°C. What is the total temperature difference between the warm 25°C suman and the -15°C cooling storage unit?\nEquation: 25 - (-15) = 40°C", ftAns: 40, stProb: "A vendor in Naval prepares a fresh batch of suman that sits at a temperature of 22°C. She places it into a small cooling unit that keeps a temperature of -5°C. What is the total temperature difference between the 22°C suman and the -5°C cooling unit?\nEquation: 22 - (-5) = 27°C", stAns: 27 },
@@ -925,8 +924,6 @@ const a2DiffC1: DiffCondition = [
   { ftProb: "Ate Susan harvested 15 baskets of santol from her farm in Naval. She delivered 9 baskets to the local public market stall. How many baskets of santol does Ate Susan have left in her storage?\n•	Equation: 15 - 9 = 6", ftAns: 6, stProb: "Ate Susan harvested 10 baskets of santol from her farm in Naval. She delivered 6 baskets to the local public market stall. How many baskets of santol does Ate Susan have left in her storage?\n•	Equation: 10 - 6 = 4", stAns: 4 },
   { ftProb: "For the upcoming barangay festival in Almeria, a farming family gathered 14 kilograms of red rambutan. They donated 8 kilograms to the youth games prize booth. How many kilograms of rambutan remain with the family?\n•	Equation: 14 - 8 = 6", ftAns: 6, stProb: "For the upcoming barangay festival in Almeria, a farming family gathered 9 kilograms of red rambutan. They donated 4 kilograms to the youth games prize booth. How many kilograms of rambutan remain with the family?\n•	Equation: 9 - 4 = 5", stAns: 5 },
   { ftProb: "Tatay Marlon brought 13 bunches of Saba bananas to the pier in Maripipi Island. He managed to load 7 bunches onto the first pump boat heading to the mainland. How many bunches of bananas are left on the dock?\n•	Equation: 13 - 7 = 6", ftAns: 6, stProb: "Tatay Marlon brought 8 bunches of Saba bananas to the pier in Maripipi Island. He managed to load 3 bunches onto the first pump boat heading to the mainland. How many bunches of bananas are left on the dock?\n•	Equation: 8 - 3 = 5", stAns: 5 },
-  { ftProb: "The Kawayan Farmers Cooperative has 9 boxes of ripe bananas in stock. A local school needs 14 boxes for a community feeding program. If the cooperative gives all 9 boxes, how much more do they need to give to the local school?\n•	Equation: 9 - 14 = -5", ftAns: -5, stProb: "The Kawayan Farmers Cooperative has 5 boxes of ripe bananas in stock. A local school needs 11 boxes for a community feeding program. If the cooperative gives all 5 boxes, how much more do they need to give to the local school?\n•	Equation: 5 - 11 = -6", stAns: -6 },
-  { ftProb: "A fruit vendor in Culaba needs to supply 15 baskets of santol to the public market. However, only 10 baskets are high quality enough to send out. If she sends these 10 baskets, how many baskets does she still need to find?\n•	Equation: 10 - 15 = -5", ftAns: -5, stProb: "A fruit vendor in Culaba needs to supply 12 baskets of santol to the public market. However, only 6 baskets are high quality enough to send out. If she sends these 6 baskets, how many baskets does she still need to find?\n•	Equation: 6 - 12 = -6", stAns: -6 },
 ];
 
 const a2DiffC2: DiffCondition = [

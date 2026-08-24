@@ -170,13 +170,13 @@ const diffC1: A3QuestionPair[] = [
 const diffC2: A3QuestionPair[] = [
   {
     ft: buildDifficultQ(
-      'A rice farmer in Naval borrowed 85 pesos for organic pest control spray. Today, he needs to borrow another 50 pesos for a new plastic shovel. How much does he need to pay back to the store?',
+      'A rice farmer in Naval borrowed the farming supply store ₱85 for organic pest control spray. Today, he needs to borrow another ₱50 for a new plastic shovel. How much does he need to pay back to the store?',
       -85, 50, -135,
       'Not Quite!',
       'Borrowing more increases the debt. Add the amounts and keep the negative sign.'
     ),
     st: buildDifficultQ(
-      'A rice farmer in Naval borrowed 35 pesos for organic pest control spray. Today, he needs to borrow another 20 pesos for a new plastic shovel. How much does he need to pay back to the store?',
+      'A rice farmer in Naval borrowed the farming supply store ₱35 for organic pest control spray. Today, he needs to borrow another ₱20 for a new plastic shovel. How much does he need to pay back to the store?',
       -35, 20, -55,
       'Not Quite!',
       'Borrowing more increases the debt. Add the amounts and keep the negative sign.'
@@ -184,13 +184,13 @@ const diffC2: A3QuestionPair[] = [
   },
   {
     ft: buildDifficultQ(
-      'A puto baker in Biliran town borrowed 70 pesos from her neighbor for a bag of white sugar. Today, she needs to borrow another 45 pesos to buy banana leaves for lining her baking pans. How much does she need to pay back to her neighbor?',
+      'A puto baker in Biliran town borrowed ₱70 to her neighbor for a bag of white sugar. Today, she needs to borrow another ₱45 to buy banana leaves for lining her baking pans. How much does she need to pay back to her neighbor?',
       -70, 45, -115,
       'Oops! Try Again!',
       'Adding more debt makes the total more negative.'
     ),
     st: buildDifficultQ(
-      'A puto baker in Biliran town borrowed 40 pesos from her neighbor for a pack of white sugar. Today, she needs to borrow another 15 pesos to buy banana leaves for lining her baking pans. How much does she need to pay back to her neighbor?',
+      'A puto baker in Biliran town borrowed ₱40 to her neighbor for a pack of white sugar. Today, she needs to borrow another ₱15 to buy banana leaves for lining her baking pans. How much does she need to pay back to her neighbor?',
       -40, 15, -55,
       'Oops! Try Again!',
       'Adding more debt makes the total more negative.'
@@ -198,13 +198,13 @@ const diffC2: A3QuestionPair[] = [
   },
   {
     ft: buildDifficultQ(
-      'A barbecue stand owner near the beach in Sambawan Island borrowed 90 pesos from a market supplier for charcoal. Today, he needs to borrow another 60 pesos to buy a fresh tub of sweet soy sauce marinade. How much does he need to pay back in total?',
+      'A barbecue stand owner near the beach in Sambawan Island borrowed ₱90 to a market supplier for charcoal. Today, he needs to borrow another ₱60 to buy a fresh tub of sweet soy sauce marinade. How much does he need to pay back in total?',
       -90, 60, -150,
       'Almost There!',
       'Combining debts means adding them together.'
     ),
     st: buildDifficultQ(
-      'A barbecue stand owner near the beach in Sambawan Island borrowed 45 pesos from a market supplier for charcoal. Today, he needs to borrow another 25 pesos to buy a fresh tub of sweet soy sauce marinade. How much does he need to pay back in total?',
+      'A barbecue stand owner near the beach in Sambawan Island borrowed ₱45 to a market supplier for charcoal. Today, he needs to borrow another ₱25 to buy a fresh tub of sweet soy sauce marinade. How much does he need to pay back in total?',
       -45, 25, -70,
       'Almost There!',
       'Combining debts means adding them together.'
@@ -212,13 +212,13 @@ const diffC2: A3QuestionPair[] = [
   },
   {
     ft: buildDifficultQ(
-      'A tricycle driver in Caibiran borrowed 65 pesos from a local vulcanizing shop to fix a flat inner tube. Today, he needs to borrow another 55 pesos for gasoline to complete his afternoon trips. How much does he need to pay back?',
+      'A tricycle driver in Caibiran borrowed ₱65 to a local vulcanizing shop to fix a flat inner tube. Today, he needs to borrow another ₱55 for gasoline to complete his afternoon trips. How much does he need to pay back?',
       -65, 55, -120,
       'Not Quite!',
       'Both amounts are debts that need to be combined.'
     ),
     st: buildDifficultQ(
-      'A tricycle driver in Caibiran borrowed 30 pesos from a local vulcanizing shop to fix a flat inner tube. Today, he needs to borrow another 25 pesos for gasoline to complete his afternoon trip. How much does he need to pay back?',
+      'A tricycle driver in Caibiran borrowed ₱30 to a local vulcanizing shop to fix a flat inner tube. Today, he needs to borrow another ₱25 for gasoline to complete his afternoon trip. How much does he need to pay back?',
       -30, 25, -55,
       'Not Quite!',
       'Both amounts are debts that need to be combined.'
@@ -226,13 +226,13 @@ const diffC2: A3QuestionPair[] = [
   },
   {
     ft: buildDifficultQ(
-      'A fish vendor at the Almeria fish port borrowed 80 pesos for renting an insulated storage cooler box. Today, she needs to borrow another 40 pesos to buy blocks of crushed ice for her fresh catch. How much does she need to pay back?',
+      'A fish vendor at the Almeria fish port borrowed ₱80 for renting an insulated storage cooler box. Today, she needs to borrow another ₱40 to buy blocks of crushed ice for her fresh catch. How much does she need to pay back?',
       -80, 40, -120,
       'Oops!',
       'Debts add up. The total is the sum of both borrowed amounts.'
     ),
     st: buildDifficultQ(
-      'A fish vendor at the Almeria fish port borrowed 38 pesos for renting an insulated storage cooler box. Today, she needs to borrow another 22 pesos to buy blocks of crushed ice for her fresh catch. How much does she need to pay back?',
+      'A fish vendor at the Almeria fish port borrowed ₱38 for renting an insulated storage cooler box. Today, she needs to borrow another ₱22 to buy blocks of crushed ice for her fresh catch. How much does she need to pay back?',
       -38, 22, -60,
       'Oops!',
       'Debts add up. The total is the sum of both borrowed amounts.'
@@ -286,22 +286,7 @@ const diffC3: A3QuestionPair[] = [
   },
   {
     ft: buildDifficultQ(
-      'Elena earned 78 points on her Science long quiz at Caibiran National High School. Afterward, her teacher realized there was a mistaken -12 point penalty written on her grading sheet. To fix the mistake, the teacher subtracted the -12 penalty from her score. What is Elena\'s corrected final quiz score?',
-      78, -12, 90,
-      'Not Quite!',
-      'Removing a penalty increases the score. Subtract the negative penalty to get the corrected score.'
-    ),
-    st: buildDifficultQ(
-      'Elena earned 42 points on her Science long quiz at Caibiran National High School. Afterward, her teacher realized there was a mistaken -5 point penalty written on her grading sheet. To fix the mistake, the teacher subtracted the -5 penalty from her score. What is Elena\'s corrected final quiz score?',
-      42, -5, 47,
-      'Not Quite!',
-      'Removing a penalty increases the score.'
-    ),
-  },
-  {
-    ft: buildDifficultQ(
-      'A vendor in Almeria prepares a fresh pan of warm maja blanca that sits at a temperature of 35\u00B0C. She sets it inside a heavy-duty cooling storage box running at -25\u00B0C to firm it up. What is the total temperature difference between the warm 35\u00B0C pudding and the -25\u00B0C cooling box?',
-      35, -25, 60,
+      'A vendor in Almeria prepares a fresh pan of warm maja blanca that sits at a temperature of 35\u00B0C. She sets it inside a heavy-duty cooling storage box running at -25\u00B0C to firm it up. What is the total temperature difference between the warm 35\u00B0C pudding and the -25\u00B0C cooling box?',      35, -25, 60,
       'Not Quite! Let\'s Try Again!',
       'The temperature difference is the warm temperature minus the cold temperature. Subtracting a negative gives a larger positive result.'
     ),

@@ -117,6 +117,10 @@ export const GuideContent: React.FC = () => {
                     <li style={{ marginBottom: '0.25rem' }}><strong>Objective 2:</strong> Solve integer subtraction problems by moving an interactive character along a horizontal number line.</li>
                     <li><strong>Objective 3:</strong> Solve integer subtraction problems written as numerals by executing the three-step Keep-Change-Change rule.</li>
                   </ul>
+                  <h2 style={{ marginTop: '1rem' }}>Purpose of the Material</h2>
+                  <p>
+                    This material helps Grade 7 learners understand and solve integer subtraction problems using models, number lines, and simple rules. It aims to develop their skills in subtracting integers and applying these skills to solve mathematical problems.
+                  </p>
                 </div>
               </section>
             </FadeInMount>
